@@ -17,16 +17,7 @@ function Recipe() {
   let params = useParams();
   const [details, setDetails] = useState({});
   const [activeTab, setActiveTab] = useState("instructions");
-  const [rating, setRating] = useState([
-    {
-      type: 4,
-      quantity: 25,
-    },
-    {
-      type: 5,
-      quantity: 25,
-    },
-  ]);
+
   const fetchDetails = async () => {
     const data = await fetch(
       `https://api.spoonacular.com/recipes/${params.name}/information?apiKey=${process.env.REACT_APP_API_KEY}`,
@@ -130,12 +121,9 @@ function Recipe() {
             }}
             name="half-rating"
             defaultValue={0}
-            precision={0.5}
           />{" "}
         </Box>
       </Box>
-      <LikeButton></LikeButton>
-      <ButtonExampleLabeledBasicShorthand></ButtonExampleLabeledBasicShorthand>
       <Container
         style={{ margin: 20, borderTop: "solid 2px #ccc", padding: 12 }}>
         {/* <CommentExampleComment></CommentExampleComment> */}
