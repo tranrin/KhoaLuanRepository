@@ -257,7 +257,7 @@ const CreateRecipe = () => {
               You can split your ingredients into groups, e.g. sauce, filling
               etc.
             </Typography>
-            {ingredients.map((item, index) => {
+            {ingredientPayload.map((item, index) => {
               return (
                 <TextField
                   sx={{ marginBottom: 1 }}
@@ -265,6 +265,7 @@ const CreateRecipe = () => {
                   label="ingredient"
                   key={index}
                   name={"ingredient" + index + 1}
+                  onAbort={(e) => handle}
                   // onChange={}
                 />
               );
@@ -273,7 +274,12 @@ const CreateRecipe = () => {
             <Button
               sx={{ marginRight: 1, bgcolor: "rgb(49, 49, 49)" }}
               onClick={() =>
-                setIngredients([...ingredients, ingredients.length + 1])
+                setIngredientPayload([
+                  ...ingredientPayload,
+                  ingredientPayload.push({
+                    tenNguyenLieu: "",
+                  }),
+                ])
               }
               variant="contained">
               Add next ingrediant
