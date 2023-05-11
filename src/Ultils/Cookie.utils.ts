@@ -1,8 +1,6 @@
-import { setDefaultLanguage } from "react-multi-lang";
 import Cookies from "universal-cookie";
-import CONSTANTS from "@/Constants";
-
-const { COOKIE_KEYS, LOCALE } = CONSTANTS;
+import CONSTANTS from "../../src/contants/index";
+const { COOKIE_KEYS } = CONSTANTS;
 
 const cookies = new Cookies();
 
@@ -44,16 +42,6 @@ const saveUserData = (userData) => {
   localStorage.setItem(COOKIE_KEYS.SAVED_USER_DATA, JSON.stringify(userData));
 };
 
-const setCurrentLanguage = (lang) => {
-  setDefaultLanguage(lang || LOCALE.EN);
-  cookies.set(COOKIE_KEYS.CURRENT_LANGUAGE, lang);
-};
-
-const getCurrentLanguage = () => {
-  const lang = cookies.get(COOKIE_KEYS.CURRENT_LANGUAGE) || LOCALE.EN;
-  return lang;
-};
-
 const clearAllSavedData = async () => {
   cookies.remove(COOKIE_KEYS.SAVED_SECURE_TOKEN);
   cookies.remove(COOKIE_KEYS.SAVED_FULL_NAME);
@@ -76,8 +64,6 @@ export {
   clearAllSavedData,
   saveUserData,
   getSavedUserData,
-  getCurrentLanguage,
-  setCurrentLanguage,
   saveLocale,
   getSavedLocale,
   saveWidth,
