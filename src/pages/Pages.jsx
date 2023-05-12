@@ -9,9 +9,8 @@ import { AnimatePresence } from "framer-motion";
 
 import Profile from "./Profile";
 import CreateRecipe from "./CreateRecipe";
-
-import PrintableComponent from "../components/RenderPdf";
-
+import RecipeManagement from "./RecipeManagement";
+import EditRecipe from "./EditRecipe";
 //ko xài và không được cả import neu không xài
 function Pages() {
   const location = useLocation();
@@ -25,8 +24,8 @@ function Pages() {
         <Route path="/recipe/:name" element={<Recipe />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/recipe/create" element={<CreateRecipe />} />
-        <Route path="/pdf" element={<PrintableComponent />} />
-
+        <Route path="/recipe-management" element={<RecipeManagement />} />
+        <Route path="/edit-recipe/:id" element={<EditRecipe />} />
       </Routes>
     </AnimatePresence>
   );

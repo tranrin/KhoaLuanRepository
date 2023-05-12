@@ -1,17 +1,16 @@
-import React from 'react'
-import { Button, Comment, Form, Header } from 'semantic-ui-react'
-
+import React from "react";
+import { Button, Comment, Form, Header } from "semantic-ui-react";
 
 const CommentExampleComment = () => (
   <Comment.Group>
-    <Header as='h3' dividing>
+    <Header as="h3" dividing>
       Comments
     </Header>
 
     <Comment>
-      <Comment.Avatar src='https://react.semantic-ui.com/images/avatar/small/matt.jpg' />
+      <Comment.Avatar src="https://react.semantic-ui.com/images/avatar/small/matt.jpg" />
       <Comment.Content>
-        <Comment.Author as='a'>Matt</Comment.Author>
+        <Comment.Author as="a">Matt</Comment.Author>
         <Comment.Metadata>
           <div>Today at 5:42PM</div>
         </Comment.Metadata>
@@ -23,9 +22,9 @@ const CommentExampleComment = () => (
     </Comment>
 
     <Comment>
-      <Comment.Avatar src='https://react.semantic-ui.com/images/avatar/small/elliot.jpg' />
+      <Comment.Avatar src="https://react.semantic-ui.com/images/avatar/small/elliot.jpg" />
       <Comment.Content>
-        <Comment.Author as='a'>Elliot Fu</Comment.Author>
+        <Comment.Author as="a">Elliot Fu</Comment.Author>
         <Comment.Metadata>
           <div>Yesterday at 12:30AM</div>
         </Comment.Metadata>
@@ -38,9 +37,9 @@ const CommentExampleComment = () => (
       </Comment.Content>
       <Comment.Group>
         <Comment>
-          <Comment.Avatar src='https://react.semantic-ui.com/images/avatar/small/jenny.jpg' />
+          <Comment.Avatar src="https://react.semantic-ui.com/images/avatar/small/jenny.jpg" />
           <Comment.Content>
-            <Comment.Author as='a'>Jenny Hess</Comment.Author>
+            <Comment.Author as="a">Jenny Hess</Comment.Author>
             <Comment.Metadata>
               <div>Just now</div>
             </Comment.Metadata>
@@ -54,9 +53,9 @@ const CommentExampleComment = () => (
     </Comment>
 
     <Comment>
-      <Comment.Avatar src='https://react.semantic-ui.com/images/avatar/small/joe.jpg' />
+      <Comment.Avatar src="https://react.semantic-ui.com/images/avatar/small/joe.jpg" />
       <Comment.Content>
-        <Comment.Author as='a'>Joe Henderson</Comment.Author>
+        <Comment.Author as="a">Joe Henderson</Comment.Author>
         <Comment.Metadata>
           <div>5 days ago</div>
         </Comment.Metadata>
@@ -69,12 +68,12 @@ const CommentExampleComment = () => (
 
     <Form reply>
       <Form.TextArea />
-      <Button content='Add Reply' labelPosition='left' icon='edit' primary />
+      <Button content="Add Reply" labelPosition="left" icon="edit" primary />
     </Form>
   </Comment.Group>
-)
+);
 // const styleLink = document.createElement("link");
 // styleLink.rel = "stylesheet";
 // styleLink.href = "https://cdn.jsdelivr.net/npm/semantic-ui/dist/semantic.min.css";
 // document.head.appendChild(styleLink);
-export default CommentExampleComment
+export default CommentExampleComment;

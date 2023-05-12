@@ -13,9 +13,11 @@ import MenuIcon from "@mui/icons-material/Menu";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { MenuItem } from "@mui/material";
 import RiceBowlIcon from "@mui/icons-material/RiceBowl";
-import { useNavigate } from "react-router-dom";
-const pages = ["Download our app", "Foods"];
-const settings = ["Profile", "Account", "Dashboard", "Logout"];
+import { Link, useNavigate } from "react-router-dom";
+import styled from "@emotion/styled";
+import { GiKnifeFork } from "react-icons/gi";
+const pages = [];
+const settings = ["Profile", "Recipe", "Logout", ""];
 
 function Navbar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
@@ -38,6 +40,10 @@ function Navbar() {
     }
     if (setting === "Profile") {
       navigate("/profile");
+    }
+
+    if (setting === "Recipe") {
+      navigate("/recipe-management");
     }
   };
 
@@ -62,6 +68,8 @@ function Navbar() {
   return (
     <AppBar
       sx={{
+        zIndex: 12,
+        overflow: "hidden",
         background:
           "linear-gradient(to right bottom, rgb(73, 73, 73), rgb(49, 49, 49))",
       }}
@@ -73,7 +81,7 @@ function Navbar() {
         }}
         maxWidth="xl">
         <Toolbar disableGutters>
-          <RiceBowlIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
+          {/* <RiceBowlIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} /> */}
           <Typography
             variant="h6"
             noWrap
@@ -88,7 +96,21 @@ function Navbar() {
               color: "inherit",
               textDecoration: "none",
             }}>
-            LOGO
+            <Logo Logo to={"/home"}>
+              <GiKnifeFork
+                style={{
+                  color: "#fff",
+                }}
+              />
+              <Typography
+                sx={{
+                  color: "#fff",
+                }}
+                variant="4">
+                {" "}
+                delicious
+              </Typography>
+            </Logo>
           </Typography>
 
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
@@ -208,3 +230,12 @@ function Navbar() {
   );
 }
 export default Navbar;
+
+const Logo = styled(Link)`
+  text-decoration: none;
+  font-size: 1.5rem;
+  font-weight: 400;
+  font-family: "Lobster Two", cursive;
+  justify-content: center;
+  color: "white";
+`;

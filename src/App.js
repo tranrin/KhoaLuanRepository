@@ -21,7 +21,8 @@ function App() {
         <Grid
           sx={{
             position: "fixed",
-            zIndex: 2,
+            overflow: "hidden",
+            zIndex: 10000,
             top: 0,
             left: 0,
             right: 0,
@@ -32,12 +33,7 @@ function App() {
           md={12}>
           <Navbar />
         </Grid>
-        <Nav>
-          <GiKnifeFork></GiKnifeFork>
-          <Logo Logo to={"/home"}>
-            delicious
-          </Logo>
-        </Nav>
+        <Nav></Nav>
         <Search></Search>
         <Category></Category>
         <Pages></Pages>
