@@ -1,6 +1,5 @@
 import Cookies from "universal-cookie";
-import CONSTANTS from "../../src/contants/index";
-const { COOKIE_KEYS } = CONSTANTS;
+import COOKIE_KEYS from "../contants/CookieKeys.constant";
 
 const cookies = new Cookies();
 

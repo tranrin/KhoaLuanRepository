@@ -1,4 +1,4 @@
-import COOKIE_KEYS from "./Constants/CookieKeys.constant";
+import COOKIE_KEYS from "../contants";
 export default {
   COOKIE_KEYS,
 };

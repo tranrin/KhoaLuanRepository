@@ -14,6 +14,7 @@ import {
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import CameraAltIcon from "@mui/icons-material/CameraAlt";
 import React, { useEffect } from "react";
+import { createRecipe } from "../api/recipe.api";
 
 const HOURS = [
   1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22,
@@ -26,19 +27,151 @@ const MINS = [
 ];
 
 const CreateRecipe = () => {
-  const [value, setValue] = React.useState(0);
+  const [prepareHours, setPrepareHours] = React.useState(0);
+  const [prepareMin, setPrepareMin] = React.useState(0);
+  const [cookHours, setCookHours] = React.useState(0);
+  const [cookMin, setCookMin] = React.useState(0);
   const [ingredients, setIngredients] = React.useState([1]);
-  const [stepMethod, setStepMethod] = React.useState([1]);
+  const [payload, setPayload] = React.useState({
+    thongTinChung: {
+      tenCongThuc: "",
+      moTa: "",
+      thoiGianNau: 0,
+      thoiGianChuanBi: 0,
+      idCategory: 0,
+      anhKemTheo: null,
+      ngayTao: " 2023-05-05T21:37:48.567",
+      doKho: 0,
+    },
+    nguyenLieu: [
+      {
+        tenNguyenLieu: "",
+      },
+    ],
+    buocNau: [
+      {
+        moTa: "",
+        thuTu: 1,
+      },
+    ],
+  });
   const [ingredientPayload, setIngredientPayload] = React.useState([
     {
       tenNguyenLieu: "",
     },
   ]);
+  const [stepMethodPayload, setStepMethodPayload] = React.useState([
+    {
+      moTa: "",
+      thuTu: 0,
+    },
+  ]);
   // const [stepMethod, setStepMethod] = React.useState([1]);
+  const myHeaders = new Headers();
+  const myInit = {
+    method: "GET",
+    headers: myHeaders,
+    mode: "cors",
+    cache: "default",
+  };
+  const handleSubmit = () => {
+    delete payload.thongTinChung.prepareHours;
+    delete payload.thongTinChung.prepareMins;
+    delete payload.thongTinChung.cookHours;
+    delete payload.thongTinChung.cookMins;
+    // const test = await createRecipe(payload);
+    fetch(
+      "https://9018-2402-800-6273-529a-4c8e-ce19-9ecd-3665.ngrok-free.app/api/CongThuc/CongThucGets/sa",
+      {},
+    )
+      .then((response) => {
+        response.header(
+          "Access-Control-Allow-Methods",
+          "GET,PUT,POST,DELETE,PATCH,OPTIONS",
+        );
+        if (response.ok) {
+          return response.text();
+        } else {
+          throw new Error("Server response was not OK");
+        }
+      })
+      .then((data) => {
+        try {
+          const jsonData = JSON.parse(data);
+          console.log(jsonData); // Do something with the data
+        } catch (error) {
+          console.error("Failed to parse JSON data", error);
+        }
+      })
+      .catch((error) => console.error(error));
+
+    // const data = await api.json();
+  };
+
+  const handleChangeIngredient = (index) => (event) => {
+    const { name, value } = event.target;
+
+    setIngredientPayload((prevPayload) => {
+      const newPayload = [...prevPayload];
+      newPayload[index] = {
+        ...newPayload[index],
+        [name]: value,
+      };
+
+      return newPayload;
+    });
+
+    setPayload({
+      ...payload,
+      nguyenLieu: ingredientPayload,
+    });
+  };
+
+  const handleChangeStepMethod = (index) => (event) => {
+    const { name, value } = event.target;
+
+    setStepMethodPayload((prevPayload) => {
+      const newPayload = [...prevPayload];
+      newPayload[index] = {
+        ...newPayload[index],
+        [name]: value,
+        thuTu: index + 1,
+      };
+      return newPayload;
+    });
+    setPayload({
+      ...payload,
+      buocNau: stepMethodPayload,
+    });
+  };
 
   const handleChangeInput = (e, name) => {
-    console.log(name);
-    console.log(e.target.value);
+    if (name === "prepareHours") {
+      setPrepareHours(e.target.value);
+    }
+
+    if (name === "prepareMins") {
+      setPrepareMin(e.target.value);
+    }
+
+    if (name === "cookHours") {
+      setCookHours(e.target.value);
+    }
+
+    if (name === "cookMins") {
+      setCookMin(e.target.value);
+    }
+
+    setPayload({
+      ...payload,
+      thongTinChung: {
+        ...payload.thongTinChung,
+        [name]: e.target.value,
+        thoiGianChuanBi:
+          prepareHours + " " + "hour" + " " + prepareMin + " " + "min",
+        thoiGianNau: cookHours + " " + "hour" + " " + cookMin + " " + "min",
+      },
+    });
   };
   return (
     <Grid
@@ -63,8 +196,9 @@ const CreateRecipe = () => {
               <input
                 style={{ display: "none" }}
                 id="upload-photo"
-                name="upload-photo"
+                name="anhkKemTheo"
                 type="file"
+                onChange={(e) => handleChangeInput(e, "anhKemTheo")}
               />
               <Fab
                 sx={{
@@ -92,8 +226,8 @@ const CreateRecipe = () => {
                   id="outlined-basic"
                   label="Recipe Title (keep it short and descriptive)"
                   variant="outlined"
-                  name="recipe-title"
-                  onChange={(e) => handleChangeInput(e, "recipe-title")}
+                  name="tenCongThuc"
+                  onChange={(e) => handleChangeInput(e, "tenCongThuc")}
                 />
               </Grid>
               <Grid item xs={12} md={12} lg={12}>
@@ -104,8 +238,8 @@ const CreateRecipe = () => {
                   variant="outlined"
                   multiline
                   rows={2}
-                  name="recipe-intro"
-                  onChange={(e) => handleChangeInput(e, "recipe-intro")}
+                  name="moTa"
+                  onChange={(e) => handleChangeInput(e, "moTa")}
                 />
               </Grid>
               <Grid item xs={12} md={12} lg={12}>
@@ -126,8 +260,8 @@ const CreateRecipe = () => {
                         id="demo-simple-select"
                         // value={age}
                         label="Hours"
-                        name="prepare-hours"
-                        onChange={(e) => handleChangeInput(e, "prepare-hours")}>
+                        name="prepareHours"
+                        onChange={(e) => handleChangeInput(e, "prepareHours")}>
                         {HOURS &&
                           HOURS.map((hour, i) => {
                             return (
@@ -149,8 +283,8 @@ const CreateRecipe = () => {
                         id="demo-simple-select"
                         // value={age}
                         label="Mins"
-                        name="prepare-min"
-                        onChange={(e) => handleChangeInput(e, "prepare-min")}
+                        name="prepareMins"
+                        onChange={(e) => handleChangeInput(e, "prepareMins")}
                         // onChange={handleChange}
                       >
                         {MINS &&
@@ -179,8 +313,8 @@ const CreateRecipe = () => {
                         id="demo-simple-select"
                         // value={Hours}
                         label="Hours"
-                        name="cook-hours"
-                        onChange={(e) => handleChangeInput(e, "cook-hours")}>
+                        name="cookHours"
+                        onChange={(e) => handleChangeInput(e, "cookHours")}>
                         {HOURS &&
                           HOURS.map((hour, i) => {
                             return (
@@ -200,10 +334,9 @@ const CreateRecipe = () => {
                       <Select
                         labelId="demo-simple-select-label"
                         id="demo-simple-select"
-                        // value={Mins}
                         label="Mins"
-                        name="cook-mins"
-                        onChange={(e) => handleChangeInput(e, "cook-mins")}>
+                        name="cookMins"
+                        onChange={(e) => handleChangeInput(e, "cookMins")}>
                         {MINS &&
                           MINS.map((hour, i) => {
                             return (
@@ -222,17 +355,37 @@ const CreateRecipe = () => {
                   <Grid paddingRight={0.5} item xs={12} md={6} lg={6}>
                     <Typography>Difficulty level</Typography>
                     <FormControl fullWidth>
-                      <InputLabel id="demo-simple-select-label">Age</InputLabel>
+                      <InputLabel id="demo-simple-select-label">
+                        Difficulty level
+                      </InputLabel>
                       <Select
                         labelId="demo-simple-select-label"
                         id="demo-simple-select"
-                        // value={age}
-                        label="Age"
-                        // onChange={handleChange}
-                      >
-                        <MenuItem value={10}>Ten</MenuItem>
-                        <MenuItem value={20}>Twenty</MenuItem>
-                        <MenuItem value={30}>Thirty</MenuItem>
+                        label="Difficulty level"
+                        name="doKho"
+                        onChange={(e) => handleChangeInput(e, "doKho")}>
+                        <MenuItem value={1}>1</MenuItem>
+                        <MenuItem value={2}>2</MenuItem>
+                        <MenuItem value={2}>3</MenuItem>
+                      </Select>
+                    </FormControl>
+                  </Grid>
+                  <Grid paddingRight={0.5} item xs={12} md={6} lg={6}>
+                    <Typography>Category</Typography>
+                    <FormControl fullWidth>
+                      <InputLabel id="demo-simple-select-label">
+                        Category
+                      </InputLabel>
+                      <Select
+                        labelId="demo-simple-select-label"
+                        id="demo-simple-select"
+                        label="Category"
+                        name="idCategory"
+                        onChange={(e) => handleChangeInput(e, "idCategory")}>
+                        <MenuItem value={1}>1</MenuItem>
+                        <MenuItem value={2}>2</MenuItem>
+                        <MenuItem value={2}>3</MenuItem>
+                        <MenuItem value={2}>4</MenuItem>
                       </Select>
                     </FormControl>
                   </Grid>
@@ -264,9 +417,8 @@ const CreateRecipe = () => {
                   fullWidth
                   label="ingredient"
                   key={index}
-                  name={"ingredient" + index + 1}
-                  onAbort={(e) => {}}
-                  // onChange={}
+                  name={`tenNguyenLieu`}
+                  onChange={handleChangeIngredient(index)}
                 />
               );
             })}
@@ -289,13 +441,15 @@ const CreateRecipe = () => {
             <Typography sx={{ marginBottom: 1 }} fontWeight={600}>
               Method
             </Typography>
-            {stepMethod.map((item, index) => {
+            {stepMethodPayload.map((item, index) => {
               return (
                 <TextField
                   sx={{ marginBottom: 1 }}
                   fullWidth
                   label={"step " + (index + 1)}
+                  name={`moTa`}
                   key={index}
+                  onChange={handleChangeStepMethod(index)}
                 />
               );
             })}
@@ -305,7 +459,13 @@ const CreateRecipe = () => {
                 bgcolor: "rgb(49, 49, 49)",
               }}
               onClick={() =>
-                setStepMethod([...stepMethod, stepMethod.length + 1])
+                setStepMethodPayload([
+                  ...stepMethodPayload,
+                  stepMethodPayload.push({
+                    moTa: "",
+                    thuTu: "",
+                  }),
+                ])
               }
               variant="contained">
               Add next step
@@ -320,6 +480,7 @@ const CreateRecipe = () => {
             color: "rgb(49, 49, 49)",
             borderColor: "rgb(49, 49, 49)",
           }}
+          onClick={() => handleSubmit()}
           variant="outlined">
           Save
         </Button>
