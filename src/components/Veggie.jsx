@@ -15,8 +15,30 @@ function Veggie() {
       setVeggie(JSON.parse(check));
     }
     else {
-      const api = await fetch(`https://api.spoonacular.com/recipes/random?apiKey=${process.env.REACT_APP_API_KEY}&number=9&tags=vegetarian`)
-      const data = await api.json();
+     // const api = await fetch(`https://api.spoonacular.com/recipes/random?apiKey=${process.env.REACT_APP_API_KEY}&number=9&tags=vegetarian`)
+      const api = await fetch(`https://eb7a-171-225-251-76.ngrok-free.app/api/CongThuc/CongThucGets/sa`
+     ,
+     {
+      headers:{"ngrok-skip-browser-warning": "69420"},
+      mode: 'cors'
+     } ).then(response =>{
+        console.log(response);
+        if(response.ok){
+             console.log("checkjson",response); //first consume it in console.log
+            return response.json(); //then consume it again, the error happens
+    
+        }})
+      try{
+        console.log('ehhe',await api.json())
+        // await api.json()
+      }
+      catch(e){
+        console.log(e,"checkerror") 
+      }
+      console.log(await api,"api") 
+      // console.log(await api," ")
+    //  const data = await api.json(); 
+     const data = await api.json();
       localStorage.setItem("veggie", JSON.stringify(data.recipes))
       setVeggie(data.recipes);
       console.log(data)

@@ -16,9 +16,12 @@ import RiceBowlIcon from "@mui/icons-material/RiceBowl";
 import { Link, useNavigate } from "react-router-dom";
 import styled from "@emotion/styled";
 import { GiKnifeFork } from "react-icons/gi";
+
+import ButtonLoginEmail from "./Login/ButtonLoginEmail";
+
 const pages = [];
 const settings = ["Profile", "Recipe", "Logout", ""];
-
+const clientId = process.env.REACT_APP_GOOGLE_CLIENTID 
 function Navbar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
@@ -48,6 +51,7 @@ function Navbar() {
   };
 
   const handleLogin = () => {
+
     localStorage.setItem("token", "token");
     const token = localStorage.getItem("token");
     setToken(token);
@@ -219,9 +223,11 @@ function Navbar() {
                 justifyContent: "center",
               }}>
               <AccountCircleIcon />
-              <Button onClick={() => handleLogin()} color="inherit">
+              {/* <Button onClick={() => handleLogin()} color="inherit">
                 Login
-              </Button>
+                
+              </Button> */}
+              <ButtonLoginEmail id='GGButton' clientId={clientId}></ButtonLoginEmail>
             </Box>
           )}
         </Toolbar>

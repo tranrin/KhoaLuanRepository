@@ -265,7 +265,7 @@ const CreateRecipe = () => {
                   label="ingredient"
                   key={index}
                   name={"ingredient" + index + 1}
-                  onAbort={(e) => handle}
+                  onAbort={(e) => {}}
                   // onChange={}
                 />
               );
