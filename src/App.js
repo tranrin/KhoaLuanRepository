@@ -33,29 +33,29 @@ function App() {
           md={12}>
           <Navbar />
         </Grid>
-        <Nav></Nav>
-        <Search></Search>
-        <Category></Category>
+        {/* <Nav></Nav> */}
+        {/* <Search></Search>
+        <Category></Category> */}
         <Pages></Pages>
       </BrowserRouter>
     </div>
   );
 }
-const Logo = styled(Link)`
-  text-decoration: none;
-  font-size: 1.5rem;
-  font-weight: 400;
-  font-family: "Lobster Two", cursive;
-  justify-content: center;
-`;
-const Nav = styled.div`
-  padding: 4rem 0rem;
-  margin-top: 1rem;
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  svg {
-    font-size: 2rem;
-  }
-`;
+// const Logo = styled(Link)`
+//   text-decoration: none;
+//   font-size: 1.5rem;
+//   font-weight: 400;
+//   font-family: "Lobster Two", cursive;
+//   justify-content: center;
+// `;
+// const Nav = styled.div`
+//   padding: 4rem 0rem;
+//   margin-top: 1rem;
+//   display: flex;
+//   justify-content: flex-start;
+//   align-items: center;
+//   svg {
+//     font-size: 2rem;
+//   }
+// `;
 export default App;

@@ -1,9 +1,6 @@
-// import sendRequest from "./config";
-// import apiContants from "../contants/api.contants";
-// export const createRecipe = async (payload) => {
-//   return sendRequest(
-//     {apiContants.RECIPE.},
-//     "POST",
-//     payload
-//   );
-// };
+import sendRequest from "./config";
+import apiContants from "../contants/api.contants";
+export const createRecipe = async (payload) => {
+  console.log(apiContants.RECIPE.CREATE);
+  return sendRequest(apiContants.RECIPE.CREATE, "POST", payload);
+};

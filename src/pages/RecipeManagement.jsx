@@ -79,7 +79,14 @@ const RecipeManagement = () => {
     setValue(1);
   }, []);
   return (
-    <Grid container md={12} xs={12} lg={12}>
+    <Grid
+      sx={{
+        marginTop: 10,
+      }}
+      container
+      md={12}
+      xs={12}
+      lg={12}>
       <Grid
         sx={{ display: "flex", justifyContent: "center" }}
         item

@@ -1,6 +1,6 @@
 export default {
   RECIPE: {
-    BASIC: `${process.env.LINK_WEB_SERCVICE}/CongThuc`,
-    CREATE: `${process.env.LINK_WEB_SERCVICE}/CongThuc/CongThucAdd`,
+    BASIC: `${process.env.REACT_APP_URL_WEB_SERCVICE}/api/CongThuc`,
+    CREATE: `${process.env.REACT_APP_URL_WEB_SERCVICE}/api/CongThuc/CongThucAdd`,
   },
 };

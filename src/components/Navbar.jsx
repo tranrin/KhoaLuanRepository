@@ -16,6 +16,8 @@ import RiceBowlIcon from "@mui/icons-material/RiceBowl";
 import { Link, useNavigate } from "react-router-dom";
 import styled from "@emotion/styled";
 import { GiKnifeFork } from "react-icons/gi";
+import Search from "./Search";
+import Category from "./Category";
 const pages = [];
 const settings = ["Profile", "Recipe", "Logout", ""];
 
@@ -174,6 +176,16 @@ function Navbar() {
                 {page}
               </Button>
             ))}
+          </Box>
+          <Box
+            sx={{
+              height: 1,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}>
+            <Category />
+            <Search />
           </Box>
           {token != null ? (
             <Box sx={{ flexGrow: 0 }}>

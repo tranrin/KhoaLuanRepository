@@ -6,6 +6,7 @@ const Profile = () => {
   return (
     <Grid
       sx={{
+        marginTop: 20,
         border: "solid #ccc 2px",
         borderRadius: 5,
         boxShadow: "0 0 20px 2px rgb(49, 49, 49,0.8)",

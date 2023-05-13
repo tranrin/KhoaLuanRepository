@@ -17,7 +17,8 @@ function Recipe() {
   let params = useParams();
   const [details, setDetails] = useState({});
   const [activeTab, setActiveTab] = useState("instructions");
-
+  const [idRecipe, setIdRecipe] = useState();
+  const { id } = params;
   const fetchDetails = async () => {
     const data = await fetch(
       `https://api.spoonacular.com/recipes/${params.name}/information?apiKey=${process.env.REACT_APP_API_KEY}`,
@@ -26,6 +27,13 @@ function Recipe() {
     setDetails(detailData);
     console.log(detailData.extendedIngredients);
   };
+  const handleSaveRecipe = () => {
+    setIdRecipe(id);
+    /// call function save here
+  };
+  useEffect(() => {
+    console.log(id);
+  }, [params.name]);
 
   useEffect(() => {
     fetchDetails();
@@ -67,7 +75,7 @@ function Recipe() {
               }}
               variant="contained">
               {" "}
-              <BookmarkAddedIcon /> Save
+              <BookmarkAddedIcon onClick={() => handleSaveRecipe()} /> Save
             </Button>
             <Button variant="contained">
               {" "}
@@ -136,7 +144,7 @@ function Recipe() {
   );
 }
 const DetailWrapper = styled.div`
-  margin-top: 10rem;
+  margin-top: 20px;
   margin-bottom: 5rem;
   display: flex;
 

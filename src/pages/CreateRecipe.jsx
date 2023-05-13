@@ -6,6 +6,7 @@ import {
   InputLabel,
   MenuItem,
   Select,
+  Stack,
   Tab,
   Tabs,
   TextField,
@@ -15,6 +16,8 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import CameraAltIcon from "@mui/icons-material/CameraAlt";
 import React, { useEffect } from "react";
 import { createRecipe } from "../api/recipe.api";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import RoundButton from "../components/RoundedButton";
 
 const HOURS = [
   1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22,
@@ -67,45 +70,27 @@ const CreateRecipe = () => {
     },
   ]);
   // const [stepMethod, setStepMethod] = React.useState([1]);
-  const myHeaders = new Headers();
-  const myInit = {
-    method: "GET",
-    headers: myHeaders,
-    mode: "cors",
-    cache: "default",
+
+  const handleRemoveItem = (indexToRemove, name) => {
+    if (name === "ingredientPayload")
+      setIngredientPayload((prevPayload) => {
+        return prevPayload.filter((_, index) => index !== indexToRemove);
+      });
+    if (name === "methodPayload")
+      setStepMethodPayload((prevPayload) => {
+        return prevPayload.filter((_, index) => index !== indexToRemove);
+      });
   };
-  const handleSubmit = () => {
+
+  const handleSubmit = async () => {
     delete payload.thongTinChung.prepareHours;
     delete payload.thongTinChung.prepareMins;
     delete payload.thongTinChung.cookHours;
     delete payload.thongTinChung.cookMins;
-    // const test = await createRecipe(payload);
-    fetch(
-      "https://9018-2402-800-6273-529a-4c8e-ce19-9ecd-3665.ngrok-free.app/api/CongThuc/CongThucGets/sa",
-      {},
-    )
-      .then((response) => {
-        response.header(
-          "Access-Control-Allow-Methods",
-          "GET,PUT,POST,DELETE,PATCH,OPTIONS",
-        );
-        if (response.ok) {
-          return response.text();
-        } else {
-          throw new Error("Server response was not OK");
-        }
-      })
-      .then((data) => {
-        try {
-          const jsonData = JSON.parse(data);
-          console.log(jsonData); // Do something with the data
-        } catch (error) {
-          console.error("Failed to parse JSON data", error);
-        }
-      })
-      .catch((error) => console.error(error));
+    const test = await createRecipe(payload);
 
-    // const data = await api.json();
+    // const data = await test.json();
+    console.log(test);
   };
 
   const handleChangeIngredient = (index) => (event) => {
@@ -180,6 +165,7 @@ const CreateRecipe = () => {
       sx={{
         border: "solid #ccc 2px",
         borderRadius: 5,
+        marginTop: 12,
         boxShadow: "0 0 20px 2px rgb(49, 49, 49,0.5)",
       }}
       container
@@ -412,14 +398,37 @@ const CreateRecipe = () => {
             </Typography>
             {ingredientPayload.map((item, index) => {
               return (
-                <TextField
-                  sx={{ marginBottom: 1 }}
-                  fullWidth
-                  label="ingredient"
-                  key={index}
-                  name={`tenNguyenLieu`}
-                  onChange={handleChangeIngredient(index)}
-                />
+                <Stack
+                  sx={{
+                    with: "100%",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    flexDirection: "row",
+                  }}>
+                  <TextField
+                    sx={{ marginBottom: 1, width: 0.9 }}
+                    label="ingredient"
+                    key={index}
+                    name={`tenNguyenLieu`}
+                    onChange={handleChangeIngredient(index)}
+                  />
+                  <RoundButton
+                    sx={{
+                      marginLeft: 1,
+                      fontSize: 25,
+                      width: "12px",
+                    }}
+                    onClick={() => handleRemoveItem(index, "ingredientPayload")}
+                    label={
+                      <DeleteOutlineIcon
+                        sx={{
+                          color: "#fff",
+                        }}
+                      />
+                    }
+                  />
+                </Stack>
               );
             })}
 
@@ -443,14 +452,38 @@ const CreateRecipe = () => {
             </Typography>
             {stepMethodPayload.map((item, index) => {
               return (
-                <TextField
-                  sx={{ marginBottom: 1 }}
-                  fullWidth
-                  label={"step " + (index + 1)}
-                  name={`moTa`}
-                  key={index}
-                  onChange={handleChangeStepMethod(index)}
-                />
+                <Stack
+                  sx={{
+                    with: "100%",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    flexDirection: "row",
+                  }}>
+                  <TextField
+                    sx={{ marginBottom: 1 }}
+                    fullWidth
+                    label={"step " + (index + 1)}
+                    name={`moTa`}
+                    key={index}
+                    onChange={handleChangeStepMethod(index)}
+                  />
+                  <RoundButton
+                    sx={{
+                      marginLeft: 1,
+                      fontSize: 25,
+                      width: "12px",
+                    }}
+                    onClick={() => handleRemoveItem(index, "methodPayload")}
+                    label={
+                      <DeleteOutlineIcon
+                        sx={{
+                          color: "#fff",
+                        }}
+                      />
+                    }
+                  />
+                </Stack>
               );
             })}
 

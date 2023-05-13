@@ -24,18 +24,20 @@ const getAPIConfig = (isCrawlingAPI) => {
   // const BASE_URL = isCrawlingAPI
   //   ? import.meta.env.VITE_BE_CRAWL_URL
   //   : import.meta.env.VITE_BE_URL;
-  const BASE_URL = process.env.LINK_WEB_SERCVICE;
+  const BASE_URL = `${process.env.REACT_APP_URL_WEB_SERCVICE}/api`;
   const api = create({
-    baseURL: ` https://9018-2402-800-6273-529a-4c8e-ce19-9ecd-3665.ngrok-free.app/api/CongThuc/CongThucGets/sa`,
+    baseURL: BASE_URL,
     headers: {
-      Accept: "application/json",
-      "ngrok-skip-browser-warning": 6024,
+      // Accept: "application/json",
+      // "ngrok-skip-browser-warning": "69420",
     },
+    // mode: "cors",
   });
-  // api.setHeader(
-  //   "Authorization",
-  //   `bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2ODM4MjEzNjksImV4cCI6MTY4MzkwNzc2OSwiYXVkIjoiaHR0cHM6Ly9teS1hcHAuY29tIiwiaXNzIjoiaHR0cHM6Ly9teS1hcHAuY29tIiwic3ViIjoiMWRmNjVmNTAtNTgzNC00YzBmLWFkZTYtNmZiMjVkNjA1N2NjIn0.vb6WKPcTczRNpxhvTuUqfjMtozpayO9lt-PddH3O-Kc`,
-  // );
+
+  api.setHeader(
+    "Authorization",
+    `bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2ODM4MjEzNjksImV4cCI6MTY4MzkwNzc2OSwiYXVkIjoiaHR0cHM6Ly9teS1hcHAuY29tIiwiaXNzIjoiaHR0cHM6Ly9teS1hcHAuY29tIiwic3ViIjoiMWRmNjVmNTAtNTgzNC00YzBmLWFkZTYtNmZiMjVkNjA1N2NjIn0.vb6WKPcTczRNpxhvTuUqfjMtozpayO9lt-PddH3O-Kc`,
+  );
   // if (lang) api.setHeader("lang", lang);
   return api;
 };
