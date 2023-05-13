@@ -29,14 +29,14 @@ const getAPIConfig = (isCrawlingAPI) => {
     baseURL: BASE_URL,
     headers: {
       // Accept: "application/json",
-      // "ngrok-skip-browser-warning": "69420",
+      "ngrok-skip-browser-warning": "69420",
     },
     // mode: "cors",
   });
 
   api.setHeader(
     "Authorization",
-    `bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2ODM4MjEzNjksImV4cCI6MTY4MzkwNzc2OSwiYXVkIjoiaHR0cHM6Ly9teS1hcHAuY29tIiwiaXNzIjoiaHR0cHM6Ly9teS1hcHAuY29tIiwic3ViIjoiMWRmNjVmNTAtNTgzNC00YzBmLWFkZTYtNmZiMjVkNjA1N2NjIn0.vb6WKPcTczRNpxhvTuUqfjMtozpayO9lt-PddH3O-Kc`,
+    `bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjE5dDEwODEwMjBAaHVzYy5lZHUudm4iLCJleHAiOjE2ODQ1NjI3MTksImlzcyI6Imh0dHA6Ly9yZWNpcGVmb29kYXBpLmNvbS8iLCJhdWQiOiJodHRwOi8vcmVjaXBlZm9vZGFwaS5jb20vIn0.yt-yX5Qua4pLQSKnUXOQcEr8Q-jFKkMAHBZ4SEonbfk`,
   );
   // if (lang) api.setHeader("lang", lang);
   return api;

@@ -13,6 +13,7 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { useNavigate } from "react-router-dom";
+import RoundButton from "../components/RoundedButton";
 const ITEM_HEIGHT = 48;
 const RecipeManagement = () => {
   const [value, setValue] = React.useState(2);
@@ -94,6 +95,13 @@ const RecipeManagement = () => {
         xs={12}
         lg={12}>
         <Box sx={{ width: "100%", typography: "body1" }}>
+          <RoundButton
+            sx={{
+              marginLeft: 4,
+            }}
+            label={"Create Recipe"}
+            onClick={() => navigate("/recipe/create")}
+          />
           <TabContext value={value}>
             <Box
               sx={{
@@ -103,17 +111,41 @@ const RecipeManagement = () => {
                 justifyContent: "center",
               }}>
               <TabList
+                TabIndicatorProps={{
+                  style: {
+                    backgroundColor: "#000",
+                    color: "#000",
+                  },
+                }}
                 onChange={handleChange}
                 aria-label="lab API tabs example">
-                <Tab label="Saved Recipe" value={1} />
-                <Tab label="My Recipe" value={2} />
+                <Tab
+                  sx={{
+                    color: "#000 !important",
+                    "&:hover": {
+                      borderColor: "#fff",
+                    },
+                  }}
+                  label="Saved Recipe"
+                  value={1}
+                />
+                <Tab
+                  sx={{
+                    color: "#000 !important",
+                    "&:hover": {
+                      borderColor: "#fff",
+                    },
+                  }}
+                  label="My Recipe"
+                  value={2}
+                />
               </TabList>
             </Box>
             <TabPanel value={1}>
               <Grid container spacing={2} md={12} xs={12} lg={12}>
                 {savedRecipe.map((item, index) => {
                   return (
-                    <Grid item xs={12} md={6} lg={4}>
+                    <Grid key={index} item xs={12} md={6} lg={4}>
                       <Card sx={{ width: "100%" }}>
                         <CardActionArea>
                           <CardMedia

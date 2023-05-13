@@ -9,6 +9,7 @@ import { Link } from "react-router-dom";
 import { useEffect } from "react";
 import Navbar from "./components/Navbar";
 import { Grid } from "@mui/material";
+import Footer from "./components/Footer";
 
 function App() {
   useEffect(() => {
@@ -36,7 +37,26 @@ function App() {
         {/* <Nav></Nav> */}
         {/* <Search></Search>
         <Category></Category> */}
-        <Pages></Pages>
+        <Grid
+          item={12}
+          xs={12}
+          lg={12}
+          sx={{
+            margin: "0 20%",
+            minHeight: "100vh",
+          }}>
+          <Pages></Pages>
+        </Grid>
+        <Grid
+          sx={{
+            width: "100%",
+          }}
+          item
+          xs={12}
+          md={12}
+          lg={12}>
+          <Footer />
+        </Grid>
       </BrowserRouter>
     </div>
   );

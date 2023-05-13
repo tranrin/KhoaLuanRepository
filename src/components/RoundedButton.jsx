@@ -16,6 +16,7 @@ const RoundButton = ({
       size={size}
       sx={{
         height: "38px",
+        color: "#fff",
         bgcolor: "rgb(49, 49, 49)",
         "&:hover": {
           bgcolor: "rgb(49, 49, 49,0.7)",

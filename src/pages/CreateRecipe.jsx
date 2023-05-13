@@ -34,6 +34,7 @@ const CreateRecipe = () => {
   const [prepareMin, setPrepareMin] = React.useState(0);
   const [cookHours, setCookHours] = React.useState(0);
   const [cookMin, setCookMin] = React.useState(0);
+  const [preview, setPreview] = React.useState("");
   const [ingredients, setIngredients] = React.useState([1]);
   const [payload, setPayload] = React.useState({
     thongTinChung: {
@@ -43,7 +44,6 @@ const CreateRecipe = () => {
       thoiGianChuanBi: 0,
       idCategory: 0,
       anhKemTheo: null,
-      ngayTao: " 2023-05-05T21:37:48.567",
       doKho: 0,
     },
     nguyenLieu: [
@@ -54,7 +54,6 @@ const CreateRecipe = () => {
     buocNau: [
       {
         moTa: "",
-        thuTu: 1,
       },
     ],
   });
@@ -66,10 +65,21 @@ const CreateRecipe = () => {
   const [stepMethodPayload, setStepMethodPayload] = React.useState([
     {
       moTa: "",
-      thuTu: 0,
     },
   ]);
   // const [stepMethod, setStepMethod] = React.useState([1]);
+  useEffect(() => {
+    // create the preview
+    // const objectUrl = window.URL.createObjectURL(
+    //   payload.thongTinChung.anhKemTheo[0],
+    // );
+    // console.log(objectUrl);
+    // // setPreview(objectUrl);
+    // console.log(preview);
+    // // free memory when ever this component is unmounted
+    // return () => URL.revokeObjectURL(objectUrl);
+    console.log(preview);
+  }, [preview]);
 
   const handleRemoveItem = (indexToRemove, name) => {
     if (name === "ingredientPayload")
@@ -88,8 +98,6 @@ const CreateRecipe = () => {
     delete payload.thongTinChung.cookHours;
     delete payload.thongTinChung.cookMins;
     const test = await createRecipe(payload);
-
-    // const data = await test.json();
     console.log(test);
   };
 
@@ -120,7 +128,6 @@ const CreateRecipe = () => {
       newPayload[index] = {
         ...newPayload[index],
         [name]: value,
-        thuTu: index + 1,
       };
       return newPayload;
     });
@@ -147,14 +154,26 @@ const CreateRecipe = () => {
       setCookMin(e.target.value);
     }
 
+    if (name === "anhKemTheo") {
+      if (e.target.files[0] != null) {
+        const objectUrl = window.URL.createObjectURL(e.target.files[0]);
+        setPreview(objectUrl);
+        setPayload({
+          ...payload,
+          thongTinChung: {
+            ...payload.thongTinChung,
+            anhKemTheo: e.target.value,
+          },
+        });
+      }
+    }
     setPayload({
       ...payload,
       thongTinChung: {
         ...payload.thongTinChung,
         [name]: e.target.value,
-        thoiGianChuanBi:
-          prepareHours + " " + "hour" + " " + prepareMin + " " + "min",
-        thoiGianNau: cookHours + " " + "hour" + " " + cookMin + " " + "min",
+        thoiGianChuanBi: prepareHours * 60 + prepareMin,
+        thoiGianNau: cookHours * 60 + cookMin,
       },
     });
   };
@@ -178,37 +197,63 @@ const CreateRecipe = () => {
         </Typography>
         <Grid container md={12} xs={12} lg={12}>
           <Grid item md={3} lg={3} xs={12}>
-            <label htmlFor="upload-photo">
-              <input
-                style={{ display: "none" }}
-                id="upload-photo"
-                name="anhkKemTheo"
-                type="file"
-                onChange={(e) => handleChangeInput(e, "anhKemTheo")}
-              />
-              <Fab
-                sx={{
-                  width: 200,
-                  height: 200,
-                  borderRadius: 12,
-                  display: "flex",
-                  flexDirection: "column",
-                }}
-                color="default"
-                size="small"
-                component="span"
-                aria-label="add"
-                variant="extended">
-                <CameraAltIcon sx={{ fontSize: 100 }} />
-                <Typography fontSize={12}>Tap or click to add photo</Typography>
-              </Fab>
-            </label>
+            {preview === "" ? (
+              <label htmlFor="upload-photo">
+                <input
+                  style={{ display: "none" }}
+                  id="upload-photo"
+                  name="anhkKemTheo"
+                  type="file"
+                  onChange={(e) => handleChangeInput(e, "anhKemTheo")}
+                />
+                <Fab
+                  sx={{
+                    width: 200,
+                    height: 200,
+                    borderRadius: 12,
+                    display: "flex",
+                    flexDirection: "column",
+                  }}
+                  color="default"
+                  size="small"
+                  component="span"
+                  aria-label="add"
+                  variant="extended">
+                  <CameraAltIcon sx={{ fontSize: 100 }} />
+                  <Typography fontSize={12}>
+                    Tap or click to add photo
+                  </Typography>
+                </Fab>
+              </label>
+            ) : (
+              <label htmlFor="upload-photo">
+                <input
+                  style={{ display: "none" }}
+                  id="upload-photo"
+                  name="anhkKemTheo"
+                  type="file"
+                  onChange={(e) => handleChangeInput(e, "anhKemTheo")}
+                />
+                <img
+                  width={"100%"}
+                  style={{
+                    borderRadius: 20,
+                    marginBottom: 2,
+                    "&::hover": {
+                      borderRadius: 100,
+                    },
+                  }}
+                  src={`${preview}`}
+                />
+              </label>
+            )}
           </Grid>
           <Grid spacing={1} item md={9} lg={9} xs={12}>
             <Grid spacing={1} container md={12} xs={12} lg={12}>
               <Grid item xs={12} md={12} lg={12}>
                 <TextField
                   fullWidth
+                  required
                   id="outlined-basic"
                   label="Recipe Title (keep it short and descriptive)"
                   variant="outlined"
