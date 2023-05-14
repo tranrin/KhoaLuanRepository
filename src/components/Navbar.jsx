@@ -16,7 +16,8 @@ import RiceBowlIcon from "@mui/icons-material/RiceBowl";
 import { Link, useNavigate } from "react-router-dom";
 import styled from "@emotion/styled";
 import { GiKnifeFork } from "react-icons/gi";
-
+import { useEffect, useRef } from 'react';
+import { gapi } from 'gapi-script';
 import ButtonLoginEmail from "./Login/ButtonLoginEmail";
 
 const pages = [];
@@ -36,10 +37,8 @@ function Navbar() {
 
   const handleSetting = (setting) => {
     if (setting === "Logout") {
-      localStorage.removeItem("token");
-      const token = localStorage.getItem("token");
-      console.log(token);
-      setToken(token);
+      localStorage.removeItem("authenticated");
+      console.log("Logout success");
     }
     if (setting === "Profile") {
       navigate("/profile");
@@ -63,9 +62,17 @@ function Navbar() {
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
-
+  useEffect(()=>{
+    function start (){
+      gapi.client.init({
+        clientId: clientId,
+        scope: ""
+      })
+    };
+    gapi.load('client:auth2',start)
+})
   React.useEffect(() => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("authenticated");
     setToken(token);
   }, [token]);
 

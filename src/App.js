@@ -11,10 +11,10 @@ import Navbar from "./components/Navbar";
 import { Grid } from "@mui/material";
 
 function App() {
-  useEffect(() => {
-    ReactGA.initialize(process.env.REACT_APP_TRACKING_ID);
-    ReactGA.send({ hitType: "pageview", page: "/home" });
-  }, []);
+  // useEffect(() => {
+  //   ReactGA.initialize(process.env.REACT_APP_TRACKING_ID);
+  //   ReactGA.send({ hitType: "pageview", page: "/home" });
+  // }, []);
   return (
     <div className="App">
       <BrowserRouter>

@@ -3,6 +3,7 @@ import Iconify from "./Iconfy";
 import GoogleLogin from 'react-google-login';
 import { useNavigate } from "react-router-dom";
 import { Link, Container, Typography, Divider, Stack, Button } from '@mui/material';
+import { values } from "lodash";
 
 //const clientId = "616257410464-3ntqpoe89go6ulln7s85hasrdpj5hvfb.apps.googleusercontent.com"
 
@@ -12,12 +13,24 @@ import { Link, Container, Typography, Divider, Stack, Button } from '@mui/materi
     console.log("Login success!", res)
  
     if (res.accessToken) {
-        localStorage.setItem("authenticated", res.accessToken);
-        navigate("/Dashboard");
+  
+  // const api = fetch(process.env.REACT_APP_URI + `/api/User/LoginUser` + res.accessToken ,{
+  //   method: "POST", 
+  //   headers:{
+  //             "ngrok-skip-browser-warning": "69420"
+  //     }
+  //     // mode: 'cors'
+  //   }).then((values)=>{
+  //             console.log("valueLogin",values);
+  //             localStorage.setItem("authenticated", values);
+  //             navigate("/Home");
+  //   })
+  // // ,
+
     }
   }
   const onFalure = (res)=>{
-    console.log("Login success!", res)
+    console.log("Login Fail!", res)
   }
       return (
        
