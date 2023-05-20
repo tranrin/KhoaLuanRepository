@@ -31,7 +31,7 @@ const lnkStyle = {
 function Category() {
   return (
     <Grid sx={{ display: "flex" }}>
-      <Link style={lnkStyle} to={"/cuisine/Italian"}>
+      <Link style={lnkStyle} to={"/cuisine/1"}>
         <FaPizzaSlice
           style={{
             color: "#fff",
@@ -45,7 +45,7 @@ function Category() {
           Italian
         </h4>
       </Link>
-      <Link style={lnkStyle} to={"/cuisine/American"}>
+      <Link style={lnkStyle} to={"/cuisine/2"}>
         <FaHamburger
           style={{
             fontSize: "24px",
@@ -60,7 +60,7 @@ function Category() {
           American
         </h4>
       </Link>
-      <Link style={lnkStyle} to={"/cuisine/Thai"}>
+      <Link style={lnkStyle} to={"/cuisine/3"}>
         <GiNoodles
           style={{
             fontSize: "24px",
@@ -75,7 +75,7 @@ function Category() {
           Thai
         </h4>
       </Link>
-      <Link style={lnkStyle} to={"cuisine/Japanese"}>
+      <Link style={lnkStyle} to={"cuisine/4"}>
         <GiChopsticks
           style={{
             fontSize: "24px",

@@ -144,7 +144,7 @@ function Recipe() {
   );
 }
 const DetailWrapper = styled.div`
-  margin-top: 20px;
+  margin-top: 100px;
   margin-bottom: 5rem;
   display: flex;
 

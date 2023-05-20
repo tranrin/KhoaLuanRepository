@@ -1,0 +1,76 @@
+
+{
+  "dashboard": "Dashboard",
+  "blog": "Blog",
+  "nav-bar": {
+    "home": "Home",
+    "profile": "Profile",
+    "logout": "Logout"
+  },
+  "profile-page":{
+      "title": "Profile",
+      "screen-name": "Screen name",
+      "location": "Location",
+      "bio": "Bio",
+      "update": "Update"
+  },
+  "blog-page":{
+    "title":"Dashboard: Blog",
+    "blog": "Blog",
+    "search-post": "Search Post",
+    "new-post": {
+    "step":{
+      "information":"Information",
+      "ingredient":"Ingredient",
+      "method": "Method",
+      "finish":"Finish",
+      "next": "Next"
+    },
+    "title": "New post",
+    "information":{
+      "title":"Information",
+      "name": "Name",
+      "description": "Description",
+      "category": "Category",
+      "cooking-time": "Cooking time",
+      "preparing-time": "Preparing time",
+      "upload-your-image": "Upload your image"
+    } ,
+    "ingredient": {
+      "title": "Ingredient",
+      "add-record": "Add record",
+      "table": {
+        "serial": "Serial",
+        "name": "Name",
+        "quantity": "Quantity",
+        "unit": "Unit",
+        "actions": "Actions"
+
+      }
+    },
+    "method": {
+      "title": "Method",
+      "add-record": "Add record",
+      "table": {
+        "step": "Step",
+        "content": "Content",
+        "actions": "Action"
+      }
+    },
+    "back": "Back",
+    "next": "Next"
+    },
+    "sort": {
+      "latest": "Latest",
+      "popular": "Popular",
+      "oldest": "Oldest"
+    }
+},
+"notifications": {
+  "title": "Notifications",
+  "new": "New",
+  "Before That": "Before that",
+  "header": "You have {{Unread}} unread messages"
+}
+}
+
