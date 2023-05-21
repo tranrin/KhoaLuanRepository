@@ -12,27 +12,31 @@ import LocalPrintshopIcon from "@mui/icons-material/LocalPrintshop";
 import { Box, Button, Rating, Typography } from "@mui/material";
 import StarRateIcon from "@mui/icons-material/StarRate";
 import Comments from "../components/comments/Comments";
+import { saveRecipe } from "../api/recipe.api";
 
 function Recipe() {
   let params = useParams();
   const [details, setDetails] = useState({});
   const [activeTab, setActiveTab] = useState("instructions");
   const [idRecipe, setIdRecipe] = useState();
-  const { id } = params;
   const fetchDetails = async () => {
     const data = await fetch(
       `https://api.spoonacular.com/recipes/${params.name}/information?apiKey=${process.env.REACT_APP_API_KEY}`,
     );
     const detailData = await data.json();
     setDetails(detailData);
-    console.log(detailData.extendedIngredients);
   };
   const handleSaveRecipe = () => {
-    setIdRecipe(id);
+    saveRecipe({
+      congThucID: params && params.name,
+      nguoiDungID: "string",
+    });
+    console.log(params.name);
     /// call function save here
   };
   useEffect(() => {
-    console.log(id);
+    console.log(params);
+    console.log(params.id);
   }, [params.name]);
 
   useEffect(() => {
@@ -70,12 +74,13 @@ function Recipe() {
               justifyContent: "center",
             }}>
             <Button
+              onClick={handleSaveRecipe}
               sx={{
                 marginRight: 1,
               }}
               variant="contained">
               {" "}
-              <BookmarkAddedIcon onClick={() => handleSaveRecipe()} /> Save
+              <BookmarkAddedIcon /> Save
             </Button>
             <Button variant="contained">
               {" "}
@@ -144,7 +149,7 @@ function Recipe() {
   );
 }
 const DetailWrapper = styled.div`
-  margin-top: 20px;
+  margin-top: 100px;
   margin-bottom: 5rem;
   display: flex;
 

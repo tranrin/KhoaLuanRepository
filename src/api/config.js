@@ -36,7 +36,7 @@ const getAPIConfig = (isCrawlingAPI) => {
 
   api.setHeader(
     "Authorization",
-    `bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjE5dDEwODEwMjBAaHVzYy5lZHUudm4iLCJleHAiOjE2ODQ1NjI3MTksImlzcyI6Imh0dHA6Ly9yZWNpcGVmb29kYXBpLmNvbS8iLCJhdWQiOiJodHRwOi8vcmVjaXBlZm9vZGFwaS5jb20vIn0.yt-yX5Qua4pLQSKnUXOQcEr8Q-jFKkMAHBZ4SEonbfk`,
+    `bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6InRyYW5uZ29jcmluMTJAZ21haWwuY29tIiwiZXhwIjoxNjg1MDI4NDg0LCJpc3MiOiJodHRwOi8vcmVjaXBlZm9vZGFwaS5jb20vIiwiYXVkIjoiaHR0cDovL3JlY2lwZWZvb2RhcGkuY29tLyJ9.-HUWgTT4kqSetNlelSqXZ7Lx-Pp4bBrxZpSja2fJe8o`,
   );
   // if (lang) api.setHeader("lang", lang);
   return api;
@@ -105,7 +105,8 @@ const post = async (api, url, data) => {
 const postFormData = async (api, url, data) => {
   const headers = {
     "Content-Type": "multipart/form-data",
-    authorization: "bearer",
+    authorization:
+      "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6InRyYW5uZ29jcmluMTJAZ21haWwuY29tIiwiZXhwIjoxNjg1MDI4NDg0LCJpc3MiOiJodHRwOi8vcmVjaXBlZm9vZGFwaS5jb20vIiwiYXVkIjoiaHR0cDovL3JlY2lwZWZvb2RhcGkuY29tLyJ9.-HUWgTT4kqSetNlelSqXZ7Lx-Pp4bBrxZpSja2fJe8o",
   };
   return api
     .post(url, data, { headers })
@@ -124,8 +125,13 @@ const putFormData = async (api, url, data) => {
 };
 
 const get = async (api, url, data) => {
+  const headers = {
+    "Content-Type": "multipart/form-data",
+    Authorization:
+      "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6InRyYW5uZ29jcmluMTJAZ21haWwuY29tIiwiZXhwIjoxNjg1MDI4NDg0LCJpc3MiOiJodHRwOi8vcmVjaXBlZm9vZGFwaS5jb20vIiwiYXVkIjoiaHR0cDovL3JlY2lwZWZvb2RhcGkuY29tLyJ9.-HUWgTT4kqSetNlelSqXZ7Lx-Pp4bBrxZpSja2fJe8o",
+  };
   return api
-    .get(url, data)
+    .get(url, data, { headers })
     .then((response) => handleResponse(response))
     .catch((err) => handleResponse(err));
 };

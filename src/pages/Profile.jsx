@@ -1,8 +1,56 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Grid from "@mui/material/Grid";
-import { Fab, TextField, Typography, Button } from "@mui/material";
+import { Fab, TextField, Typography, Button, Box } from "@mui/material";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import { editProfile, getProfile } from "../api/user.api";
+import { LoadingButton } from "@mui/lab";
+import CircularProgress from "@mui/material/CircularProgress";
+const default_payload = {
+  email: "tranngocrin12@gmail.com",
+  birthDate: "2023-05-20T15:51:19.686Z",
+  screenName: "",
+  bio: "",
+  location: "",
+  image: "",
+  facebookURL: "facebook.com",
+  instagramURL: "https://www.instagram.com/",
+  websiteURL: "string",
+  twitterURL: "string",
+};
 const Profile = () => {
+  const [profilePayload, SetProfilePayload] = useState(default_payload);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isMounting, setIsMounting] = useState(false);
+  useEffect(() => {
+    setIsMounting(true);
+    getProfile()
+      .then((payload) => {
+        SetProfilePayload(payload.data);
+      })
+      .finally(() => {
+        setIsMounting(false);
+      });
+  }, []);
+
+  const handleChange = (e, name) => {
+    const { value } = e.target;
+    SetProfilePayload({
+      ...profilePayload,
+      [name]: value,
+    });
+  };
+
+  const handleEdit = () => {
+    setIsLoading(true);
+    editProfile(profilePayload)
+      .then((payload) => {})
+      .catch((error) => {
+        console.error(error);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  };
   return (
     <Grid
       sx={{
@@ -29,103 +77,183 @@ const Profile = () => {
           winners.
         </Typography>
       </Grid>
-      <Grid
-        alignItems={"center"}
-        justifyContent={"center"}
-        item
-        md={12}
-        xs={12}
-        lg={12}>
-        <Typography marginBottom={2} fontWeight={600}>
-          Profile photo
-        </Typography>
-        <label htmlFor="upload-photo">
-          <input
-            style={{ display: "none" }}
-            id="upload-photo"
-            name="upload-photo"
-            type="file"
-          />
-          <Fab
-            sx={{
-              width: 200,
-              height: 200,
-              borderRadius: "50%",
-            }}
-            color="default"
-            size="small"
-            component="span"
-            aria-label="add"
-            variant="extended">
-            <AccountCircleIcon sx={{ fontSize: 100 }} />
-          </Fab>
-        </label>
-      </Grid>
-      <Grid item xs={12} md={6} lg={12}>
-        <TextField id="outlined-basic" label="Screen name" variant="outlined" />
-      </Grid>
-      <Grid item xs={12} md={12} lg={6}>
-        <TextField
-          fullWidth
-          id="outlined-multiline-flexible"
-          label="Bio"
-          multiline
-          maxRows={4}
-        />
-      </Grid>
-      <Grid item xs={12} md={12} lg={12}>
-        <TextField
-          sx={{
-            width: 0.992,
-          }}
-          id="outlined-multiline-flexible"
-          label="Location"
-        />
-      </Grid>
-      <Grid item xs={12} md={12} lg={12}>
-        <Grid container spacing={1} xs={12} md={12} lg={12}>
-          <Grid item xs={12} md={6} lg={6}>
+      {isMounting === true ? (
+        <>
+          <Box sx={{ display: "flex" }}>
+            <CircularProgress />{" "}
+          </Box>
+        </>
+      ) : (
+        <>
+          <Grid
+            alignItems={"center"}
+            justifyContent={"center"}
+            item
+            md={12}
+            xs={12}
+            lg={12}>
+            <Typography marginBottom={2} fontWeight={600}>
+              Profile photo
+            </Typography>
+
+            <label htmlFor="upload-photo">
+              {profilePayload && profilePayload.image != null ? (
+                <Box
+                  sx={{
+                    width: 1,
+                    height: 1,
+                    borderRadius: 50,
+                  }}>
+                  <img
+                    style={{
+                      width: 200,
+                      borderRadius: 12,
+                    }}
+                    src={profilePayload.image}
+                    alt="image profile"
+                  />
+                </Box>
+              ) : (
+                <>
+                  <input
+                    style={{ display: "none" }}
+                    id="upload-photo"
+                    name="upload-photo"
+                    type="file"
+                  />
+                  <Fab
+                    sx={{
+                      width: 200,
+                      height: 200,
+                      borderRadius: "50%",
+                    }}
+                    color="default"
+                    size="small"
+                    component="span"
+                    aria-label="add"
+                    variant="extended">
+                    <AccountCircleIcon sx={{ fontSize: 100 }} />
+                  </Fab>
+                </>
+              )}
+            </label>
+          </Grid>
+          <Grid item xs={12} md={12} lg={12}>
             <TextField
               fullWidth
-              id="outlined-multiline-flexible"
-              label="Facebook URL"
+              id="outlined-basic"
+              disabled
+              label="Email"
+              InputLabelProps={{ shrink: true }}
+              value={(profilePayload && profilePayload.email) || ""}
+              variant="outlined"
             />
           </Grid>
-          <Grid item xs={12} md={6} lg={6}>
+          <Grid item xs={12} md={12} lg={12}>
             <TextField
               fullWidth
-              id="outlined-multiline-flexible"
-              label="Twitter URL"
-            />
-          </Grid>{" "}
-          <Grid item xs={12} md={6} lg={6}>
-            <TextField
-              fullWidth
-              id="outlined-multiline-flexible"
-              label="Instagram URL              "
-            />
-          </Grid>{" "}
-          <Grid item xs={12} md={6} lg={6}>
-            <TextField
-              fullWidth
-              id="outlined-multiline-flexible"
-              label="Website URL"
+              id="outlined-basic"
+              label="Screen name"
+              InputLabelProps={{ shrink: true }}
+              value={profilePayload && profilePayload.screenName}
+              onChange={(e) => handleChange(e, "screenName")}
+              variant="outlined"
             />
           </Grid>
-        </Grid>
-      </Grid>
-      <Grid item md={12} xs={12} lg={12}>
-        <Button
-          sx={{
-            bgcolor: " rgb(49, 49, 49)",
-            "&:hover": {
-              bgcolor: "rgb(49, 49, 49,0.8)",
-            },
-          }}
-          variant="contained">
-          Save change
-        </Button>
-      </Grid>
+          <Grid item xs={12} md={12} lg={12}>
+            <TextField
+              fullWidth
+              id="outlined-multiline-flexible"
+              label="Bio"
+              multiline
+              InputLabelProps={{ shrink: true }}
+              value={profilePayload && profilePayload.bio}
+              onChange={(e) => handleChange(e, "bio")}
+              maxRows={4}
+            />
+          </Grid>
+          <Grid item xs={12} md={12} lg={12}>
+            <TextField
+              fullWidth
+              id="outlined-multiline-flexible"
+              label="Birthday"
+              multiline
+              InputLabelProps={{ shrink: true }}
+              value={
+                profilePayload &&
+                new Date(profilePayload.birthDate).toDateString()
+              }
+              onChange={(e) => handleChange(e, "birthDate")}
+              maxRows={4}
+            />
+          </Grid>
+          <Grid item xs={12} md={12} lg={12}>
+            <TextField
+              sx={{
+                width: 0.992,
+              }}
+              id="outlined-multiline-flexible"
+              label="Location"
+              InputLabelProps={{ shrink: true }}
+              onChange={(e) => handleChange(e, "location")}
+              value={(profilePayload && profilePayload.location) || ""}
+            />
+          </Grid>
+          <Grid item xs={12} md={12} lg={12}>
+            <Grid container spacing={1} xs={12} md={12} lg={12}>
+              <Grid item xs={12} md={6} lg={6}>
+                <TextField
+                  fullWidth
+                  id="outlined-multiline-flexible"
+                  defaultValue={""}
+                  label="Facebook URL"
+                  value={(profilePayload && profilePayload.facebookURL) || ""}
+                  onChange={(e) => handleChange(e, "facebookURL")}
+                />
+              </Grid>
+              <Grid item xs={12} md={6} lg={6}>
+                <TextField
+                  fullWidth
+                  id="outlined-multiline-flexible"
+                  label="Twitter URL"
+                />
+              </Grid>{" "}
+              <Grid item xs={12} md={6} lg={6}>
+                <TextField
+                  fullWidth
+                  id="outlined-multiline-flexible"
+                  label="Instagram URL"
+                  value={(profilePayload && profilePayload.instagramURL) || ""}
+                  onChange={(e) => handleChange(e, "instagramURL")}
+                />
+              </Grid>{" "}
+              <Grid item xs={12} md={6} lg={6}>
+                <TextField
+                  fullWidth
+                  id="outlined-multiline-flexible"
+                  label="Website URL"
+                  value={(profilePayload && profilePayload.websiteURL) || ""}
+                  onChange={(e) => handleChange(e, "websiteURL")}
+                />
+              </Grid>
+            </Grid>
+          </Grid>
+          <Grid item md={12} xs={12} lg={12}>
+            <LoadingButton
+              loading={isLoading}
+              onClick={() => handleEdit()}
+              sx={{
+                bgcolor: " rgb(49, 49, 49)",
+                "&:hover": {
+                  bgcolor: "rgb(49, 49, 49,0.8)",
+                },
+              }}
+              variant="contained">
+              Save change
+            </LoadingButton>
+          </Grid>
+        </>
+      )}
     </Grid>
   );
 };
