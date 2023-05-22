@@ -6,13 +6,17 @@ import { Link, useParams } from "react-router-dom";
 function Cuisine() {
   let params = useParams();
   const [cuisine, setCuisine] = useState([]);
-  const getCuisine = async (name) => {
+  const getCuisine = async (idCategory) => {
     const data = await fetch(
-      `https://api.spoonacular.com/recipes/complexSearch?apiKey=${process.env.REACT_APP_API_KEY}&cuisine=${name}`,
+      process.env.REACT_APP_URI_Local + 'api/CongThuc/CongThucGetsByCategory/' + idCategory,
+      // {
+        // headers:{
+        //               "ngrok-skip-browser-warning": "69420"
+        //      }     }
     );
     const recipes = await data.json();
     console.log(recipes);
-    setCuisine(recipes.results);
+    setCuisine(recipes);
   };
   useEffect(() => {
     getCuisine(params.type);
@@ -29,8 +33,8 @@ function Cuisine() {
           return (
             <Card key={item.id}>
               <Link to={"/recipe/" + item.id}>
-                <img src={item.image} alt={item.title} />
-                <h4>{item.title}</h4>
+                <img src={item.anhKemTheo} alt={item.tenCongThuc} />
+                <h4>{item.tenCongThuc}</h4>
               </Link>
             </Card>
           );

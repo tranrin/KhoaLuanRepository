@@ -1,0 +1,75 @@
+{
+  "dashboard": "Tổng quan",
+  "blog": "Bài viết",
+  "nav-bar": {
+    "home": "Trang chủ",
+    "profile": "Hồ sơ",
+    "logout": "Đăng xuất"
+
+  },
+  "profile-page":{
+      "title": "Thông tin",
+      "screen-name": "Tên",
+      "location": "Địa chỉ",
+      "bio": "Tiểu sử",
+      "update": "Cập nhật"
+  },
+  "blog-page":{
+    "title":"Tổng quan: bài viết",
+    "blog": "Bài viết",
+    "search-post": "Tìm kiếm bài viết",
+    "new-post": {
+      "step":{
+        "information":"Thông tin chung",
+        "ingredient":"Nguyên liệu",
+        "method": "Bước nấu",
+        "finish":"Hoàn thành",
+        "next": "Tiếp tục"
+      },
+    "title": "Tạo bài viết",
+    "information":{
+      "title":"Thông tin chung",
+      "name": "Tên công thức",
+      "description": "Mô tả",
+      "category": "Thể loại",
+      "cooking-time": "Thời gian nấu",
+      "preparing-time": "Thời gian chuẩn bị",
+      "upload-your-image": "Tải ảnh"
+    } ,
+    "ingredient": {
+      "title": "Nguyên liệu",
+      "add-record": "Thêm nguyên liệu",
+      "table": {
+        "serial": "Stt",
+        "name": "Tên nguyên liệu",
+        "quantity": "Số lượng",
+        "unit": "Đơn vị",
+        "actions": "Chức năng"
+
+      }
+    },
+    "method": {
+      "title": "Bước nấu",
+      "add-record": "Thêm bước nấu",
+      "table": {
+        "step": "Bước nấu",
+        "content": "Nội dung",
+        "actions": "Chức năng"
+      }
+    },
+    "back": "Trở về",
+    "next": "Tiếp tục"
+    },
+    "sort": {
+      "latest": "Mới nhất",
+      "popular": "Nổi bật",
+      "oldest": "Cũ nhất"
+    }
+},
+"notifications": {
+  "title": "Thông báo",
+  "new": "Mới",
+  "Before That": "Đã đọc",
+  "header": "Bạn có {{Unread}} thông báo chưa đọc"
+}
+}
