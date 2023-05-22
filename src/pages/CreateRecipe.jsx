@@ -97,8 +97,8 @@ const CreateRecipe = () => {
     delete payload.thongTinChung.prepareMins;
     delete payload.thongTinChung.cookHours;
     delete payload.thongTinChung.cookMins;
-    const test = await createRecipe(payload);
-    console.log(test);
+    console.log(payload);
+    // const test = await createRecipe(payload);
   };
 
   const handleChangeIngredient = (index) => (event) => {
@@ -131,6 +131,7 @@ const CreateRecipe = () => {
       };
       return newPayload;
     });
+    console.log(stepMethodPayload);
     setPayload({
       ...payload,
       buocNau: stepMethodPayload,

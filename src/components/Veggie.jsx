@@ -10,18 +10,17 @@ function Veggie() {
     getVeggie();
   }, []);
   const getVeggie = async () => {
-
-      const api = await fetch(
-        process.env.REACT_APP_URI_Local + 'api/CongThuc/CongThucGetsByTop',
-        // {
-        // headers:{
-        //               "ngrok-skip-browser-warning": "69420"
-        //      }     }
-      );
-      const data = await api.json();
-      setVeggie(data);
-      console.log(data);
-
+    const api = await fetch(
+      process.env.REACT_APP_URI_Local + "api/CongThuc/CongThucGetsByTop",
+      {
+        headers: {
+          "ngrok-skip-browser-warning": "69420",
+        },
+      },
+    );
+    const data = await api.json();
+    setVeggie(data);
+    console.log(data);
   };
 
   return (
@@ -41,9 +40,9 @@ function Veggie() {
               <SplideSlide key={recipe.id}>
                 <Card>
                   <Link to={"/recipe/" + recipe.id}>
-                  <p>{recipe.tenCongThuc}</p>
-                  <img src={recipe.anhKemTheo} alt={recipe.tenCongThuc} />
-                  <Gradient></Gradient>
+                    <p>{recipe.tenCongThuc}</p>
+                    <img src={recipe.anhKemTheo} alt={recipe.tenCongThuc} />
+                    <Gradient></Gradient>
                   </Link>
                 </Card>
               </SplideSlide>
