@@ -48,6 +48,8 @@ function Recipe() {
     getDetailsRecipe(params.name).then((payload) => {
       setDetails(payload.data);
     });
+
+    return () => setDetails({});
   }, []);
 
   useEffect(() => {
@@ -76,8 +78,8 @@ function Recipe() {
             }}
             src={
               details?.thongTinChung?.anhKemTheo
-                ? details?.thongTinChung?.anhKemThe
-                : "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxleHBsb3JlLWZlZWR8Mnx8fGVufDB8fHx8fA%3D%3D&w=1000&q=80"
+              // ? details?.thongTinChung?.anhKemTheo
+              // : "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxleHBsb3JlLWZlZWR8Mnx8fGVufDB8fHx8fA%3D%3D&w=1000&q=80"
             }
             alt={details.title}
           />
