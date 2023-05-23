@@ -81,11 +81,15 @@ const RecipeManagement = () => {
 
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
-    event.stopPropagation();
     setAnchorEl(event.currentTarget);
   };
-  const handleClose = (option) => {
-    navigate("/edit-recipe/2");
+  const handleClose = (e, option, id) => {
+    if (!e) var e = window.event;
+    if (e.stopPropagation) e.stopPropagation();
+    console.log(option);
+    if (option === "Edit") {
+      navigate("/edit-recipe/" + id);
+    }
     setAnchorEl(null);
   };
 
@@ -163,19 +167,19 @@ const RecipeManagement = () => {
                 {savedRecipe.map((item, index) => {
                   return (
                     <Grid key={index} item xs={12} md={6} lg={4}>
-                      <Link to={"/recipe/" + item.id}>
-                        <Card sx={{ width: "100%" }}>
-                          <CardActionArea>
-                            <CardMedia
-                              component="img"
-                              width="100%"
-                              image={
-                                item.anhKemTheo
-                                  ? item.anhKemThe
-                                  : "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxleHBsb3JlLWZlZWR8Mnx8fGVufDB8fHx8fA%3D%3D&w=1000&q=80"
-                              }
-                              alt="green iguana"
-                            />
+                      <Card sx={{ width: "100%" }}>
+                        <CardActionArea>
+                          <CardMedia
+                            component="img"
+                            width="100%"
+                            image={
+                              item.anhKemTheo
+                                ? item.anhKemThe
+                                : "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxleHBsb3JlLWZlZWR8Mnx8fGVufDB8fHx8fA%3D%3D&w=1000&q=80"
+                            }
+                            alt="green iguana"
+                          />
+                          <CardContent sx={{ padding: 2 }}>
                             <div
                               style={{
                                 position: "absolute",
@@ -198,7 +202,7 @@ const RecipeManagement = () => {
                                 }}
                                 anchorEl={anchorEl}
                                 open={open}
-                                onClose={handleClose}
+                                // onClose={handleClose}
                                 PaperProps={{
                                   style: {
                                     maxHeight: ITEM_HEIGHT * 4.5,
@@ -209,13 +213,15 @@ const RecipeManagement = () => {
                                   <MenuItem
                                     key={option}
                                     selected={option === "Unsave"}
-                                    onClick={() => handleClose(option)}>
+                                    onClick={(e) =>
+                                      handleClose(e, option, item.id)
+                                    }>
                                     {option}
                                   </MenuItem>
                                 ))}
                               </Menu>
                             </div>
-                            <CardContent sx={{ padding: 2 }}>
+                            <Link to={"/recipe/" + item.id}>
                               <Typography
                                 gutterBottom
                                 variant="h5"
@@ -240,10 +246,10 @@ const RecipeManagement = () => {
                                   7 Ratings
                                 </Typography>
                               </Box>
-                            </CardContent>
-                          </CardActionArea>
-                        </Card>
-                      </Link>
+                            </Link>
+                          </CardContent>
+                        </CardActionArea>
+                      </Card>
                     </Grid>
                   );
                 })}
@@ -255,59 +261,61 @@ const RecipeManagement = () => {
                 {myRecipe.map((item, index) => {
                   return (
                     <Grid item xs={12} md={6} lg={4}>
-                      <Link to={"/recipe/" + item.id}>
-                        <Card sx={{ width: "100%" }}>
-                          <CardActionArea>
-                            <CardMedia
-                              component="img"
-                              width="100%"
-                              image={
-                                item.anhKemTheo
-                                  ? item.anhKemThe
-                                  : "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxleHBsb3JlLWZlZWR8Mnx8fGVufDB8fHx8fA%3D%3D&w=1000&q=80"
-                              }
-                              alt="green iguana"
-                            />
-                            <div
-                              style={{
-                                position: "absolute",
-                                top: 0,
-                                right: 0,
+                      <Card sx={{ width: "100%" }}>
+                        <CardActionArea>
+                          <CardMedia
+                            component="img"
+                            width="100%"
+                            image={
+                              item.anhKemTheo
+                                ? item.anhKemThe
+                                : "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxleHBsb3JlLWZlZWR8Mnx8fGVufDB8fHx8fA%3D%3D&w=1000&q=80"
+                            }
+                            alt="green iguana"
+                          />
+                          <div
+                            style={{
+                              position: "absolute",
+                              top: 0,
+                              right: 0,
+                            }}>
+                            <IconButton
+                              aria-label="more"
+                              id="long-button"
+                              aria-controls={open ? "long-menu" : undefined}
+                              aria-expanded={open ? "true" : undefined}
+                              aria-haspopup="true"
+                              onClick={handleClick}>
+                              <MoreVertIcon />
+                            </IconButton>
+                            <Menu
+                              id="long-menu"
+                              MenuListProps={{
+                                "aria-labelledby": "long-button",
+                              }}
+                              anchorEl={anchorEl}
+                              open={open}
+                              // onClose={handleClose}
+                              PaperProps={{
+                                style: {
+                                  maxHeight: ITEM_HEIGHT * 4.5,
+                                  width: "20ch",
+                                },
                               }}>
-                              <IconButton
-                                aria-label="more"
-                                id="long-button"
-                                aria-controls={open ? "long-menu" : undefined}
-                                aria-expanded={open ? "true" : undefined}
-                                aria-haspopup="true"
-                                onClick={handleClick}>
-                                <MoreVertIcon />
-                              </IconButton>
-                              <Menu
-                                id="long-menu"
-                                MenuListProps={{
-                                  "aria-labelledby": "long-button",
-                                }}
-                                anchorEl={anchorEl}
-                                open={open}
-                                onClose={handleClose}
-                                PaperProps={{
-                                  style: {
-                                    maxHeight: ITEM_HEIGHT * 4.5,
-                                    width: "20ch",
-                                  },
-                                }}>
-                                {options.map((option) => (
-                                  <MenuItem
-                                    key={option}
-                                    selected={option === "Unsave"}
-                                    onClick={() => handleClose(option)}>
-                                    {option}
-                                  </MenuItem>
-                                ))}
-                              </Menu>
-                            </div>
-                            <CardContent sx={{ padding: 2 }}>
+                              {options.map((option) => (
+                                <MenuItem
+                                  key={option}
+                                  selected={option === "Unsave"}
+                                  onClick={(e) =>
+                                    handleClose(e, option, item.id)
+                                  }>
+                                  {option}
+                                </MenuItem>
+                              ))}
+                            </Menu>
+                          </div>
+                          <CardContent sx={{ padding: 2 }}>
+                            <Link to={"/recipe/" + item.id}>
                               <Typography
                                 gutterBottom
                                 variant="h5"
@@ -332,10 +340,10 @@ const RecipeManagement = () => {
                                   7 Ratings
                                 </Typography>
                               </Box>
-                            </CardContent>
-                          </CardActionArea>
-                        </Card>
-                      </Link>
+                            </Link>
+                          </CardContent>
+                        </CardActionArea>
+                      </Card>
                     </Grid>
                   );
                 })}

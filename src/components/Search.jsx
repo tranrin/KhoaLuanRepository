@@ -5,21 +5,20 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Box } from "@mui/material";
 function Search() {
-  
   const [getinput, setInput] = useState("");
   const navigate = useNavigate();
   const submitHandle = (e) => {
-    console.log(getinput,"vaoroi")
-    console.log(e.nativeEvent.key,"vaoroi")
+    console.log(getinput, "vaoroi");
+    console.log(e.nativeEvent.key, "vaoroi");
     // const value = e.target.value;
-    let  value = document.getElementById('myInput').value;
-   
-    if (e.nativeEvent.key === "Enter" && value != '') {
-        console.log("vaoroi")
-        e.preventDefault();
-        navigate("/searched/" + value);
-      }
-     console.log(value,"valuevalue")
+    let value = document.getElementById("myInput").value;
+
+    if (e.nativeEvent.key === "Enter" && value != "") {
+      console.log("vaoroi");
+      e.preventDefault();
+      navigate("/searched/" + value);
+    }
+    console.log(value, "valuevalue");
   };
   return (
     <Box
@@ -32,7 +31,7 @@ function Search() {
         marginRight: 12,
       }}
       // onSubmit={submitHandle}
-      >
+    >
       <input
         id="myInput"
         style={{

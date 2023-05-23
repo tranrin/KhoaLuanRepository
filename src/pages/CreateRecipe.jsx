@@ -15,7 +15,7 @@ import {
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import CameraAltIcon from "@mui/icons-material/CameraAlt";
 import React, { useEffect } from "react";
-import { createRecipe } from "../api/recipe.api";
+import { createRecipe, saveRecipe, upLoadImage } from "../api/recipe.api";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import RoundButton from "../components/RoundedButton";
 
@@ -35,10 +35,11 @@ const CreateRecipe = () => {
   const [cookHours, setCookHours] = React.useState(0);
   const [cookMin, setCookMin] = React.useState(0);
   const [preview, setPreview] = React.useState("");
+  const [file, setFile] = React.useState("");
   const [ingredients, setIngredients] = React.useState([1]);
   const [payload, setPayload] = React.useState({
     thongTinChung: {
-      tenCongThuc: "",
+      TenCongThuc: "",
       moTa: "",
       thoiGianNau: 0,
       thoiGianChuanBi: 0,
@@ -97,8 +98,23 @@ const CreateRecipe = () => {
     delete payload.thongTinChung.prepareMins;
     delete payload.thongTinChung.cookHours;
     delete payload.thongTinChung.cookMins;
-    const test = await createRecipe(payload);
-    console.log(test);
+    console.log(payload);
+    const formData = new FormData();
+    formData.append("File", file);
+    const uploadImage = await upLoadImage(formData[0]).then(async (item) => {
+      console.log(item);
+      setPayload({
+        ...payload,
+        thongTinChung: {
+          ...payload.thongTinChung,
+          anhKemTheo: item && item.data,
+        },
+      });
+      await createRecipe(payload).then((data) => {
+        console.log(data);
+      });
+    });
+    // const test = await createRecipe(payload).then((data) => {});
   };
 
   const handleChangeIngredient = (index) => (event) => {
@@ -138,6 +154,7 @@ const CreateRecipe = () => {
   };
 
   const handleChangeInput = (e, name) => {
+    console.log(name);
     if (name === "prepareHours") {
       setPrepareHours(e.target.value);
     }
@@ -155,6 +172,7 @@ const CreateRecipe = () => {
     }
 
     if (name === "anhKemTheo") {
+      setFile(e.target.files[0]);
       if (e.target.files[0] != null) {
         const objectUrl = window.URL.createObjectURL(e.target.files[0]);
         setPreview(objectUrl);
@@ -162,7 +180,6 @@ const CreateRecipe = () => {
           ...payload,
           thongTinChung: {
             ...payload.thongTinChung,
-            anhKemTheo: e.target.value,
           },
         });
       }
@@ -176,6 +193,7 @@ const CreateRecipe = () => {
         thoiGianNau: cookHours * 60 + cookMin,
       },
     });
+    console.log(payload);
   };
   return (
     <Grid
@@ -257,8 +275,8 @@ const CreateRecipe = () => {
                   id="outlined-basic"
                   label="Recipe Title (keep it short and descriptive)"
                   variant="outlined"
-                  name="tenCongThuc"
-                  onChange={(e) => handleChangeInput(e, "tenCongThuc")}
+                  name="TenCongThuc"
+                  onChange={(e) => handleChangeInput(e, "TenCongThuc")}
                 />
               </Grid>
               <Grid item xs={12} md={12} lg={12}>

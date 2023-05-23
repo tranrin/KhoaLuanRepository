@@ -12,7 +12,12 @@ import LocalPrintshopIcon from "@mui/icons-material/LocalPrintshop";
 import { Box, Button, Rating, Typography } from "@mui/material";
 import StarRateIcon from "@mui/icons-material/StarRate";
 import Comments from "../components/comments/Comments";
-import { saveRecipe } from "../api/recipe.api";
+import {
+  getDetailsRecipe,
+  getSavedRecipe,
+  saveRecipe,
+} from "../api/recipe.api";
+import { LoadingButton } from "@mui/lab";
 
 function Recipe() {
   let params = useParams();
@@ -31,32 +36,57 @@ function Recipe() {
     setDetails(detailData);
   };
   const handleSaveRecipe = () => {
+    setIsLoading(true);
     saveRecipe({
       congThucID: params && params.name,
       nguoiDungID: "string",
-    });
-    console.log(params.name);
+    })
+      .then(() => {})
+      .finally(() => {
+        setIsLoading(false);
+      });
+    setIsSaved(true);
     /// call function save here
   };
-  useEffect(() => {
-    console.log(params);
-    console.log(params.id);
-  }, [params.name]);
+  useEffect(() => {}, [params.name]);
 
   useEffect(() => {
-    fetchDetails();
-  }, [params.name]);
+    getDetailsRecipe(params.name).then((payload) => {
+      setDetails(payload.data);
+    });
+
+    return () => setDetails({});
+  }, []);
+
+  useEffect(() => {
+    getSavedRecipe().then((payload) => {
+      setlistSavedRecipe(payload.data);
+    });
+  }, [isLoading]);
+
+  useEffect(() => {
+    const isTrue = listSavedRecipe?.filter((item) => {
+      return item.congThucID.toString() === params.name;
+    });
+    setIsSaved(isTrue.length > 0);
+  }, [listSavedRecipe, isLoading]);
+
   return (
     <>
       <DetailWrapper>
         <div>
-          <h2>{details.title}</h2>
+          <h2>{details?.thongTinChung?.tenCongThuc}</h2>
           {/* <img> src={details.img}</img> */}
+
           <img
             style={{
               borderRadius: 6,
             }}
-            src={details.image}
+            src={
+              details?.thongTinChung?.anhKemTheo
+              // ? details?.thongTinChung?.anhKemTheo
+              // : "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxleHBsb3JlLWZlZWR8Mnx8fGVufDB8fHx8fA%3D%3D&w=1000&q=80"
+            }
             alt={details.title}
           />
           <div
@@ -77,15 +107,25 @@ function Recipe() {
               display: "flex",
               justifyContent: "center",
             }}>
-            <Button
+            <LoadingButton
+              disabled={isSaved}
+              loading={isLoading}
               onClick={handleSaveRecipe}
               sx={{
                 marginRight: 1,
               }}
               variant="contained">
               {" "}
-              <BookmarkAddedIcon /> Save
-            </Button>
+              {isSaved ? (
+                <>
+                  <BookmarkAddedIcon /> Saved
+                </>
+              ) : (
+                <>
+                  <BookmarkAddedIcon /> Save{" "}
+                </>
+              )}
+            </LoadingButton>
             <Button variant="contained">
               {" "}
               <LocalPrintshopIcon /> Print
@@ -109,15 +149,30 @@ function Recipe() {
           </Button>
           {activeTab === "instructions" && (
             <div>
-              <h3 dangerouslySetInnerHTML={{ __html: details.summary }}></h3>
               <h3
-                dangerouslySetInnerHTML={{ __html: details.instructions }}></h3>
+                dangerouslySetInnerHTML={{
+                  __html: details?.thongTinChung?.moTa,
+                }}></h3>
+              <ul>
+                <Typography
+                  sx={{
+                    fontSize: 16,
+                    fontWeight: 500,
+                  }}>
+                  Step method
+                </Typography>
+
+                {details?.buocNau?.map((buocNau) => {
+                  return <li key={buocNau.id}>{buocNau.moTa}</li>;
+                })}
+              </ul>
             </div>
           )}
           {activeTab === "ingredients" && (
             <ul>
-              {details.extendedIngredients.map((ingredient) => {
-                return <li key={ingredient.id}>{ingredient.original}</li>;
+              {details?.nguyenLieu?.map((nguyenLieu) => {
+                console.log(nguyenLieu);
+                return <li key={nguyenLieu.id}>{nguyenLieu.tenNguyenLieu}</li>;
               })}
             </ul>
           )}
