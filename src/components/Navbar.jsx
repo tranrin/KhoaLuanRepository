@@ -24,6 +24,7 @@ import { gapi } from 'gapi-script';
 import LanguagePopover from "../Language/LanguagePopover";
 
 const pages = [];
+
 const settings = ["Profile", "Recipe", "Logout", ""];
 const clientId = process.env.REACT_APP_GOOGLE_CLIENTID 
 function Navbar() {
@@ -94,8 +95,9 @@ function Navbar() {
     }})
     let token = ''
     token = await api.text();
-    console.log("token",token)
+    console.log("token",token);
     localStorage.setItem("token",token);
+    setToken(token);
   }
   testAutho()
     }
@@ -119,6 +121,7 @@ function Navbar() {
             "linear-gradient(to right bottom, rgb(73, 73, 73), rgb(49, 49, 49))",
         }}
         maxWidth="xl">
+  
         <Toolbar disableGutters>
           {/* <RiceBowlIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} /> */}
           <Typography
@@ -135,6 +138,7 @@ function Navbar() {
               color: "inherit",
               textDecoration: "none",
             }}>
+                           {/* <img src="https://localhost:44337/images\original-62b8a65b3a744b16072a125d9b7774f3.webporiginal-62b8a65b3a744b16072a125d9b7774f3.webp" alt="aloalo" /> */}
             <Logo Logo to={"/home"}>
               <GiKnifeFork
                 style={{
@@ -151,7 +155,7 @@ function Navbar() {
               </Typography>
             </Logo>
           </Typography>
-
+             
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
             <IconButton
               size="large"

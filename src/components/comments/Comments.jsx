@@ -73,7 +73,8 @@ const Comments = ({ commentsUrl, currentUserId }) => {
   const sendMessage = (message) => {
     //console.log(message)
     if (connectionRef.current && connectionRef.current.state === 'Connected') {
-      connectionRef.current.invoke('SendOffersToUser', message).then((data)=>{
+      
+      connectionRef.current.invoke('SendOffersToUser', "message").then((data)=>{
         console.log(data)
       //addComment(data.Content, data.ParentId, data.CongThucId,data.UserId)
       })
@@ -119,7 +120,11 @@ const Comments = ({ commentsUrl, currentUserId }) => {
   useEffect(() => {
     console.log(token,"token")
     connectionRef.current = new HubConnectionBuilder()
-      .withUrl(process.env.REACT_APP_URI_Local + 'CommentChat', {accessTokenFactory: () => {return token}}
+      .withUrl(process.env.REACT_APP_URI_Local + 'CommentChat', {
+        //skipNegotiation: true,
+        accessTokenFactory: () => {return token}
+    ,
+    }
 
     //accessTokenFactory: () => token,
     // {

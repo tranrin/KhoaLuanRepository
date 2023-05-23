@@ -21,7 +21,11 @@ function Recipe() {
   const [idRecipe, setIdRecipe] = useState();
   const fetchDetails = async () => {
     const data = await fetch(
-      `https://api.spoonacular.com/recipes/${params.name}/information?apiKey=${process.env.REACT_APP_API_KEY}`,
+      process.env.REACT_APP_URI_Local + '/api/CongThuc/CongThucGet/' + params.name,
+          {
+        headers:{
+                      "ngrok-skip-browser-warning": "69420"
+             }     }
     );
     const detailData = await data.json();
     setDetails(detailData);
@@ -126,7 +130,7 @@ function Recipe() {
           flexDirection: "column",
           alignItems: "center",
         }}>
-        <Typography variant="h4">You rating</Typography>
+        <Typography variant="h4">Your rating</Typography>
         <Box>
           <Rating
             style={{
