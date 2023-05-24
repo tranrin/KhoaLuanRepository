@@ -109,7 +109,7 @@ const Profile = () => {
                       width: 200,
                       borderRadius: 12,
                     }}
-                    src={profilePayload.image}
+                    src={process.env.REACT_APP_URI_Local + profilePayload.image}
                     alt="image profile"
                   />
                 </Box>

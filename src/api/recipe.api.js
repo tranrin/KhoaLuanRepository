@@ -8,6 +8,10 @@ export const getRecipeWithUser = async () => {
   return sendRequest(apiContants.RECIPE.GET_BY_CURRENT_USER, "GET");
 };
 
+export const ratingRecipe = async (payload) => {
+  return sendRequest(apiContants.RECIPE.RATING_RECIPE, "POST", payload);
+};
+
 export const saveRecipe = async (payload) => {
   return sendRequest(apiContants.RECIPE.SAVE_RECIPE, "POST", payload);
 };
@@ -29,9 +33,14 @@ export const upLoadImage = async (payload) => {
 };
 
 export const updateRecipe = async (payload) => {
-  return sendRequest(apiContants.RECIPE.UPDATE_RECIPE);
+  return sendRequest(apiContants.RECIPE.UPDATE_RECIPE, "PUT", payload);
+};
+
+export const deleteRecipe = async (id) => {
+  console.log(apiContants.RECIPE.DELETE_RECIPE + "/" + id);
+  return sendRequest(apiContants.RECIPE.DELETE_RECIPE + "/" + id, "DEL");
 };
 export const getCommentRecipe = async (idCongThuc) => {
-  console.log(apiContants.RECIPE.GET_COMMENT + "/" + idCongThuc)
+  console.log(apiContants.RECIPE.GET_COMMENT + "/" + idCongThuc);
   return sendRequest(apiContants.RECIPE.GET_COMMENT + "/" + idCongThuc, "GET");
 };

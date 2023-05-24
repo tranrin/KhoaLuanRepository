@@ -14,7 +14,11 @@ import MenuItem from "@mui/material/MenuItem";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { Link, useNavigate } from "react-router-dom";
 import RoundButton from "../components/RoundedButton";
-import { getRecipeWithUser, getSavedRecipe } from "../api/recipe.api";
+import {
+  deleteRecipe,
+  getRecipeWithUser,
+  getSavedRecipe,
+} from "../api/recipe.api";
 const ITEM_HEIGHT = 48;
 const RecipeManagement = () => {
   const [value, setValue] = React.useState(2);
@@ -41,28 +45,8 @@ const RecipeManagement = () => {
     },
   ]);
 
-  const [myRecipe, setMyRecipe] = React.useState([
-    {
-      recipeName: "Test 2",
-      image:
-        "https://www.shutterstock.com/image-photo/surreal-image-african-elephant-wearing-260nw-1365289022.jpg",
-      rating: 4,
-    },
-    {
-      recipeName: "Test 2",
-      image:
-        "https://www.shutterstock.com/image-photo/surreal-image-african-elephant-wearing-260nw-1365289022.jpg",
-      rating: 4,
-    },
-    {
-      recipeName: "Test 2",
-      image:
-        "https://www.shutterstock.com/image-photo/surreal-image-african-elephant-wearing-260nw-1365289022.jpg",
-      rating: 4,
-    },
-  ]);
+  const [myRecipe, setMyRecipe] = React.useState([]);
   const [anchorEl, setAnchorEl] = React.useState();
-
   useEffect(() => {
     const listRecipeUser = getRecipeWithUser();
     listRecipeUser.then((list) => {
@@ -82,11 +66,16 @@ const RecipeManagement = () => {
     setAnchorEl(event.currentTarget);
   };
   const handleClose = (e, option, id) => {
-    if (!e) var e = window.event;
-    if (e.stopPropagation) e.stopPropagation();
-
     if (option === "Edit") {
       navigate("/edit-recipe/" + id);
+    }
+
+    if (option === "Remove") {
+      deleteRecipe(id).then(async (data) => {
+        await getRecipeWithUser().then((list) => {
+          setMyRecipe(list.data);
+        });
+      });
     }
     setAnchorEl(null);
   };
@@ -163,93 +152,89 @@ const RecipeManagement = () => {
             <TabPanel value={1}>
               <Grid container spacing={2} md={12} xs={12} lg={12}>
                 {savedRecipe.map((item, index) => {
-                  console.log(item.anhKemtheo);
                   return (
                     <Grid key={index} item xs={12} md={6} lg={4}>
-                      <Card sx={{ width: "100%" }}>
-                        <CardActionArea>
-                          <CardMedia
-                            component="img"
-                            width="100%"
-                            image={
-                              //process.env.REACT_APP_URI_Local + item.anhKemTheo
-                              item.anhKemtheo
-                                ? process.env.REACT_APP_URI_Local +
-                                  item.anhKemtheo
-                                : "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxleHBsb3JlLWZlZWR8Mnx8fGVufDB8fHx8fA%3D%3D&w=1000&q=80"
-                            }
-                            alt="green iguana"
-                          />
-                          <CardContent sx={{ padding: 2 }}>
-                            <div
-                              style={{
-                                position: "absolute",
-                                top: 0,
-                                right: 0,
+                      <Card sx={{ position: "relative", width: "100%" }}>
+                        <div
+                          style={{
+                            position: "absolute",
+                            top: 0,
+                            right: 0,
+                          }}>
+                          <IconButton
+                            aria-label="more"
+                            id="long-button"
+                            aria-controls={open ? "long-menu" : undefined}
+                            aria-expanded={open ? "true" : undefined}
+                            aria-haspopup="true"
+                            onClick={handleClick}>
+                            <MoreVertIcon />
+                          </IconButton>
+                          <Menu
+                            id="long-menu"
+                            MenuListProps={{
+                              "aria-labelledby": "long-button",
+                            }}
+                            anchorEl={anchorEl}
+                            open={open}
+                            onClose={handleClose}
+                            PaperProps={{
+                              style: {
+                                maxHeight: ITEM_HEIGHT * 4.5,
+                                width: "20ch",
+                              },
+                            }}>
+                            {options.map((option) => (
+                              <MenuItem
+                                key={option}
+                                selected={option === "Unsave"}
+                                onClick={(e) =>
+                                  handleClose(e, option, item.id)
+                                }>
+                                {option}
+                              </MenuItem>
+                            ))}
+                          </Menu>
+                        </div>
+                        <CardMedia
+                          component="img"
+                          width="100%"
+                          image={
+                            //process.env.REACT_APP_URI_Local + item.anhKemTheo
+                            item.anhKemtheo
+                              ? process.env.REACT_APP_URI_Local +
+                                item.anhKemtheo
+                              : "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxleHBsb3JlLWZlZWR8Mnx8fGVufDB8fHx8fA%3D%3D&w=1000&q=80"
+                          }
+                          alt="green iguana"
+                        />
+
+                        <CardContent sx={{ padding: 2 }}>
+                          <Link to={"/recipe/" + item.congThucID}>
+                            <Typography
+                              gutterBottom
+                              variant="h5"
+                              component="div">
+                              {item.tenCongThuc}
+                            </Typography>
+                            <Box
+                              sx={{
+                                display: "flex",
+                                justifyContent: "center",
+                                alignItems: "center       ",
                               }}>
-                              <IconButton
-                                aria-label="more"
-                                id="long-button"
-                                aria-controls={open ? "long-menu" : undefined}
-                                aria-expanded={open ? "true" : undefined}
-                                aria-haspopup="true"
-                                onClick={handleClick}>
-                                <MoreVertIcon />
-                              </IconButton>
-                              <Menu
-                                id="long-menu"
-                                MenuListProps={{
-                                  "aria-labelledby": "long-button",
-                                }}
-                                anchorEl={anchorEl}
-                                open={open}
-                                // onClose={handleClose}
-                                PaperProps={{
-                                  style: {
-                                    maxHeight: ITEM_HEIGHT * 4.5,
-                                    width: "20ch",
-                                  },
-                                }}>
-                                {options.map((option) => (
-                                  <MenuItem
-                                    key={option}
-                                    selected={option === "Unsave"}
-                                    onClick={(e) =>
-                                      handleClose(e, option, item.id)
-                                    }>
-                                    {option}
-                                  </MenuItem>
-                                ))}
-                              </Menu>
-                            </div>
-                            <Link to={"/recipe/" + item.congThucID}>
-                              <Typography
-                                gutterBottom
-                                variant="h5"
-                                component="div">
-                                {item.tenCongThuc}
+                              <Rating
+                                readOnly
+                                name="half-rating"
+                                defaultValue={3}
+                              />{" "}
+                              <Typography sx={{ fontWeight: 600 }} variant="p">
+                                {" "}
+                                7 Ratings
                               </Typography>
-                              <Box
-                                sx={{
-                                  display: "flex",
-                                  justifyContent: "center",
-                                  alignItems: "center       ",
-                                }}>
-                                <Rating
-                                  readOnly
-                                  name="half-rating"
-                                  defaultValue={3}
-                                />{" "}
-                                <Typography
-                                  sx={{ fontWeight: 600 }}
-                                  variant="p">
-                                  {" "}
-                                  7 Ratings
-                                </Typography>
-                              </Box>
-                            </Link>
-                          </CardContent>
-                        </CardActionArea>
+                            </Box>
+                          </Link>
+                        </CardContent>
                       </Card>
                     </Grid>
                   );
@@ -262,89 +247,86 @@ const RecipeManagement = () => {
                 {myRecipe.map((item, index) => {
                   return (
                     <Grid item xs={12} md={6} lg={4}>
-                      <Card sx={{ width: "100%" }}>
-                        <CardActionArea>
-                          <CardMedia
-                            component="img"
-                            width="100%"
-                            image={
-                              item.anhKemTheo
-                                ? process.env.REACT_APP_URI_Local +
-                                  item.anhKemTheo
-                                : "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxleHBsb3JlLWZlZWR8Mnx8fGVufDB8fHx8fA%3D%3D&w=1000&q=80"
-                            }
-                            alt="green iguana"
-                          />
-                          <div
-                            style={{
-                              position: "absolute",
-                              top: 0,
-                              right: 0,
+                      <Card sx={{ width: "100%", position: "relative" }}>
+                        <div
+                          style={{
+                            position: "absolute",
+                            top: 0,
+                            right: 0,
+                          }}>
+                          <IconButton
+                            aria-label="more"
+                            id="long-button"
+                            aria-controls={open ? "long-menu" : undefined}
+                            aria-expanded={open ? "true" : undefined}
+                            aria-haspopup="true"
+                            onClick={handleClick}>
+                            <MoreVertIcon />
+                          </IconButton>
+                          <Menu
+                            id="long-menu"
+                            MenuListProps={{
+                              "aria-labelledby": "long-button",
+                            }}
+                            anchorEl={anchorEl}
+                            open={open}
+                            onClose={handleClose}
+                            PaperProps={{
+                              style: {
+                                maxHeight: ITEM_HEIGHT * 4.5,
+                                width: "20ch",
+                              },
                             }}>
-                            <IconButton
-                              aria-label="more"
-                              id="long-button"
-                              aria-controls={open ? "long-menu" : undefined}
-                              aria-expanded={open ? "true" : undefined}
-                              aria-haspopup="true"
-                              onClick={handleClick}>
-                              <MoreVertIcon />
-                            </IconButton>
-                            <Menu
-                              id="long-menu"
-                              MenuListProps={{
-                                "aria-labelledby": "long-button",
-                              }}
-                              anchorEl={anchorEl}
-                              open={open}
-                              // onClose={handleClose}
-                              PaperProps={{
-                                style: {
-                                  maxHeight: ITEM_HEIGHT * 4.5,
-                                  width: "20ch",
-                                },
+                            <MenuItem
+                              onClick={(e) => handleClose(e, "Edit", item.id)}>
+                              Edit
+                            </MenuItem>
+                            <MenuItem
+                              onClick={(e) =>
+                                handleClose(e, "Remove", item.id)
+                              }>
+                              Remove
+                            </MenuItem>
+                          </Menu>
+                        </div>
+                        <CardMedia
+                          component="img"
+                          width="100%"
+                          image={
+                            item.anhKemTheo
+                              ? process.env.REACT_APP_URI_Local +
+                                item.anhKemTheo
+                              : "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxleHBsb3JlLWZlZWR8Mnx8fGVufDB8fHx8fA%3D%3D&w=1000&q=80"
+                          }
+                          alt="green iguana"
+                        />
+
+                        <CardContent sx={{ padding: 2 }}>
+                          <Link to={"/recipe/" + item.id}>
+                            <Typography
+                              gutterBottom
+                              variant="h5"
+                              component="div">
+                              {item.tenCongThuc}
+                            </Typography>
+                            <Box
+                              sx={{
+                                display: "flex",
+                                justifyContent: "center",
+                                alignItems: "center       ",
                               }}>
-                              {options.map((option) => (
-                                <MenuItem
-                                  key={option}
-                                  selected={option === "Unsave"}
-                                  onClick={(e) =>
-                                    handleClose(e, option, item.id)
-                                  }>
-                                  {option}
-                                </MenuItem>
-                              ))}
-                            </Menu>
-                          </div>
-                          <CardContent sx={{ padding: 2 }}>
-                            <Link to={"/recipe/" + item.congThucID}>
-                              <Typography
-                                gutterBottom
-                                variant="h5"
-                                component="div">
-                                {item.tenCongThuc}
+                              <Rating
+                                readOnly
+                                name="half-rating"
+                                defaultValue={3}
+                              />{" "}
+                              <Typography sx={{ fontWeight: 600 }} variant="p">
+                                {" "}
+                                7 Ratings
                               </Typography>
-                              <Box
-                                sx={{
-                                  display: "flex",
-                                  justifyContent: "center",
-                                  alignItems: "center       ",
-                                }}>
-                                <Rating
-                                  readOnly
-                                  name="half-rating"
-                                  defaultValue={3}
-                                />{" "}
-                                <Typography
-                                  sx={{ fontWeight: 600 }}
-                                  variant="p">
-                                  {" "}
-                                  7 Ratings
-                                </Typography>
-                              </Box>
-                            </Link>
-                          </CardContent>
-                        </CardActionArea>
+                            </Box>
+                          </Link>
+                        </CardContent>
                       </Card>
                     </Grid>
                   );
