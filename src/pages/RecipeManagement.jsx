@@ -18,6 +18,8 @@ import { getRecipeWithUser, getSavedRecipe } from "../api/recipe.api";
 const ITEM_HEIGHT = 48;
 const RecipeManagement = () => {
   const [value, setValue] = React.useState(2);
+  const [idUpdate, setIdUpdate] = React.useState();
+
   const options = value === 1 ? ["Unsave"] : ["Edit", "Remove"];
   const navigate = useNavigate();
   const [savedRecipe, setSavedRecipe] = React.useState([
@@ -80,15 +82,16 @@ const RecipeManagement = () => {
   }, []);
 
   const open = Boolean(anchorEl);
-  const handleClick = (event) => {
+  const handleClick = (event, id) => {
+    setIdUpdate(id);
     setAnchorEl(event.currentTarget);
   };
-  const handleClose = (e, option, id) => {
+  const handleClose = (e, option) => {
     if (!e) var e = window.event;
     if (e.stopPropagation) e.stopPropagation();
     console.log(option);
     if (option === "Edit") {
-      navigate("/edit-recipe/" + id);
+      navigate("/edit-recipe/" + idUpdate);
     }
     setAnchorEl(null);
   };
@@ -192,7 +195,7 @@ const RecipeManagement = () => {
                                 aria-controls={open ? "long-menu" : undefined}
                                 aria-expanded={open ? "true" : undefined}
                                 aria-haspopup="true"
-                                onClick={handleClick}>
+                                onClick={() => console.log(item.id)}>
                                 <MoreVertIcon />
                               </IconButton>
                               <Menu
@@ -221,32 +224,30 @@ const RecipeManagement = () => {
                                 ))}
                               </Menu>
                             </div>
-                            <Link to={"/recipe/" + item.id}>
-                              <Typography
-                                gutterBottom
-                                variant="h5"
-                                component="div">
-                                {item.tenCongThuc}
+                            {/* <Link to={"/recipe/" + item.id}> */}
+                            <Typography
+                              gutterBottom
+                              variant="h5"
+                              component="div">
+                              {item.tenCongThuc}
+                            </Typography>
+                            <Box
+                              sx={{
+                                display: "flex",
+                                justifyContent: "center",
+                                alignItems: "center       ",
+                              }}>
+                              <Rating
+                                readOnly
+                                name="half-rating"
+                                defaultValue={3}
+                              />{" "}
+                              <Typography sx={{ fontWeight: 600 }} variant="p">
+                                {" "}
+                                7 Ratings
                               </Typography>
-                              <Box
-                                sx={{
-                                  display: "flex",
-                                  justifyContent: "center",
-                                  alignItems: "center       ",
-                                }}>
-                                <Rating
-                                  readOnly
-                                  name="half-rating"
-                                  defaultValue={3}
-                                />{" "}
-                                <Typography
-                                  sx={{ fontWeight: 600 }}
-                                  variant="p">
-                                  {" "}
-                                  7 Ratings
-                                </Typography>
-                              </Box>
-                            </Link>
+                            </Box>
+                            {/* </Link> */}
                           </CardContent>
                         </CardActionArea>
                       </Card>
@@ -285,7 +286,7 @@ const RecipeManagement = () => {
                               aria-controls={open ? "long-menu" : undefined}
                               aria-expanded={open ? "true" : undefined}
                               aria-haspopup="true"
-                              onClick={handleClick}>
+                              onClick={(e) => handleClick(e, item.id)}>
                               <MoreVertIcon />
                             </IconButton>
                             <Menu
@@ -295,7 +296,7 @@ const RecipeManagement = () => {
                               }}
                               anchorEl={anchorEl}
                               open={open}
-                              // onClose={handleClose}
+                              onClose={handleClose}
                               PaperProps={{
                                 style: {
                                   maxHeight: ITEM_HEIGHT * 4.5,
@@ -305,42 +306,38 @@ const RecipeManagement = () => {
                               {options.map((option) => (
                                 <MenuItem
                                   key={option}
-                                  selected={option === "Unsave"}
-                                  onClick={(e) =>
-                                    handleClose(e, option, item.id)
-                                  }>
+                                  selected={option === "Edit"}
+                                  onClick={(e) => handleClose(e, option)}>
                                   {option}
                                 </MenuItem>
                               ))}
                             </Menu>
                           </div>
                           <CardContent sx={{ padding: 2 }}>
-                            <Link to={"/recipe/" + item.id}>
-                              <Typography
-                                gutterBottom
-                                variant="h5"
-                                component="div">
-                                {item.tenCongThuc}
+                            {/* <Link to={"/recipe/" + item.id}> */}
+                            <Typography
+                              gutterBottom
+                              variant="h5"
+                              component="div">
+                              {item.tenCongThuc}
+                            </Typography>
+                            <Box
+                              sx={{
+                                display: "flex",
+                                justifyContent: "center",
+                                alignItems: "center       ",
+                              }}>
+                              <Rating
+                                readOnly
+                                name="half-rating"
+                                defaultValue={3}
+                              />{" "}
+                              <Typography sx={{ fontWeight: 600 }} variant="p">
+                                {" "}
+                                7 Ratings
                               </Typography>
-                              <Box
-                                sx={{
-                                  display: "flex",
-                                  justifyContent: "center",
-                                  alignItems: "center       ",
-                                }}>
-                                <Rating
-                                  readOnly
-                                  name="half-rating"
-                                  defaultValue={3}
-                                />{" "}
-                                <Typography
-                                  sx={{ fontWeight: 600 }}
-                                  variant="p">
-                                  {" "}
-                                  7 Ratings
-                                </Typography>
-                              </Box>
-                            </Link>
+                            </Box>
+                            {/* </Link> */}
                           </CardContent>
                         </CardActionArea>
                       </Card>

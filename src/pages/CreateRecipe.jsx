@@ -12,7 +12,6 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import CameraAltIcon from "@mui/icons-material/CameraAlt";
 import React, { useEffect } from "react";
 import { createRecipe, saveRecipe, upLoadImage } from "../api/recipe.api";
@@ -80,7 +79,8 @@ const CreateRecipe = () => {
     // // free memory when ever this component is unmounted
     // return () => URL.revokeObjectURL(objectUrl);
     console.log(preview);
-  }, [preview]);
+    // logic render
+  }, []);
 
   const handleRemoveItem = (indexToRemove, name) => {
     if (name === "ingredientPayload")
@@ -101,7 +101,7 @@ const CreateRecipe = () => {
     console.log(payload);
     const formData = new FormData();
     formData.append("File", file);
-    const uploadImage = await upLoadImage(formData[0]).then(async (item) => {
+    const uploadImage = await upLoadImage(formData).then(async (item) => {
       console.log(item);
       setPayload({
         ...payload,

@@ -15,7 +15,12 @@ import {
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import CameraAltIcon from "@mui/icons-material/CameraAlt";
 import React, { useEffect } from "react";
-import { createRecipe, getDetailsRecipeToUpdate } from "../api/recipe.api";
+import {
+  createRecipe,
+  getDetailsRecipeToUpdate,
+  upLoadImage,
+  updateRecipe,
+} from "../api/recipe.api";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import RoundButton from "../components/RoundedButton";
 import { useParams } from "react-router-dom";
@@ -73,9 +78,11 @@ const EditRecipe = () => {
   const [prepareMin, setPrepareMin] = React.useState(0);
   const [cookHours, setCookHours] = React.useState(0);
   const [cookMin, setCookMin] = React.useState(0);
+  const [file, setFile] = React.useState("");
   const [preview, setPreview] = React.useState("");
   const [payload, setPayload] = React.useState({
     thongTinChung: {
+      id: "",
       tenCongThuc: "",
       moTa: "",
       thoiGianNau: 0,
@@ -106,6 +113,35 @@ const EditRecipe = () => {
       moTa: "",
     },
   ]);
+  const handleSubmit = async () => {
+    delete payload.thongTinChung.prepareHours;
+    delete payload.thongTinChung.prepareMins;
+    delete payload.thongTinChung.cookHours;
+    delete payload.thongTinChung.cookMins;
+    console.log(payload);
+    const formData = new FormData();
+    formData.append("File", file);
+    if (file) {
+      const uploadImage = await upLoadImage(formData).then(async (item) => {
+        setPayload({
+          ...payload,
+          thongTinChung: {
+            ...payload.thongTinChung,
+            anhKemTheo: item && item.data,
+          },
+        });
+        await updateRecipe(payload).then((data) => {
+          console.log(data);
+        });
+      });
+    } else {
+      await updateRecipe(payload).then((data) => {
+        console.log(data);
+      });
+    }
+
+    // const test = await createRecipe(payload).then((data) => {});
+  };
 
   const convertMinutesToHoursAndMinutes = (minutes) => {
     var hours = Math.floor(minutes / 60); // Lấy phần nguyên khi chia cho 60 để tính giờ
@@ -136,13 +172,7 @@ const EditRecipe = () => {
     setPrepareMin(timePre.minutes);
     setCookHours(timeCook.hours);
     setCookMin(timeCook.minutes);
-    // setPayload({
-    //   ...payload,
-    //   buocNau: details?.buocNau,
-    //   nguyenLieu: details?.nguyenLieu,
-    // });
     setStepMethodPayload(payload?.buocNau);
-    console.log(stepMethodPayload);
     setIngredientPayload(payload?.nguyenLieu);
   }, [payload]);
 
@@ -155,17 +185,6 @@ const EditRecipe = () => {
       setStepMethodPayload((prevPayload) => {
         return prevPayload.filter((_, index) => index !== indexToRemove);
       });
-  };
-
-  const handleSubmit = async () => {
-    delete payload.thongTinChung.prepareHours;
-    delete payload.thongTinChung.prepareMins;
-    delete payload.thongTinChung.cookHours;
-    delete payload.thongTinChung.cookMins;
-    Object.assign(payload, {
-      id: payload.id,
-    });
-    const test = await createRecipe(payload);
   };
 
   const handleChangeIngredient = (index) => (event) => {
