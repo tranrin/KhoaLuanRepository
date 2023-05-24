@@ -101,17 +101,22 @@ const CreateRecipe = () => {
     console.log(payload);
     const formData = new FormData();
     formData.append("File", file);
-    const uploadImage = await upLoadImage(formData[0]).then(async (item) => {
-      console.log(item);
+    const uploadImage = await upLoadImage(formData).then(async (item) => {
+      console.log(item.data,"dataItem")
+      var file = item.data.replace("C:\\fakepath\\", "");
+      //var reader = new FileReader();
+           // reader.readAsDataURL(item.data);
+      //var reader = new FileReader();
+      //reader.onload = imageIsLoaded;
+     ;
       setPayload({
         ...payload,
         thongTinChung: {
           ...payload.thongTinChung,
-          anhKemTheo: item && item.data,
+          anhKemTheo:file,
         },
-      });
+      }); console.log(payload)
       await createRecipe(payload).then((data) => {
-        console.log(data);
       });
     });
     // const test = await createRecipe(payload).then((data) => {});

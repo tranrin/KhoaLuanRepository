@@ -1,3 +1,4 @@
+
 import React from "react";
 import { useEffect } from "react";
 import { useState } from "react";
@@ -24,17 +25,11 @@ function Recipe() {
   const [details, setDetails] = useState({});
   const [activeTab, setActiveTab] = useState("instructions");
   const [idRecipe, setIdRecipe] = useState();
-  const fetchDetails = async () => {
-    const data = await fetch(
-      process.env.REACT_APP_URI_Local + '/api/CongThuc/CongThucGet/' + params.name,
-          {
-        headers:{
-                      "ngrok-skip-browser-warning": "69420"
-             }     }
-    );
-    const detailData = await data.json();
-    setDetails(detailData);
-  };
+  const [isLoading, setIsLoading] = useState(false);
+  const [listSavedRecipe, setlistSavedRecipe] = useState([]);
+  const [isRating, setIsRating] = useState(0)
+  const [isSaved, setIsSaved] = useState(false);
+
   const handleSaveRecipe = () => {
     setIsLoading(true);
     saveRecipe({
@@ -52,7 +47,10 @@ function Recipe() {
 
   useEffect(() => {
     getDetailsRecipe(params.name).then((payload) => {
+      console.log(process.env.REACT_APP_URI_Local +  details?.thongTinChung?.anhKemTheo,"payload")
       setDetails(payload.data);
+      console.log(payload.data.thongTinChung,"setDetails")
+     // setIsRating(payload.data.thongTinChung.saoTrungBinh)
     });
 
     return () => setDetails({});
@@ -74,8 +72,8 @@ function Recipe() {
   return (
     <>
       <DetailWrapper>
-        <div>
-          <h2>{details?.thongTinChung?.tenCongThuc}</h2>
+        <div>   
+       <h2>{details?.thongTinChung?.tenCongThuc}</h2>
           {/* <img> src={details.img}</img> */}
 
           <img
@@ -83,7 +81,8 @@ function Recipe() {
               borderRadius: 6,
             }}
             src={
-              details?.thongTinChung?.anhKemTheo
+              process.env.REACT_APP_URI_Local +  details?.thongTinChung?.anhKemTheo
+             
               // ? details?.thongTinChung?.anhKemTheo
               // : "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxleHBsb3JlLWZlZWR8Mnx8fGVufDB8fHx8fA%3D%3D&w=1000&q=80"
             }
@@ -166,6 +165,30 @@ function Recipe() {
                   return <li key={buocNau.id}>{buocNau.moTa}</li>;
                 })}
               </ul>
+              <Typography
+                  sx={{
+                    fontSize: 16,
+                    fontWeight: 500,
+                  }}>
+                Level
+                </Typography>
+                {details?.thongTinChung?.nameDoKho}
+                <Typography
+                  sx={{
+                    fontSize: 16,
+                    fontWeight: 500,
+                  }}>
+                 Preparing Time
+                </Typography>
+                {details?.thongTinChung?.thoiGianChuanBi}
+                <Typography
+                  sx={{
+                    fontSize: 16,
+                    fontWeight: 500,
+                  }}>
+                 Cooking Time
+                </Typography>
+                {details?.thongTinChung?.thoiGianNau}
             </div>
           )}
           {activeTab === "ingredients" && (
@@ -185,14 +208,16 @@ function Recipe() {
           flexDirection: "column",
           alignItems: "center",
         }}>
-        <Typography variant="h4">Your rating</Typography>
+        <Typography variant="h4">You rating</Typography>
         <Box>
           <Rating
             style={{
               fontSize: 60,
             }}
             name="half-rating"
-            defaultValue={0}
+            defaultValue={
+              
+              details?.thongTinChung?.saoTrungBinh ?    details.thongTinChung.saoTrungBinh : 0}
           />{" "}
         </Box>
       </Box>
@@ -202,6 +227,7 @@ function Recipe() {
         <Comments
           // commentsUrl="http://localhost:3000/comments"
           currentUserId="1"
+          CongThucId={params.name}
         />
       </Container>
     </>

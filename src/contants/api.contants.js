@@ -7,6 +7,7 @@ export default {
     GET_DETAILS: `${process.env.REACT_APP_URL_WEB_SERCVICE}/api/CongThuc/CongThucGet`,
     GET_SAVED_RECIPE: `${process.env.REACT_APP_URL_WEB_SERCVICE}/api/Collection/GetCollectionByUserID`,
     UPLOAD_IMAGE: `${process.env.REACT_APP_URL_WEB_SERCVICE}/api/CongThuc/PostFile`,
+    GET_COMMENT: `${process.env.REACT_APP_URL_WEB_SERCVICE}/api/Comment/GetsCommentByCongThucID`,
   },
   USER: {
     PROFILE: `${process.env.REACT_APP_URL_WEB_SERCVICE}/api/User/GetProfileUser`,

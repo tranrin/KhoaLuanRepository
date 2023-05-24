@@ -22,7 +22,7 @@ import GoogleLogin from 'react-google-login';
 import { useEffect } from "react";
 import { gapi } from 'gapi-script';
 import LanguagePopover from "../Language/LanguagePopover";
-
+import { useState } from "react";
 const pages = [];
 
 const settings = ["Profile", "Recipe", "Logout", ""];
@@ -31,20 +31,31 @@ function Navbar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const [token, setToken] = React.useState("");
+  const [open, setOpen] = useState(null);
   const navigate = useNavigate();
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
+  };
+  const handleOpen = (event) => {
+    setOpen(event.currentTarget);
+  };
+  const handleClose = () => {
+    //  navigate("/dashboard/profile");
+   console.log("check")
+    setOpen(null);
   };
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
   };
 
   const handleSetting = (setting) => {
+    setOpen(null);
     if (setting === "Logout") {
       localStorage.removeItem("token");
-      const token = localStorage.getItem("token");
-      console.log(token);
+       const token = localStorage.getItem("token");
+      // console.log(token);
       setToken(token);
+      navigate("/home");
     }
     if (setting === "Profile") {
       navigate("/profile");
@@ -227,7 +238,7 @@ function Navbar() {
             }}>
             <Category />
             <Search />
-            <LanguagePopover />
+            <LanguagePopover onClose={handleClose}/>
           </Box>
           {token != null ? (
             <Box sx={{ flexGrow: 0 }}>

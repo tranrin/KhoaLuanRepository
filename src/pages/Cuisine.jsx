@@ -33,7 +33,7 @@ function Cuisine() {
           return (
             <Card key={item.id}>
               <Link to={"/recipe/" + item.id}>
-                <img src={item.anhKemTheo} alt={item.tenCongThuc} />
+                <img src={ process.env.REACT_APP_URI_Local + item.anhKemTheo} alt={item.tenCongThuc} />
                 <h4>{item.tenCongThuc}</h4>
               </Link>
             </Card>

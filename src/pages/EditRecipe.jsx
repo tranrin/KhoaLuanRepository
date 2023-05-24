@@ -260,7 +260,7 @@ const EditRecipe = () => {
       lg={12}>
       <Grid item md={12} xs={12} lg={12}>
         <Typography marginBottom={2} fontSize={20} fontWeight={600}>
-          Recipe Details
+          Recipe Editing
         </Typography>
         <Grid container md={12} xs={12} lg={12}>
           <Grid item md={3} lg={3} xs={12}>

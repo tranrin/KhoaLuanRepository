@@ -68,15 +68,16 @@ const RecipeManagement = () => {
     listRecipeUser.then((list) => {
       return setMyRecipe(list.data);
     });
-    console.log(myRecipe);
+
   }, []);
 
   useEffect(() => {
     const listRecipeUser = getSavedRecipe();
     listRecipeUser.then((list) => {
+
       return setSavedRecipe(list.data);
     });
-    console.log(savedRecipe);
+  
   }, []);
 
   const open = Boolean(anchorEl);
@@ -86,7 +87,7 @@ const RecipeManagement = () => {
   const handleClose = (e, option, id) => {
     if (!e) var e = window.event;
     if (e.stopPropagation) e.stopPropagation();
-    console.log(option);
+
     if (option === "Edit") {
       navigate("/edit-recipe/" + id);
     }
@@ -165,6 +166,7 @@ const RecipeManagement = () => {
             <TabPanel value={1}>
               <Grid container spacing={2} md={12} xs={12} lg={12}>
                 {savedRecipe.map((item, index) => {
+                  console.log(item.anhKemtheo)
                   return (
                     <Grid key={index} item xs={12} md={6} lg={4}>
                       <Card sx={{ width: "100%" }}>
@@ -172,11 +174,14 @@ const RecipeManagement = () => {
                           <CardMedia
                             component="img"
                             width="100%"
+                            
                             image={
-                              item.anhKemTheo
-                                ? item.anhKemThe
+                              //process.env.REACT_APP_URI_Local + item.anhKemTheo
+                              item.anhKemtheo
+                                ? process.env.REACT_APP_URI_Local + item.anhKemtheo
                                 : "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxleHBsb3JlLWZlZWR8Mnx8fGVufDB8fHx8fA%3D%3D&w=1000&q=80"
-                            }
+                           
+                              }
                             alt="green iguana"
                           />
                           <CardContent sx={{ padding: 2 }}>
@@ -221,7 +226,7 @@ const RecipeManagement = () => {
                                 ))}
                               </Menu>
                             </div>
-                            <Link to={"/recipe/" + item.id}>
+                            <Link to={"/recipe/" + item.congThucID}>
                               <Typography
                                 gutterBottom
                                 variant="h5"
@@ -268,7 +273,7 @@ const RecipeManagement = () => {
                             width="100%"
                             image={
                               item.anhKemTheo
-                                ? item.anhKemThe
+                                ? process.env.REACT_APP_URI_Local + item.anhKemTheo
                                 : "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxleHBsb3JlLWZlZWR8Mnx8fGVufDB8fHx8fA%3D%3D&w=1000&q=80"
                             }
                             alt="green iguana"
@@ -315,7 +320,7 @@ const RecipeManagement = () => {
                             </Menu>
                           </div>
                           <CardContent sx={{ padding: 2 }}>
-                            <Link to={"/recipe/" + item.id}>
+                            <Link to={"/recipe/" + item.congThucID}>
                               <Typography
                                 gutterBottom
                                 variant="h5"
