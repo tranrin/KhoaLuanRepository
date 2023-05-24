@@ -1,4 +1,6 @@
 import { useState } from "react";
+import Alert from '@mui/material/Alert';
+
 
 const CommentForm = ({
   handleSubmit,
@@ -7,11 +9,18 @@ const CommentForm = ({
   handleCancel,
   initialText = "",
 }) => {
+  
   const [text, setText] = useState(initialText);
   const isTextareaDisabled = text.length === 0;
   const onSubmit = (event) => {
-    event.preventDefault();
-    handleSubmit(text);
+    if(localStorage.getItem('token')){
+      event.preventDefault();
+      handleSubmit('a');
+    }else{
+      event.preventDefault();
+      <Alert severity="warning">This is a warning alert — check it out!</Alert>
+    }
+  
     setText("");
   };
   return (

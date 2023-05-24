@@ -85,7 +85,7 @@ const Comments = ({ commentsUrl, currentUserId,CongThucId  }) => {
   };
   const handleSendMessage = () => {
     const message = {
-      CongThucId:3,
+      CongThucId:CongThucId,
       Content: "check comment",
       ParentId: null
     }; // Your message content
@@ -173,7 +173,7 @@ const Comments = ({ commentsUrl, currentUserId,CongThucId  }) => {
       <CommentForm submitLabel="Write" handleSubmit={handleSendMessage} />
       <div className="comments-container">
         {rootComments.map((rootComment) => {
-        
+        console.log(rootComment,"rootComment")
           return(
           <Comment
             key={rootComment.id}

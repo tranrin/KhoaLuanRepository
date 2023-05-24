@@ -1,5 +1,7 @@
+import { Height } from "@material-ui/icons";
 import CommentForm from "./CommentForm";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import { StyledEngineProvider } from '@mui/material/styles';
 
 const Comment = ({
   comment,
@@ -27,19 +29,25 @@ const Comment = ({
   const canReply = Boolean(currentUserId);
   const canEdit = currentUserId === comment.userId && !timePassed;
   const replyId = parentId ? parentId : comment.id;
-  const createdAt = new Date(comment.createdAt).toLocaleDateString();
+  const createdAt = new Date(comment.dateCreate).toLocaleDateString();
   return (
     <div key={comment.id} className="comment">
       <div className="comment-image-container">
-        {/* <img src="/user-icon.png" /> */}
-        <AccountCircleIcon />
+        {comment.image ? <img style={{
+          width:"50px",
+          height:"50px",
+          borderRadius:"50%"
+
+        }} src={process.env.REACT_APP_URI_Local + comment.image}></img> :    <AccountCircleIcon  /> }
+    
+     
       </div>
       <div className="comment-right-part">
         <div className="comment-content">
-          <div className="comment-author">{comment.username}</div>
+          <div className="comment-author">{comment.screenName}</div>
           <div>{createdAt}</div>
         </div>
-        {!isEditing && <div className="comment-text">{comment.body}</div>}
+        {!isEditing && <div className="comment-text">{comment.content}</div>}
         {isEditing && (
           <CommentForm
             submitLabel="Update"

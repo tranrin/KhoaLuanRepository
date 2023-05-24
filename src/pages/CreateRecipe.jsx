@@ -113,7 +113,7 @@ const CreateRecipe = () => {
         ...payload,
         thongTinChung: {
           ...payload.thongTinChung,
-          anhKemTheo:file,
+          anhKemTheo:item.data,
         },
       }); console.log(payload)
       await createRecipe(payload).then((data) => {
