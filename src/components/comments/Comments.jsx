@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import CommentForm from "./CommentForm";
 import Comment from "./Comment";
-import { HubConnectionBuilder } from '@microsoft/signalr';
+import { HubConnectionBuilder } from "@microsoft/signalr";
 import { useRef } from "react";
 import {
   getComments as getCommentsApi,
@@ -11,12 +11,12 @@ import {
 } from "../../api/api";
 import { getCommentRecipe } from "../../api/recipe.api";
 
-const Comments = ({ commentsUrl, currentUserId,CongThucId  }) => {
+const Comments = ({ commentsUrl, currentUserId, CongThucId }) => {
   const connectionRef = useRef(null);
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem("token");
   const [backendComments, setBackendComments] = useState([]);
   const [activeComment, setActiveComment] = useState(null);
-  const rootComments = backendComments
+  const rootComments = backendComments;
   // .filter(
   //   (backendComment) => backendComment.parentId === null,
   // );
@@ -28,30 +28,30 @@ const Comments = ({ commentsUrl, currentUserId,CongThucId  }) => {
           new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
       );
   const addComment = (text, parentId, congThucId, UserId) => {
-  //   if (!parentId) {
-  //     // Nếu comment không có parentId, đây là comment cha.
-  //     // Hiển thị comment cha trong phần tử HTML tương ứng với bài viết.
-  //     const commentElement = createCommentElement(comment);
-  //     const postCommentsElement = document.getElementById(`post-${comment.postId}-comments`);
-  //     postCommentsElement.appendChild(commentElement);
-  // } else {
-  //     // Nếu comment có parentId, đây là comment con.
-  //     // Xác định group tương ứng với comment con, và hiển thị comment con trong phần tử HTML tương ứng với comment cha.
-  //     const commentElement = createCommentElement(comment);
-  //     const parentCommentElement = document.getElementById(`comment-${comment.postId}-${comment.parentId}`);
-  //     const parentCommentRepliesElement = parentCommentElement.querySelector(".comment-replies");
-  //     parentCommentRepliesElement.appendChild(commentElement);
-  // }
+    //   if (!parentId) {
+    //     // Nếu comment không có parentId, đây là comment cha.
+    //     // Hiển thị comment cha trong phần tử HTML tương ứng với bài viết.
+    //     const commentElement = createCommentElement(comment);
+    //     const postCommentsElement = document.getElementById(`post-${comment.postId}-comments`);
+    //     postCommentsElement.appendChild(commentElement);
+    // } else {
+    //     // Nếu comment có parentId, đây là comment con.
+    //     // Xác định group tương ứng với comment con, và hiển thị comment con trong phần tử HTML tương ứng với comment cha.
+    //     const commentElement = createCommentElement(comment);
+    //     const parentCommentElement = document.getElementById(`comment-${comment.postId}-${comment.parentId}`);
+    //     const parentCommentRepliesElement = parentCommentElement.querySelector(".comment-replies");
+    //     parentCommentRepliesElement.appendChild(commentElement);
+    // }
     //
-    console.log(text,"value comment")
+    console.log(text, "value comment");
     // sendMessage({
     //  text: text,
     //  parentId: parentId,
     //  congThucId: congThucId,
-    //  UserId: UserId 
+    //  UserId: UserId
     // })
     createCommentApi(text, parentId).then((comment) => {
-     // setBackendComments([comment, ...backendComments]);
+      // setBackendComments([comment, ...backendComments]);
       setActiveComment(null);
     });
   };
@@ -71,15 +71,15 @@ const Comments = ({ commentsUrl, currentUserId,CongThucId  }) => {
     `;
 
     return commentElement;
-}
+  }
   const sendMessage = (message) => {
     //console.log(message)
-    if (connectionRef.current && connectionRef.current.state === 'Connected') {
-      
-      connectionRef.current.invoke('SendOffersToUser', message).then((data)=>{
-    })
+    if (connectionRef.current && connectionRef.current.state === "Connected") {
+      connectionRef.current
+        .invoke("SendOffersToUser", message)
+        .then((data) => {})
         .catch((error) => {
-          console.error('Failed to send message: ', error);
+          console.error("Failed to send message: ", error);
         });
     }
   };
@@ -87,9 +87,9 @@ const Comments = ({ commentsUrl, currentUserId,CongThucId  }) => {
     const message = {
       CongThucId:CongThucId,
       Content: "check comment",
-      ParentId: null
+      ParentId: null,
     }; // Your message content
-   console.log("handleSendMessage")
+    console.log("handleSendMessage");
     sendMessage(message);
   };
 
@@ -115,41 +115,50 @@ const Comments = ({ commentsUrl, currentUserId,CongThucId  }) => {
       });
     }
   };
-  
-  useEffect(() => {
-    console.log(token,"token")
-    connectionRef.current = new HubConnectionBuilder()
-      .withUrl(process.env.REACT_APP_URI_Local + 'CommentChat', {
-        //skipNegotiation: true,
-        accessTokenFactory: () => {return token}
-    ,
-    }
 
-    //accessTokenFactory: () => token,
-    // {
-    //     headers: {
-    //       'Authorization': `Bearer ${token}`
-    //     }
-    //   }
+  useEffect(() => {
+    console.log(token, "token");
+    connectionRef.current = new HubConnectionBuilder()
+      .withUrl(
+        process.env.REACT_APP_URI_Local + "CommentChat",
+        {
+          //skipNegotiation: true,
+          accessTokenFactory: () => {
+            return token;
+          },
+        },
+
+        //accessTokenFactory: () => token,
+        // {
+        //     headers: {
+        //       'Authorization': `Bearer ${token}`
+        //     }
+        //   }
       )
       .build();
 
-    connectionRef.current.start()
+    connectionRef.current
+      .start()
       .then((mesage) => {
-        console.log(mesage,'Connected to SignalR server');
+        console.log(mesage, "Connected to SignalR server");
         // Perform any additional setup or event subscriptions here
       })
       .catch((error) => {
-        console.error('Failed to connect to SignalR server: ', error);
+        console.error("Failed to connect to SignalR server: ", error);
       });
-      connectionRef.current.on('ReceiveMessage', (data) => {
-        // Gọi hàm xử lý sự kiện truyền vào từ props
-        let dataMessage = data.value
-        console.log(dataMessage,"dataMessage")
-      addComment(dataMessage.content, dataMessage.parentId, dataMessage.idCongThuc,dataMessage.idUser)
-     
-       console.log(data,"sended message")
-      });
+    connectionRef.current.on("ReceiveMessage", (data) => {
+      // Gọi hàm xử lý sự kiện truyền vào từ props
+      let dataMessage = data.value;
+      console.log(dataMessage, "dataMessage");
+      addComment(
+        dataMessage.content,
+        dataMessage.parentId,
+        dataMessage.idCongThuc,
+        dataMessage.idUser,
+      );
+
+      console.log(data, "sended message");
+    });
 
     return () => {
       connectionRef.current.stop(); // Clean up the connection when the component unmounts
@@ -157,13 +166,11 @@ const Comments = ({ commentsUrl, currentUserId,CongThucId  }) => {
   }, [token]);
 
 
-  
-  useEffect(() => {
     console.log(CongThucId)
-    getCommentRecipe(CongThucId).then((data) => {
+    console.log(CongThucId);
       console.log(data.data,"data")
-     setBackendComments(data.data);
-    });
+      console.log(data.data, "data");
+      setBackendComments(data.data);
   }, []);
 
   return (
@@ -173,8 +180,8 @@ const Comments = ({ commentsUrl, currentUserId,CongThucId  }) => {
       <CommentForm submitLabel="Write" handleSubmit={handleSendMessage} />
       <div className="comments-container">
         {rootComments.map((rootComment) => {
+        
         console.log(rootComment,"rootComment")
-          return(
           <Comment
             key={rootComment.id}
             comment={rootComment}

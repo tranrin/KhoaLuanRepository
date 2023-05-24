@@ -15,10 +15,16 @@ import {
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import CameraAltIcon from "@mui/icons-material/CameraAlt";
 import React, { useEffect } from "react";
-import { createRecipe, getDetailsRecipeToUpdate } from "../api/recipe.api";
+import {
+  createRecipe,
+  getDetailsRecipeToUpdate,
+  upLoadImage,
+  updateRecipe,
+} from "../api/recipe.api";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import RoundButton from "../components/RoundedButton";
 import { useParams } from "react-router-dom";
+import { LoadingButton } from "@mui/lab";
 
 const HOURS = [
   1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22,
@@ -72,10 +78,13 @@ const EditRecipe = () => {
   const [prepareHours, setPrepareHours] = React.useState(0);
   const [prepareMin, setPrepareMin] = React.useState(0);
   const [cookHours, setCookHours] = React.useState(0);
+  const [isLoading, setIsLoading] = React.useState(false);
   const [cookMin, setCookMin] = React.useState(0);
+  const [file, setFile] = React.useState("");
   const [preview, setPreview] = React.useState("");
   const [payload, setPayload] = React.useState({
     thongTinChung: {
+      id: "",
       tenCongThuc: "",
       moTa: "",
       thoiGianNau: 0,
@@ -106,6 +115,44 @@ const EditRecipe = () => {
       moTa: "",
     },
   ]);
+  const handleSubmit = async () => {
+    delete payload.thongTinChung.prepareHours;
+    delete payload.thongTinChung.prepareMins;
+    delete payload.thongTinChung.cookHours;
+    delete payload.thongTinChung.cookMins;
+    const formData = new FormData();
+    formData.append("File", file);
+    if (file.name != "") {
+      const uploadImage = await upLoadImage(formData)
+        .then(async (item) => {
+          setIsLoading(true);
+          setPayload({
+            ...payload,
+            thongTinChung: {
+              ...payload.thongTinChung,
+              anhKemTheo: payload?.thongTinChung?.anhKemTheo.replaceAll(
+                "C:\\fakepath\\",
+                "",
+              ),
+            },
+          });
+          await updateRecipe(payload).then((data) => {
+            console.log(data);
+          });
+
+          await getDetailsRecipeToUpdate(param.id).then((payload) => {
+            setPayload(payload?.data);
+          });
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
+    } else {
+      await updateRecipe(payload).then((data) => {});
+    }
+
+    // const test = await createRecipe(payload).then((data) => {});
+  };
 
   const convertMinutesToHoursAndMinutes = (minutes) => {
     var hours = Math.floor(minutes / 60); // Lấy phần nguyên khi chia cho 60 để tính giờ
@@ -117,7 +164,6 @@ const EditRecipe = () => {
   };
   // const [stepMethod, setStepMethod] = React.useState([1]);
 
-  const [details, setDetails] = React.useState();
   const param = useParams();
   useEffect(() => {
     getDetailsRecipeToUpdate(param.id).then((payload) => {
@@ -136,13 +182,7 @@ const EditRecipe = () => {
     setPrepareMin(timePre.minutes);
     setCookHours(timeCook.hours);
     setCookMin(timeCook.minutes);
-    // setPayload({
-    //   ...payload,
-    //   buocNau: details?.buocNau,
-    //   nguyenLieu: details?.nguyenLieu,
-    // });
     setStepMethodPayload(payload?.buocNau);
-    console.log(stepMethodPayload);
     setIngredientPayload(payload?.nguyenLieu);
   }, [payload]);
 
@@ -155,17 +195,6 @@ const EditRecipe = () => {
       setStepMethodPayload((prevPayload) => {
         return prevPayload.filter((_, index) => index !== indexToRemove);
       });
-  };
-
-  const handleSubmit = async () => {
-    delete payload.thongTinChung.prepareHours;
-    delete payload.thongTinChung.prepareMins;
-    delete payload.thongTinChung.cookHours;
-    delete payload.thongTinChung.cookMins;
-    Object.assign(payload, {
-      id: payload.id,
-    });
-    const test = await createRecipe(payload);
   };
 
   const handleChangeIngredient = (index) => (event) => {
@@ -223,6 +252,7 @@ const EditRecipe = () => {
 
     if (name === "anhKemTheo") {
       if (e.target.files[0] != null) {
+        setFile(e.target.files[0]);
         const objectUrl = window.URL.createObjectURL(e.target.files[0]);
         setPreview(objectUrl);
         setPayload({
@@ -264,7 +294,7 @@ const EditRecipe = () => {
         </Typography>
         <Grid container md={12} xs={12} lg={12}>
           <Grid item md={3} lg={3} xs={12}>
-            {preview === "" ? (
+            {payload?.thongTinChung.anhKemTheo === "" ? (
               <label htmlFor="upload-photo">
                 <input
                   style={{ display: "none" }}
@@ -301,17 +331,34 @@ const EditRecipe = () => {
                   type="file"
                   onChange={(e) => handleChangeInput(e, "anhKemTheo")}
                 />
-                <img
-                  width={"100%"}
-                  style={{
-                    borderRadius: 20,
-                    marginBottom: 2,
-                    "&::hover": {
-                      borderRadius: 100,
-                    },
-                  }}
-                  src={`${preview || payload.thongTinChung.anhKemTheo}`}
-                />
+                {preview != "" ? (
+                  <img
+                    width={"100%"}
+                    style={{
+                      borderRadius: 20,
+                      marginBottom: 2,
+                      "&::hover": {
+                        borderRadius: 100,
+                      },
+                    }}
+                    src={preview}
+                  />
+                ) : (
+                  <img
+                    width={"100%"}
+                    style={{
+                      borderRadius: 20,
+                      marginBottom: 2,
+                      "&::hover": {
+                        borderRadius: 100,
+                      },
+                    }}
+                    src={`${
+                      process.env.REACT_APP_URI_Local +
+                      payload?.thongTinChung?.anhKemTheo
+                    }`}
+                  />
+                )}
               </label>
             )}
           </Grid>
@@ -638,7 +685,8 @@ const EditRecipe = () => {
         </Grid>
       </Grid>
       <Grid marginTop={2} item xs={3} md={3} lg={3}>
-        <Button
+        <LoadingButton
+          loading={isLoading}
           sx={{
             marginRight: 1,
             color: "rgb(49, 49, 49)",
@@ -647,7 +695,7 @@ const EditRecipe = () => {
           onClick={() => handleSubmit()}
           variant="outlined">
           Save
-        </Button>
+        </LoadingButton>
       </Grid>
     </Grid>
   );

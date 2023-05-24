@@ -12,13 +12,33 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import CameraAltIcon from "@mui/icons-material/CameraAlt";
 import React, { useEffect } from "react";
 import { createRecipe, saveRecipe, upLoadImage } from "../api/recipe.api";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import RoundButton from "../components/RoundedButton";
-
+import AlertDialog from "../components/Alert";
+const defaulPayload = {
+  thongTinChung: {
+    tenCongThuc: "",
+    moTa: "",
+    thoiGianNau: 0,
+    thoiGianChuanBi: 0,
+    idCategory: 0,
+    anhKemTheo: null,
+    doKho: 0,
+  },
+  nguyenLieu: [
+    {
+      tenNguyenLieu: "",
+    },
+  ],
+  buocNau: [
+    {
+      moTa: "",
+    },
+  ],
+};
 const HOURS = [
   1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22,
   23,
@@ -35,29 +55,11 @@ const CreateRecipe = () => {
   const [cookHours, setCookHours] = React.useState(0);
   const [cookMin, setCookMin] = React.useState(0);
   const [preview, setPreview] = React.useState("");
+  const [open, setOpen] = React.useState(false);
   const [file, setFile] = React.useState("");
-  const [ingredients, setIngredients] = React.useState([1]);
-  const [payload, setPayload] = React.useState({
-    thongTinChung: {
-      TenCongThuc: "",
-      moTa: "",
-      thoiGianNau: 0,
-      thoiGianChuanBi: 0,
-      idCategory: 0,
-      anhKemTheo: null,
-      doKho: 0,
-    },
-    nguyenLieu: [
-      {
-        tenNguyenLieu: "",
-      },
-    ],
-    buocNau: [
-      {
-        moTa: "",
-      },
-    ],
-  });
+  const [textAlert, setTextAlert] = React.useState("");
+
+  const [payload, setPayload] = React.useState(defaulPayload);
   const [ingredientPayload, setIngredientPayload] = React.useState([
     {
       tenNguyenLieu: "",
@@ -68,19 +70,6 @@ const CreateRecipe = () => {
       moTa: "",
     },
   ]);
-  // const [stepMethod, setStepMethod] = React.useState([1]);
-  useEffect(() => {
-    // create the preview
-    // const objectUrl = window.URL.createObjectURL(
-    //   payload.thongTinChung.anhKemTheo[0],
-    // );
-    // console.log(objectUrl);
-    // // setPreview(objectUrl);
-    // console.log(preview);
-    // // free memory when ever this component is unmounted
-    // return () => URL.revokeObjectURL(objectUrl);
-    console.log(preview);
-  }, [preview]);
 
   const handleRemoveItem = (indexToRemove, name) => {
     if (name === "ingredientPayload")
@@ -94,31 +83,80 @@ const CreateRecipe = () => {
   };
 
   const handleSubmit = async () => {
-    delete payload.thongTinChung.prepareHours;
-    delete payload.thongTinChung.prepareMins;
-    delete payload.thongTinChung.cookHours;
-    delete payload.thongTinChung.cookMins;
-    console.log(payload);
-    const formData = new FormData();
-    formData.append("File", file);
-    const uploadImage = await upLoadImage(formData).then(async (item) => {
-      console.log(item.data,"dataItem")
-      var file = item.data.replace("C:\\fakepath\\", "");
-      //var reader = new FileReader();
-           // reader.readAsDataURL(item.data);
-      //var reader = new FileReader();
-      //reader.onload = imageIsLoaded;
-     ;
-      setPayload({
-        ...payload,
-        thongTinChung: {
-          ...payload.thongTinChung,
-          anhKemTheo:item.data,
-        },
-      }); console.log(payload)
-      await createRecipe(payload).then((data) => {
-      });
+    // alert.show("Oh look, an alert!");
+    let hasValidationError = false;
+    // Check thongTinChung properties
+    const {
+      tenCongThuc,
+      moTa,
+      thoiGianNau,
+      thoiGianChuanBi,
+      idCategory,
+      anhKemTheo,
+      doKho,
+    } = payload.thongTinChung;
+
+    if (
+      !tenCongThuc ||
+      tenCongThuc.trim() === "" ||
+      !moTa ||
+      moTa.trim() === ""
+    ) {
+      setOpen(true);
+      hasValidationError = true;
+      setTextAlert("Please enter all fields.");
+    }
+
+    payload.nguyenLieu.forEach((nguyenLieu, index) => {
+      if (!nguyenLieu.tenNguyenLieu || nguyenLieu.tenNguyenLieu.trim() === "") {
+        hasValidationError = true;
+        setOpen(true);
+
+        setTextAlert(`Please enter all fields`);
+      }
     });
+
+    // Check buocNau properties
+    payload.buocNau.forEach((buocNau, index) => {
+      if (!buocNau.moTa || buocNau.moTa.trim() === "") {
+        hasValidationError = true;
+        setOpen(true);
+        setTextAlert(`Please enter all fields`);
+      }
+    });
+
+    // Perform further validation if needed...
+
+    // If there are no validation errors, proceed with submitting the form
+    if (!hasValidationError) {
+      // Submit form logic here
+      delete payload.thongTinChung.prepareHours;
+      delete payload.thongTinChung.prepareMins;
+      delete payload.thongTinChung.cookHours;
+      delete payload.thongTinChung.cookMins;
+      console.log(payload);
+      const formData = new FormData();
+      formData.append("File", file);
+      const uploadImage = await upLoadImage(formData).then(async (item) => {
+        console.log(item);
+        const file = item.data.replace("C:\\fakepath\\", "");
+        setPayload({
+          ...payload,
+          thongTinChung: {
+            ...payload.thongTinChung,
+            anhKemTheo: file,
+          },
+        });
+        await createRecipe(payload)
+          .then((data) => {
+            console.log(data);
+          })
+          .finally(() => {
+            setPayload(defaulPayload);
+          });
+      });
+    }
+
     // const test = await createRecipe(payload).then((data) => {});
   };
 
@@ -198,7 +236,6 @@ const CreateRecipe = () => {
         thoiGianNau: cookHours * 60 + cookMin,
       },
     });
-    console.log(payload);
   };
   return (
     <Grid
@@ -214,6 +251,11 @@ const CreateRecipe = () => {
       md={12}
       xs={12}
       lg={12}>
+      <AlertDialog
+        handleClose={() => setOpen(false)}
+        isOpen={open}
+        text={textAlert}
+      />
       <Grid item md={12} xs={12} lg={12}>
         <Typography marginBottom={2} fontSize={20} fontWeight={600}>
           Recipe Details
@@ -280,8 +322,8 @@ const CreateRecipe = () => {
                   id="outlined-basic"
                   label="Recipe Title (keep it short and descriptive)"
                   variant="outlined"
-                  name="TenCongThuc"
-                  onChange={(e) => handleChangeInput(e, "TenCongThuc")}
+                  name="tenCongThuc"
+                  onChange={(e) => handleChangeInput(e, "tenCongThuc")}
                 />
               </Grid>
               <Grid item xs={12} md={12} lg={12}>
