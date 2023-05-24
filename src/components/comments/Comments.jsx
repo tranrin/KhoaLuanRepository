@@ -9,18 +9,20 @@ import {
   updateComment as updateCommentApi,
   deleteComment as deleteCommentApi,
 } from "../../api/api";
+import { getCommentRecipe } from "../../api/recipe.api";
 
-const Comments = ({ commentsUrl, currentUserId }) => {
+const Comments = ({ commentsUrl, currentUserId,CongThucId  }) => {
   const connectionRef = useRef(null);
   const token = localStorage.getItem('token');
   const [backendComments, setBackendComments] = useState([]);
   const [activeComment, setActiveComment] = useState(null);
-  const rootComments = backendComments.filter(
-    (backendComment) => backendComment.parentId === null,
-  );
+  const rootComments = backendComments
+  // .filter(
+  //   (backendComment) => backendComment.parentId === null,
+  // );
   const getReplies = (commentId) =>
     backendComments
-      .filter((backendComment) => backendComment.parentId === commentId)
+      .filter((backendComment) => backendComment.parentID === commentId)
       .sort(
         (a, b) =>
           new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
@@ -73,10 +75,9 @@ const Comments = ({ commentsUrl, currentUserId }) => {
   const sendMessage = (message) => {
     //console.log(message)
     if (connectionRef.current && connectionRef.current.state === 'Connected') {
+      
       connectionRef.current.invoke('SendOffersToUser', message).then((data)=>{
-        console.log(data)
-      //addComment(data.Content, data.ParentId, data.CongThucId,data.UserId)
-      })
+    })
         .catch((error) => {
           console.error('Failed to send message: ', error);
         });
@@ -84,9 +85,8 @@ const Comments = ({ commentsUrl, currentUserId }) => {
   };
   const handleSendMessage = () => {
     const message = {
-      congThucId:3,
+      CongThucId:3,
       Content: "check comment",
-      UserId: "check@gmail.com",
       ParentId: null
     }; // Your message content
    console.log("handleSendMessage")
@@ -119,7 +119,11 @@ const Comments = ({ commentsUrl, currentUserId }) => {
   useEffect(() => {
     console.log(token,"token")
     connectionRef.current = new HubConnectionBuilder()
-      .withUrl(process.env.REACT_APP_URI_Local + 'CommentChat', {accessTokenFactory: () => {return token}}
+      .withUrl(process.env.REACT_APP_URI_Local + 'CommentChat', {
+        //skipNegotiation: true,
+        accessTokenFactory: () => {return token}
+    ,
+    }
 
     //accessTokenFactory: () => token,
     // {
@@ -138,10 +142,13 @@ const Comments = ({ commentsUrl, currentUserId }) => {
       .catch((error) => {
         console.error('Failed to connect to SignalR server: ', error);
       });
-      connectionRef.current.on('ReceiveMessage', (message) => {
+      connectionRef.current.on('ReceiveMessage', (data) => {
         // Gọi hàm xử lý sự kiện truyền vào từ props
-      
-       console.log(message,"sended message")
+        let dataMessage = data.value
+        console.log(dataMessage,"dataMessage")
+      addComment(dataMessage.content, dataMessage.parentId, dataMessage.idCongThuc,dataMessage.idUser)
+     
+       console.log(data,"sended message")
       });
 
     return () => {
@@ -152,8 +159,10 @@ const Comments = ({ commentsUrl, currentUserId }) => {
 
   
   useEffect(() => {
-    getCommentsApi().then((data) => {
-      setBackendComments(data);
+    console.log(CongThucId)
+    getCommentRecipe(CongThucId).then((data) => {
+      console.log(data.data,"data")
+     setBackendComments(data.data);
     });
   }, []);
 
@@ -163,7 +172,9 @@ const Comments = ({ commentsUrl, currentUserId }) => {
       <div className="comment-form-title">Write comment</div>
       <CommentForm submitLabel="Write" handleSubmit={handleSendMessage} />
       <div className="comments-container">
-        {rootComments.map((rootComment) => (
+        {rootComments.map((rootComment) => {
+        
+          return(
           <Comment
             key={rootComment.id}
             comment={rootComment}
@@ -174,8 +185,8 @@ const Comments = ({ commentsUrl, currentUserId }) => {
             deleteComment={deleteComment}
             updateComment={updateComment}
             currentUserId={currentUserId}
-          />
-        ))}
+          />)
+          })}
       </div>
     </div>
   );

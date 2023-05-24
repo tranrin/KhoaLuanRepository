@@ -41,7 +41,7 @@ function Veggie() {
                 <Card>
                   <Link to={"/recipe/" + recipe.id}>
                     <p>{recipe.tenCongThuc}</p>
-                    <img src={recipe.anhKemTheo} alt={recipe.tenCongThuc} />
+                    <img src={ process.env.REACT_APP_URI_Local + recipe.anhKemTheo} alt={recipe.tenCongThuc} />
                     <Gradient></Gradient>
                   </Link>
                 </Card>

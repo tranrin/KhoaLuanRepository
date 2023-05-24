@@ -18,8 +18,6 @@ import { getRecipeWithUser, getSavedRecipe } from "../api/recipe.api";
 const ITEM_HEIGHT = 48;
 const RecipeManagement = () => {
   const [value, setValue] = React.useState(2);
-  const [idUpdate, setIdUpdate] = React.useState();
-
   const options = value === 1 ? ["Unsave"] : ["Edit", "Remove"];
   const navigate = useNavigate();
   const [savedRecipe, setSavedRecipe] = React.useState([
@@ -70,7 +68,6 @@ const RecipeManagement = () => {
     listRecipeUser.then((list) => {
       return setMyRecipe(list.data);
     });
-    console.log(myRecipe);
   }, []);
 
   useEffect(() => {
@@ -78,20 +75,18 @@ const RecipeManagement = () => {
     listRecipeUser.then((list) => {
       return setSavedRecipe(list.data);
     });
-    console.log(savedRecipe);
   }, []);
 
   const open = Boolean(anchorEl);
-  const handleClick = (event, id) => {
-    setIdUpdate(id);
+  const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
-  const handleClose = (e, option) => {
+  const handleClose = (e, option, id) => {
     if (!e) var e = window.event;
     if (e.stopPropagation) e.stopPropagation();
-    console.log(option);
+
     if (option === "Edit") {
-      navigate("/edit-recipe/" + idUpdate);
+      navigate("/edit-recipe/" + id);
     }
     setAnchorEl(null);
   };
@@ -168,6 +163,7 @@ const RecipeManagement = () => {
             <TabPanel value={1}>
               <Grid container spacing={2} md={12} xs={12} lg={12}>
                 {savedRecipe.map((item, index) => {
+                  console.log(item.anhKemtheo);
                   return (
                     <Grid key={index} item xs={12} md={6} lg={4}>
                       <Card sx={{ width: "100%" }}>
@@ -176,8 +172,10 @@ const RecipeManagement = () => {
                             component="img"
                             width="100%"
                             image={
-                              item.anhKemTheo
-                                ? item.anhKemThe
+                              //process.env.REACT_APP_URI_Local + item.anhKemTheo
+                              item.anhKemtheo
+                                ? process.env.REACT_APP_URI_Local +
+                                  item.anhKemtheo
                                 : "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxleHBsb3JlLWZlZWR8Mnx8fGVufDB8fHx8fA%3D%3D&w=1000&q=80"
                             }
                             alt="green iguana"
@@ -195,7 +193,7 @@ const RecipeManagement = () => {
                                 aria-controls={open ? "long-menu" : undefined}
                                 aria-expanded={open ? "true" : undefined}
                                 aria-haspopup="true"
-                                onClick={() => console.log(item.id)}>
+                                onClick={handleClick}>
                                 <MoreVertIcon />
                               </IconButton>
                               <Menu
@@ -224,30 +222,32 @@ const RecipeManagement = () => {
                                 ))}
                               </Menu>
                             </div>
-                            {/* <Link to={"/recipe/" + item.id}> */}
-                            <Typography
-                              gutterBottom
-                              variant="h5"
-                              component="div">
-                              {item.tenCongThuc}
-                            </Typography>
-                            <Box
-                              sx={{
-                                display: "flex",
-                                justifyContent: "center",
-                                alignItems: "center       ",
-                              }}>
-                              <Rating
-                                readOnly
-                                name="half-rating"
-                                defaultValue={3}
-                              />{" "}
-                              <Typography sx={{ fontWeight: 600 }} variant="p">
-                                {" "}
-                                7 Ratings
+                            <Link to={"/recipe/" + item.congThucID}>
+                              <Typography
+                                gutterBottom
+                                variant="h5"
+                                component="div">
+                                {item.tenCongThuc}
                               </Typography>
-                            </Box>
-                            {/* </Link> */}
+                              <Box
+                                sx={{
+                                  display: "flex",
+                                  justifyContent: "center",
+                                  alignItems: "center       ",
+                                }}>
+                                <Rating
+                                  readOnly
+                                  name="half-rating"
+                                  defaultValue={3}
+                                />{" "}
+                                <Typography
+                                  sx={{ fontWeight: 600 }}
+                                  variant="p">
+                                  {" "}
+                                  7 Ratings
+                                </Typography>
+                              </Box>
+                            </Link>
                           </CardContent>
                         </CardActionArea>
                       </Card>
@@ -269,7 +269,8 @@ const RecipeManagement = () => {
                             width="100%"
                             image={
                               item.anhKemTheo
-                                ? item.anhKemThe
+                                ? process.env.REACT_APP_URI_Local +
+                                  item.anhKemTheo
                                 : "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxleHBsb3JlLWZlZWR8Mnx8fGVufDB8fHx8fA%3D%3D&w=1000&q=80"
                             }
                             alt="green iguana"
@@ -286,7 +287,7 @@ const RecipeManagement = () => {
                               aria-controls={open ? "long-menu" : undefined}
                               aria-expanded={open ? "true" : undefined}
                               aria-haspopup="true"
-                              onClick={(e) => handleClick(e, item.id)}>
+                              onClick={handleClick}>
                               <MoreVertIcon />
                             </IconButton>
                             <Menu
@@ -296,7 +297,7 @@ const RecipeManagement = () => {
                               }}
                               anchorEl={anchorEl}
                               open={open}
-                              onClose={handleClose}
+                              // onClose={handleClose}
                               PaperProps={{
                                 style: {
                                   maxHeight: ITEM_HEIGHT * 4.5,
@@ -306,38 +307,42 @@ const RecipeManagement = () => {
                               {options.map((option) => (
                                 <MenuItem
                                   key={option}
-                                  selected={option === "Edit"}
-                                  onClick={(e) => handleClose(e, option)}>
+                                  selected={option === "Unsave"}
+                                  onClick={(e) =>
+                                    handleClose(e, option, item.id)
+                                  }>
                                   {option}
                                 </MenuItem>
                               ))}
                             </Menu>
                           </div>
                           <CardContent sx={{ padding: 2 }}>
-                            {/* <Link to={"/recipe/" + item.id}> */}
-                            <Typography
-                              gutterBottom
-                              variant="h5"
-                              component="div">
-                              {item.tenCongThuc}
-                            </Typography>
-                            <Box
-                              sx={{
-                                display: "flex",
-                                justifyContent: "center",
-                                alignItems: "center       ",
-                              }}>
-                              <Rating
-                                readOnly
-                                name="half-rating"
-                                defaultValue={3}
-                              />{" "}
-                              <Typography sx={{ fontWeight: 600 }} variant="p">
-                                {" "}
-                                7 Ratings
+                            <Link to={"/recipe/" + item.congThucID}>
+                              <Typography
+                                gutterBottom
+                                variant="h5"
+                                component="div">
+                                {item.tenCongThuc}
                               </Typography>
-                            </Box>
-                            {/* </Link> */}
+                              <Box
+                                sx={{
+                                  display: "flex",
+                                  justifyContent: "center",
+                                  alignItems: "center       ",
+                                }}>
+                                <Rating
+                                  readOnly
+                                  name="half-rating"
+                                  defaultValue={3}
+                                />{" "}
+                                <Typography
+                                  sx={{ fontWeight: 600 }}
+                                  variant="p">
+                                  {" "}
+                                  7 Ratings
+                                </Typography>
+                              </Box>
+                            </Link>
                           </CardContent>
                         </CardActionArea>
                       </Card>

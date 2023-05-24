@@ -103,7 +103,7 @@ function Footer() {
           textAlign: "center",
         }}
         variant="h4">
-        @Direct By Ngoc Xet
+        @Direct By
       </Typography>
     </Box>
   );

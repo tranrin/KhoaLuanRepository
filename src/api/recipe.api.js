@@ -31,3 +31,7 @@ export const upLoadImage = async (payload) => {
 export const updateRecipe = async (payload) => {
   return sendRequest(apiContants.RECIPE.UPDATE_RECIPE);
 };
+export const getCommentRecipe = async (idCongThuc) => {
+  console.log(apiContants.RECIPE.GET_COMMENT + "/" + idCongThuc)
+  return sendRequest(apiContants.RECIPE.GET_COMMENT + "/" + idCongThuc, "GET");
+};
