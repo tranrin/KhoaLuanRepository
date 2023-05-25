@@ -5,6 +5,7 @@ export default {
     GET_BY_CURRENT_USER: `${process.env.REACT_APP_URL_WEB_SERCVICE}/api/CongThuc/CongThucGetByUserID`,
     SAVE_RECIPE: `${process.env.REACT_APP_URL_WEB_SERCVICE}/api/Collection/AddCollection`,
     UPDATE_RECIPE: `${process.env.REACT_APP_URL_WEB_SERCVICE}/api/CongThuc/CongThucUpdate`,
+    DELETE_SAVED_RECIPE: `${process.env.REACT_APP_URL_WEB_SERCVICE}/api/Collection/DeleteCollection`,
     DELETE_RECIPE: `${process.env.REACT_APP_URL_WEB_SERCVICE}/api/CongThuc/CongThucDelete`,
     GET_DETAILS: `${process.env.REACT_APP_URL_WEB_SERCVICE}/api/CongThuc/CongThucGet`,
     GET_SAVED_RECIPE: `${process.env.REACT_APP_URL_WEB_SERCVICE}/api/Collection/GetCollectionByUserID`,

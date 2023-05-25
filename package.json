@@ -37,6 +37,7 @@
     "react-icons": "^4.8.0",
     "react-router-dom": "^6.9.0",
     "react-scripts": "5.0.1",
+    "react-to-pdf": "^0.0.14",
     "semantic-ui-react": "^2.1.4",
     "styled-components": "^5.3.9",
     "universal-cookie": "^4.0.4",

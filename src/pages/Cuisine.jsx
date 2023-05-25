@@ -8,11 +8,14 @@ function Cuisine() {
   const [cuisine, setCuisine] = useState([]);
   const getCuisine = async (idCategory) => {
     const data = await fetch(
-      process.env.REACT_APP_URI_Local + 'api/CongThuc/CongThucGetsByCategory/' + idCategory,
-      // {
-        // headers:{
-        //               "ngrok-skip-browser-warning": "69420"
-        //      }     }
+      process.env.REACT_APP_URI_Local +
+        "api/CongThuc/CongThucGetsByCategory/" +
+        idCategory,
+      {
+        headers: {
+          "ngrok-skip-browser-warning": "69420",
+        },
+      },
     );
     const recipes = await data.json();
     console.log(recipes);
@@ -33,7 +36,10 @@ function Cuisine() {
           return (
             <Card key={item.id}>
               <Link to={"/recipe/" + item.id}>
-                <img src={ process.env.REACT_APP_URI_Local + item.anhKemTheo} alt={item.tenCongThuc} />
+                <img
+                  src={process.env.REACT_APP_URI_Local + item.anhKemTheo}
+                  alt={item.tenCongThuc}
+                />
                 <h4>{item.tenCongThuc}</h4>
               </Link>
             </Card>

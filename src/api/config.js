@@ -18,7 +18,7 @@ const BAD_REQUEST_ERROR = [400, 422];
 const WRONG_URL_ERROR = [404];
 
 const getAPIConfig = (isCrawlingAPI) => {
-  const token = Utils.getSavedToken();
+  const token = localStorage.getItem("token");
   // const validateToken = Utils.checkTokenLifeTime(token);
   // if (!validateToken) return;
   // const BASE_URL = isCrawlingAPI
@@ -34,10 +34,7 @@ const getAPIConfig = (isCrawlingAPI) => {
     // mode: "cors",
   });
 
-  api.setHeader(
-    "Authorization",
-    `bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6InRyYW5uZ29jcmluMTJAZ21haWwuY29tIiwiZXhwIjoxNjg1MDI4NDg0LCJpc3MiOiJodHRwOi8vcmVjaXBlZm9vZGFwaS5jb20vIiwiYXVkIjoiaHR0cDovL3JlY2lwZWZvb2RhcGkuY29tLyJ9.-HUWgTT4kqSetNlelSqXZ7Lx-Pp4bBrxZpSja2fJe8o`,
-  );
+  api.setHeader("Authorization", `bearer ${token}`);
   // if (lang) api.setHeader("lang", lang);
   return api;
 };
