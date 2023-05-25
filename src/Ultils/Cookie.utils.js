@@ -19,7 +19,6 @@ const saveToken = (token) => {
 
 const getSavedToken = () => {
   const token = cookies.get(COOKIE_KEYS.SAVED_SECURE_TOKEN);
-  console.log(token);
   return token;
 };
 

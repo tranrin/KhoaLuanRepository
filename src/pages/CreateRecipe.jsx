@@ -197,7 +197,6 @@ const CreateRecipe = () => {
   };
 
   const handleChangeInput = (e, name) => {
-    console.log(name);
     if (name === "prepareHours") {
       setPrepareHours(e.target.value);
     }

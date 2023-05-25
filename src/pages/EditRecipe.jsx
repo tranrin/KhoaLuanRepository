@@ -130,10 +130,7 @@ const EditRecipe = () => {
             ...payload,
             thongTinChung: {
               ...payload.thongTinChung,
-              anhKemTheo: payload?.thongTinChung?.anhKemTheo.replaceAll(
-                "C:\\fakepath\\",
-                "",
-              ),
+              anhKemTheo: payload?.thongTinChung?.anhKemTheo,
             },
           });
           await updateRecipe(payload).then((data) => {
@@ -168,51 +165,61 @@ const EditRecipe = () => {
   useEffect(() => {
     getDetailsRecipeToUpdate(param.id).then((payload) => {
       setPayload(payload?.data);
+      setStepMethodPayload(payload?.data?.buocNau);
+      setIngredientPayload(payload?.data?.nguyenLieu);
+      const timePre = convertMinutesToHoursAndMinutes(
+        payload?.data?.thongTinChung?.thoiGianChuanBi,
+      );
+      console.log(payload?.data?.thongTinChung?.thoiGianChuanBi);
+      const timeCook = convertMinutesToHoursAndMinutes(
+        payload?.data?.thongTinChung?.thoiGianNau,
+      );
+      setPrepareHours(timePre.hours);
+      setPrepareMin(timePre.minutes);
+      setCookHours(timeCook.hours);
+      setCookMin(timeCook.minutes);
     });
   }, []);
 
-  useEffect(() => {
-    const timePre = convertMinutesToHoursAndMinutes(
-      payload?.thongTinChung?.thoiGianChuanBi,
-    );
-    const timeCook = convertMinutesToHoursAndMinutes(
-      payload?.thongTinChung?.thoiGianNau,
-    );
-    setPrepareHours(timePre.hours);
-    setPrepareMin(timePre.minutes);
-    setCookHours(timeCook.hours);
-    setCookMin(timeCook.minutes);
-    setStepMethodPayload(payload?.buocNau);
-    setIngredientPayload(payload?.nguyenLieu);
-  }, [payload]);
-
   const handleRemoveItem = (indexToRemove, name) => {
-    if (name === "ingredientPayload")
-      setIngredientPayload((prevPayload) => {
-        return prevPayload.filter((_, index) => index !== indexToRemove);
+    if (name === "ingredientPayload") {
+      const newPayload = ingredientPayload.filter((item, index) => {
+        return index !== indexToRemove;
       });
-    if (name === "methodPayload")
-      setStepMethodPayload((prevPayload) => {
-        return prevPayload.filter((_, index) => index !== indexToRemove);
+      setIngredientPayload(newPayload);
+      setPayload({
+        ...payload,
+        ...payload.thongTinChung,
+        nguyenLieu: newPayload,
       });
+    }
+    if (name === "methodPayload") {
+      const newPayload = stepMethodPayload.filter((item, index) => {
+        return index !== indexToRemove;
+      });
+      setStepMethodPayload(newPayload);
+      setPayload({
+        ...payload,
+        ...payload.thongTinChung,
+        buocNau: newPayload,
+      });
+    }
   };
 
   const handleChangeIngredient = (index) => (event) => {
     const { name, value } = event.target;
-
     setIngredientPayload((prevPayload) => {
       const newPayload = [...prevPayload];
       newPayload[index] = {
         ...newPayload[index],
         [name]: value,
       };
-
+      setPayload({
+        ...payload,
+        ...payload.thongTinChung,
+        nguyenLieu: newPayload,
+      });
       return newPayload;
-    });
-
-    setPayload({
-      ...payload,
-      nguyenLieu: ingredientPayload,
     });
   };
 
@@ -225,15 +232,18 @@ const EditRecipe = () => {
         ...newPayload[index],
         [name]: value,
       };
+      setPayload({
+        ...payload,
+        ...payload.thongTinChung,
+        buocNau: newPayload,
+      });
       return newPayload;
-    });
-    setPayload({
-      ...payload,
-      buocNau: stepMethodPayload,
     });
   };
 
   const handleChangeInput = (e, name) => {
+    console.log(payload);
+    console.log(cookHours * 60 + cookMin);
     if (name === "prepareHours") {
       setPrepareHours(e.target.value);
     }
@@ -405,15 +415,14 @@ const EditRecipe = () => {
                       <Select
                         labelId="demo-simple-select-label"
                         id="demo-simple-select"
+                        value={prepareHours}
                         label="Hours"
                         name="prepareHours"
-                        // defaultValue={3}
-                        value={prepareHours}
                         onChange={(e) => handleChangeInput(e, "prepareHours")}>
                         {HOURS &&
                           HOURS.map((hour, i) => {
                             return (
-                              <MenuItem value={prepareHours} key={i}>
+                              <MenuItem value={hour} key={i}>
                                 {hour} hours
                               </MenuItem>
                             );
@@ -438,7 +447,7 @@ const EditRecipe = () => {
                         {MINS &&
                           MINS.map((hour, i) => {
                             return (
-                              <MenuItem value={prepareMin} label="Mins" key={i}>
+                              <MenuItem value={hour} key={i}>
                                 {hour} mins
                               </MenuItem>
                             );
@@ -459,16 +468,15 @@ const EditRecipe = () => {
                       <Select
                         labelId="demo-simple-select-label"
                         id="demo-simple-select"
-                        // value={Hours}
+                        value={cookHours}
                         label="Hours"
                         name="cookHours"
-                        value={cookHours}
                         onChange={(e) => handleChangeInput(e, "cookHours")}>
                         {HOURS &&
                           HOURS.map((hour, i) => {
                             return (
-                              <MenuItem value={cookHours} key={i}>
-                                {hour} mins
+                              <MenuItem value={hour} key={i}>
+                                {hour} hours
                               </MenuItem>
                             );
                           })}
@@ -484,13 +492,13 @@ const EditRecipe = () => {
                         labelId="demo-simple-select-label"
                         id="demo-simple-select"
                         label="Mins"
-                        name="cookMins"
                         value={cookMin}
+                        name="cookMins"
                         onChange={(e) => handleChangeInput(e, "cookMins")}>
                         {MINS &&
                           MINS.map((hour, i) => {
                             return (
-                              <MenuItem value={cookMin} key={i}>
+                              <MenuItem value={hour} key={i}>
                                 {hour} mins
                               </MenuItem>
                             );
