@@ -17,6 +17,7 @@ const Comments = ({ commentsUrl, currentUserId, CongThucId }) => {
   const [backendComments, setBackendComments] = useState([]);
   const [activeComment, setActiveComment] = useState(null);
   const rootComments = backendComments;
+  const [loadComments, setLoadComments] = useState(null)
   // .filter(
   //   (backendComment) => backendComment.parentId === null,
   // );
@@ -72,17 +73,7 @@ const Comments = ({ commentsUrl, currentUserId, CongThucId }) => {
 
     return commentElement;
   }
-  const sendMessage = (message) => {
-    //console.log(message)
-    if (connectionRef.current && connectionRef.current.state === "Connected") {
-      connectionRef.current
-        .invoke("SendOffersToUser", message)
-        .then((data) => {})
-        .catch((error) => {
-          console.error("Failed to send message: ", error);
-        });
-    }
-  };
+
   const handleSendMessage = () => {
     const message = {
       CongThucId:CongThucId,
@@ -90,7 +81,7 @@ const Comments = ({ commentsUrl, currentUserId, CongThucId }) => {
       ParentId: null,
     }; // Your message content
     console.log("handleSendMessage");
-    sendMessage(message);
+  //  sendMessage(message);
   };
 
   const updateComment = (text, commentId) => {
@@ -147,15 +138,16 @@ const Comments = ({ commentsUrl, currentUserId, CongThucId }) => {
         console.error("Failed to connect to SignalR server: ", error);
       });
     connectionRef.current.on("ReceiveMessage", (data) => {
+      setLoadComments(data);
       // Gọi hàm xử lý sự kiện truyền vào từ props
-      let dataMessage = data.value;
+      let dataMessage = data;
       console.log(dataMessage, "dataMessage");
-      addComment(
-        dataMessage.content,
-        dataMessage.parentId,
-        dataMessage.idCongThuc,
-        dataMessage.idUser,
-      );
+      // addComment(
+      //   dataMessage.content,
+      //   dataMessage.parentId,
+      //   dataMessage.idCongThuc,
+      //   dataMessage.idUser,
+      // );
 
       console.log(data, "sended message");
     });
@@ -172,18 +164,20 @@ const Comments = ({ commentsUrl, currentUserId, CongThucId }) => {
       console.log(data.data, "data");
       setBackendComments(data.data);
     });
-  }, []);
+  }, [loadComments]);
 
   return (
     <div className="comments">
       <h3 className="comments-title">Comments</h3>
       <div className="comment-form-title">Write comment</div>
-      <CommentForm submitLabel="Write" handleSubmit={handleSendMessage} />
+      <CommentForm submitLabel="Write"  dataComment={CongThucId} dataUseRef={connectionRef.current}/>
       <div className="comments-container">
         {rootComments.map((rootComment) => {
         
           return(
           <Comment
+           dataComment={CongThucId}
+            loadComment ={connectionRef.current}
             key={rootComment.id}
             comment={rootComment}
             replies={getReplies(rootComment.id)}
@@ -193,6 +187,7 @@ const Comments = ({ commentsUrl, currentUserId, CongThucId }) => {
             deleteComment={deleteComment}
             updateComment={updateComment}
             currentUserId={currentUserId}
+            parentId={rootComment.id}
           />)
           })}
       </div>

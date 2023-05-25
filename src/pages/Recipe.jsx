@@ -22,6 +22,7 @@ import { LoadingButton } from "@mui/lab";
 import Ultils from "../Ultils";
 import PrintToPDF from "../components/PrintPDF";
 function Recipe() {
+
   let params = useParams();
   const [details, setDetails] = useState({});
   const [activeTab, setActiveTab] = useState("instructions");
@@ -67,7 +68,7 @@ function Recipe() {
     getDetailsRecipe(params.name).then((payload) => {
       console.log(payload.data.danhGiaByUserId)
 
-        setRatingByUser(payload.data.danhGiaByUserId.sao + 1)
+        //setRatingByUser(payload.data.danhGiaByUserId.sao + 1)
       setRating(payload?.data?.thongTinChung?.saoTrungBinh);
       setDetails(payload.data);
     });
@@ -97,7 +98,7 @@ function Recipe() {
     <>
       <DetailWrapper>
         <div>
-          <PrintToPDF handleClose={() => setOpen(false)} isOpen={open} />
+          <PrintToPDF handleClose={() => setOpen(false)} isOpen={open} Data={details}/>
 
           <h2>{details?.thongTinChung?.tenCongThuc}</h2>
           {/* <img> src={details.img}</img> */}

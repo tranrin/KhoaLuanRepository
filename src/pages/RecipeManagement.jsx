@@ -32,6 +32,7 @@ const RecipeManagement = () => {
   useEffect(() => {
     const listRecipeUser = getRecipeWithUser();
     listRecipeUser.then((list) => {
+      console.log(list,"list")
       return setMyRecipe(list.data);
     });
   }, []);
@@ -39,6 +40,7 @@ const RecipeManagement = () => {
   useEffect(() => {
     const listSavedRecipeUser = getSavedRecipe();
     listSavedRecipeUser.then((list) => {
+
       return setSavedRecipe(list.data);
     });
   }, []);
@@ -309,14 +311,15 @@ const RecipeManagement = () => {
                                 justifyContent: "center",
                                 alignItems: "center       ",
                               }}>
-                              <Rating
+                                  <Rating
                                 readOnly
                                 name="half-rating"
-                                defaultValue={3}
+                                defaultValue={item?.saoTrungBinh || null}
+                                value={item?.saoTrungBinh || null}
                               />{" "}
                               <Typography sx={{ fontWeight: 600 }} variant="p">
-                                {" "}
-                                7 Ratings
+                                {console.log(item?.saoTrungBinh)}
+                                {item?.tongSoLuong} Ratings
                               </Typography>
                             </Box>
                           </Link>

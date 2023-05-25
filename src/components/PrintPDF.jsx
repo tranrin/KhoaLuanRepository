@@ -22,7 +22,8 @@ const FAKE_INGREDIENT = ["1 Ca", "1 Thit", "2 KG Suong Bo", "Mau me"];
 
 const FAKE_METHOD = ["Bat nuoc", "Luoc Ca", "Ngam Suong", "Nem Mau me"];
 
-const PrintToPDF = ({ isOpen, handleClose }) => {
+const PrintToPDF = ({ isOpen, handleClose, Data }) => {
+  console.log(Data,"data")
   const createPDF = async () => {
     const pdf = new jsPDF("portrait", "pt", "a4");
     const img =
@@ -35,10 +36,13 @@ const PrintToPDF = ({ isOpen, handleClose }) => {
     const imgData = canvas.toDataURL(
       "https://images.immediate.co.uk/production/volatile/sites/30/2020/08/chorizo-mozarella-gnocchi-bake-cropped-9ab73a3.jpg?quality=90&resize=556,505",
     );
+    var img1 = new Image()
+    img1.src = process.env.REACT_APP_URI_Local + Data.thongTinChung?.anhKemTheo 
+
     const pdfWidth = pdf.internal.pageSize.getWidth();
     const pdfHeight = (imgProperties.height * pdfWidth) / imgProperties.width;
     // Add the image to the PDF
-    pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+    pdf.addImage(imgData, "JPG", 0, 0, pdfWidth, pdfHeight);
     pdf.save("output.pdf");
   };
 
@@ -86,7 +90,7 @@ const PrintToPDF = ({ isOpen, handleClose }) => {
                           fontWeight: 600,
                         }}
                         caption>
-                        ngocrin
+              
                       </Typography>
                     </Typography>
                     <Typography
@@ -94,7 +98,10 @@ const PrintToPDF = ({ isOpen, handleClose }) => {
                       variant="h1">
                       food
                     </Typography>
+        
+                    
                   </Grid>
+                  
                   <Grid item xs={12} md={5} lg={5}>
                     <img
                       width={"100%"}
@@ -102,6 +109,39 @@ const PrintToPDF = ({ isOpen, handleClose }) => {
                         "https://images.immediate.co.uk/production/volatile/sites/30/2020/08/chorizo-mozarella-gnocchi-bake-cropped-9ab73a3.jpg?quality=90&resize=556,505"
                       }
                     />
+                  </Grid>
+                </Grid>
+              </Grid>
+              <Grid item xs={12} md={12} lg={12}>
+                <Grid spacing={2} container xs={12} md={12} lg={12}>
+                <Grid
+                    sx={{
+                      fontSize: 12,
+                      fontWeight: 600,
+                    }}
+                   >
+                    <Typography
+                      sx={{
+                        fontSize: 24,
+                        color: "#285d5d",
+                        fontWeight: 600,
+                        margin: 2
+                      }}
+                      variant="body1">
+                       Recipe name :      <span>{Data  ?  Data.thongTinChung?.tenCongThuc : ''  }</span>
+                    </Typography>
+               
+                        <Typography
+                          sx={{
+                            fontSize: 16,
+                            fontWeight: 500,
+                            corlo: "#000",
+                            marginLeft: 5
+                          }}
+                          variant="caption">
+                          Description:
+                        </Typography>   
+                        {Data ? Data.thongTinChung?.moTa : null }             
                   </Grid>
                 </Grid>
               </Grid>
@@ -117,7 +157,7 @@ const PrintToPDF = ({ isOpen, handleClose }) => {
                       variant="body1">
                       Ingredient
                     </Typography>
-                    {FAKE_INGREDIENT.map((item, index) => (
+                    {Data ? null : Data?.nguyenLieu?.map((item, index) => (
                       <Stack
                         sx={{
                           borderBottom: "1px solid #ccc",
@@ -128,7 +168,7 @@ const PrintToPDF = ({ isOpen, handleClose }) => {
                             fontWeight: 500,
                           }}
                           variant="caption">
-                          {item}
+                          {item.tenNguyenLieu}
                         </Typography>
                       </Stack>
                     ))}
@@ -151,7 +191,7 @@ const PrintToPDF = ({ isOpen, handleClose }) => {
                       variant="body1">
                       Method
                     </Typography>
-                    {FAKE_METHOD.map((item, index) => (
+                    {Data ? null :Data.buocNau.map((item, index) => (
                       <Stack>
                         <Typography
                           sx={{
@@ -160,13 +200,45 @@ const PrintToPDF = ({ isOpen, handleClose }) => {
                             corlo: "#000",
                           }}
                           variant="caption">
-                          {item}
+                          {item.moTa}
                         </Typography>
                       </Stack>
                     ))}
                   </Grid>
                 </Grid>
               </Grid>
+              <Grid item xs={12} md={12} lg={12}>
+                <Grid spacing={2} container xs={12} md={12} lg={12}>
+                  <Grid item xs={12} md={4} lg={4}>
+                    <Typography
+                      sx={{
+                        fontSize: 24,
+                        color: "#285d5d",
+                        fontWeight: 600,
+                      }}
+                      variant="body1">
+              
+                    </Typography>
+                    {Data?.nguyenLieu?.map((item, index) => (
+                      <Stack
+                        sx={{
+                          borderBottom: "1px solid #ccc",
+                        }}>
+                        <Typography
+                          sx={{
+                            fontSize: 16,
+                            fontWeight: 500,
+                          }}
+                          variant="caption">
+                          {item.tenNguyenLieu}
+                        </Typography>
+                      </Stack>
+                    ))}
+                  </Grid>
+                 
+                </Grid>
+              </Grid>
+            
             </Grid>
           </div>
           <Button onClick={createPDF}>Download</Button>

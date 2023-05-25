@@ -4,6 +4,8 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { StyledEngineProvider } from '@mui/material/styles';
 
 const Comment = ({
+  dataComment,
+  loadComment,
   comment,
   replies,
   setActiveComment,
@@ -11,7 +13,7 @@ const Comment = ({
   updateComment,
   deleteComment,
   addComment,
-  parentId = null,
+  parentId ,
   currentUserId,
 }) => {
   const isEditing =
@@ -28,7 +30,7 @@ const Comment = ({
     currentUserId === comment.userId && replies.length === 0 && !timePassed;
   const canReply = Boolean(currentUserId);
   const canEdit = currentUserId === comment.userId && !timePassed;
-  const replyId = parentId ? parentId : comment.id;
+  const replyId = parentId ? parentId : comment.ID;
   const createdAt = new Date(comment.dateCreate).toLocaleDateString();
   return (
     <div key={comment.id} className="comment">
@@ -50,6 +52,9 @@ const Comment = ({
         {!isEditing && <div className="comment-text">{comment.content}</div>}
         {isEditing && (
           <CommentForm
+          parentId={parentId}
+          dataComment={dataComment}
+          dataUseRef={loadComment}
             submitLabel="Update"
             hasCancelButton
             initialText={comment.body}
@@ -60,6 +65,7 @@ const Comment = ({
           />
         )}
         <div className="comment-actions">
+          
           {canReply && (
             <div
               className="comment-action"
@@ -88,6 +94,10 @@ const Comment = ({
         </div>
         {isReplying && (
           <CommentForm
+          parentId={parentId}
+          dataComment={dataComment}
+          dataUseRef={loadComment}
+
             submitLabel="Reply"
             handleSubmit={(text) => addComment(text, replyId)}
           />
@@ -103,9 +113,11 @@ const Comment = ({
                 updateComment={updateComment}
                 deleteComment={deleteComment}
                 addComment={addComment}
-                parentId={comment.id}
+                parentId={parentId}
                 replies={[]}
                 currentUserId={currentUserId}
+                dataComment={dataComment}
+                loadComment ={loadComment}
               />
             ))}
           </div>
