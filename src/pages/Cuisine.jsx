@@ -2,6 +2,9 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { motion } from "framer-motion";
 import { Link, useParams } from "react-router-dom";
+import { Typography } from "@mui/material";
+import Box from "@mui/material/Box";
+import { Rating } from "@mui/material";
 
 function Cuisine() {
   let params = useParams();
@@ -39,7 +42,24 @@ function Cuisine() {
                 <img
                   src={process.env.REACT_APP_URI_Local + item.anhKemTheo}
                   alt={item.tenCongThuc}
-                />
+                />   <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center       ",
+                }}>
+                    <Rating
+                  readOnly
+                  name="half-rating"
+                  defaultValue={item?.saoTrungBinh || null}
+                  value={item?.saoTrungBinh || null}
+                />{" "}
+                 <Typography sx={{ fontWeight: 600 }} variant="p">
+                                {console.log(item?.saoTrungBinh)}
+                                {item?.tongSoLuong} Ratings
+                              </Typography>
+              </Box>
+                         
                 <h4>{item.tenCongThuc}</h4>
               </Link>
             </Card>

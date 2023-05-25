@@ -24,14 +24,14 @@ import { gapi } from "gapi-script";
 import LanguagePopover from "../Language/LanguagePopover";
 import { useState } from "react";
 const pages = [];
-
+const ImageUser = localStorage.getItem("imageUser");
 const settings = ["Profile", "Recipe", "Logout", ""];
 const clientId = process.env.REACT_APP_GOOGLE_CLIENTID;
 function Navbar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const [token, setToken] = React.useState("");
-  const [imageUser, setImageUser] = React.useState("");
+  const [imageUser, setImageUser] = React.useState(ImageUser);
   const [open, setOpen] = useState(null);
   const navigate = useNavigate();
   const handleOpenNavMenu = (event) => {
@@ -53,6 +53,7 @@ function Navbar() {
     setOpen(null);
     if (setting === "Logout") {
       localStorage.removeItem("token");
+      localStorage.removeItem("imageUser");
       const token = localStorage.getItem("token");
       // console.log(token);
       setToken(token);
@@ -88,7 +89,7 @@ function Navbar() {
     setToken(token);
   }, [token]);
   const onSuccess = async (res) => {
-   window.location.reload();
+   //window.location.reload();
    
 
     if (res.tokenId) {
