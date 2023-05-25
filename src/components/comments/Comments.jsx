@@ -166,11 +166,12 @@ const Comments = ({ commentsUrl, currentUserId, CongThucId }) => {
   }, [token]);
 
 
-    console.log(CongThucId)
+  useEffect(() => {
     console.log(CongThucId);
-      console.log(data.data,"data")
+    getCommentRecipe(CongThucId).then((data) => {
       console.log(data.data, "data");
       setBackendComments(data.data);
+    });
   }, []);
 
   return (
@@ -181,7 +182,7 @@ const Comments = ({ commentsUrl, currentUserId, CongThucId }) => {
       <div className="comments-container">
         {rootComments.map((rootComment) => {
         
-        console.log(rootComment,"rootComment")
+          return(
           <Comment
             key={rootComment.id}
             comment={rootComment}

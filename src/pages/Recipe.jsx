@@ -30,7 +30,7 @@ function Recipe() {
   const [isRating, setIsRating] = useState(0);
   const [isSaved, setIsSaved] = useState(false);
   const [rating, setRating] = useState();
-
+  const [ratingByUser, setRatingByUser] = useState(0)
   const handleSaveRecipe = () => {
     setIsLoading(true);
     saveRecipe({
@@ -55,6 +55,7 @@ function Recipe() {
       congThucID: params.name,
     }).then(async () => {
       await getDetailsRecipe(params.name).then((payload) => {
+     
         setRating(payload?.data?.thongTinChung?.saoTrungBinh);
         // setIsRating(payload.data.thongTinChung.saoTrungBinh)
       });
@@ -62,6 +63,9 @@ function Recipe() {
   };
   useEffect(() => {
     getDetailsRecipe(params.name).then((payload) => {
+      console.log(payload.data.danhGiaByUserId)
+
+        setRatingByUser(payload.data.danhGiaByUserId.sao + 1)
       setRating(payload?.data?.thongTinChung?.saoTrungBinh);
       setDetails(payload.data);
     });
@@ -226,6 +230,7 @@ function Recipe() {
         <Typography variant="h4">Your rating</Typography>
         <Box>
           <Rating
+            defaultValue={ratingByUser}
             onChange={(event, newValue) => {
               handleRating(newValue);
             }}
