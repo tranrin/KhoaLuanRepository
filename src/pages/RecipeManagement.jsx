@@ -11,11 +11,12 @@ import { useEffect } from "react";
 import IconButton from "@mui/material/IconButton";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
+import ScatterPlotIcon from "@mui/icons-material/ScatterPlot";
 import { Link, useNavigate } from "react-router-dom";
 import RoundButton from "../components/RoundedButton";
 import {
   deleteRecipe,
+  deleteSavedRecipe,
   getRecipeWithUser,
   getSavedRecipe,
 } from "../api/recipe.api";
@@ -24,26 +25,7 @@ const RecipeManagement = () => {
   const [value, setValue] = React.useState(2);
   const options = value === 1 ? ["Unsave"] : ["Edit", "Remove"];
   const navigate = useNavigate();
-  const [savedRecipe, setSavedRecipe] = React.useState([
-    {
-      recipeName: "Test",
-      image:
-        "https://www.shutterstock.com/image-photo/surreal-image-african-elephant-wearing-260nw-1365289022.jpg",
-      rating: 4,
-    },
-    {
-      recipeName: "Test",
-      image:
-        "https://www.shutterstock.com/image-photo/surreal-image-african-elephant-wearing-260nw-1365289022.jpg",
-      rating: 4,
-    },
-    {
-      recipeName: "Test",
-      image:
-        "https://www.shutterstock.com/image-photo/surreal-image-african-elephant-wearing-260nw-1365289022.jpg",
-      rating: 4,
-    },
-  ]);
+  const [savedRecipe, setSavedRecipe] = React.useState([]);
 
   const [myRecipe, setMyRecipe] = React.useState([]);
   const [anchorEl, setAnchorEl] = React.useState();
@@ -55,8 +37,8 @@ const RecipeManagement = () => {
   }, []);
 
   useEffect(() => {
-    const listRecipeUser = getSavedRecipe();
-    listRecipeUser.then((list) => {
+    const listSavedRecipeUser = getSavedRecipe();
+    listSavedRecipeUser.then((list) => {
       return setSavedRecipe(list.data);
     });
   }, []);
@@ -68,6 +50,13 @@ const RecipeManagement = () => {
   const handleClose = (e, option, id) => {
     if (option === "Edit") {
       navigate("/edit-recipe/" + id);
+    }
+    if (option === "Unsave") {
+      deleteSavedRecipe(id).then(async () => {
+        await getSavedRecipe().then((list) => {
+          setSavedRecipe(list.data);
+        });
+      });
     }
 
     if (option === "Remove") {
@@ -158,42 +147,42 @@ const RecipeManagement = () => {
                         <div
                           style={{
                             position: "absolute",
-                            top: 0,
-                            right: 0,
+                            top: 2,
+                            left: 220,
+                            width: "100%",
+                            height: "100%",
                           }}>
-                          <IconButton
-                            aria-label="more"
-                            id="long-button"
-                            aria-controls={open ? "long-menu" : undefined}
-                            aria-expanded={open ? "true" : undefined}
-                            aria-haspopup="true"
-                            onClick={handleClick}>
-                            <MoreVertIcon />
-                          </IconButton>
-                          <Menu
-                            id="long-menu"
-                            MenuListProps={{
-                              "aria-labelledby": "long-button",
+                          <ScatterPlotIcon
+                            sx={{
+                              color: "#fff",
+                              fontWeight: 600,
+                              background: "#ccc",
+                              border: "#000 2px solid",
+                              "&:hover": {
+                                cursor: "pointer",
+                              },
                             }}
+                            id="basic-button"
+                            aria-controls={open ? "basic-menu" : undefined}
+                            aria-haspopup="true"
+                            aria-expanded={open ? "true" : undefined}
+                            onClick={handleClick}
+                          />
+
+                          <Menu
+                            id="basic-menu"
                             anchorEl={anchorEl}
                             open={open}
                             onClose={handleClose}
-                            PaperProps={{
-                              style: {
-                                maxHeight: ITEM_HEIGHT * 4.5,
-                                width: "20ch",
-                              },
+                            MenuListProps={{
+                              "aria-labelledby": "basic-button",
                             }}>
-                            {options.map((option) => (
-                              <MenuItem
-                                key={option}
-                                selected={option === "Unsave"}
-                                onClick={(e) =>
-                                  handleClose(e, option, item.id)
-                                }>
-                                {option}
-                              </MenuItem>
-                            ))}
+                            <MenuItem
+                              onClick={(e) =>
+                                handleClose(e, "Unsave", item.id)
+                              }>
+                              Unsave
+                            </MenuItem>
                           </Menu>
                         </div>
                         <CardMedia
@@ -226,11 +215,12 @@ const RecipeManagement = () => {
                               <Rating
                                 readOnly
                                 name="half-rating"
-                                defaultValue={3}
+                                defaultValue={item?.soSaoTrungBinh || null}
+                                value={item?.soSaoTrungBinh || null}
                               />{" "}
                               <Typography sx={{ fontWeight: 600 }} variant="p">
-                                {" "}
-                                7 Ratings
+                                {console.log(item?.soSaoTrungBinh)}
+                                {item?.soNguoiDanhGia} Ratings
                               </Typography>
                             </Box>
                           </Link>
@@ -251,31 +241,35 @@ const RecipeManagement = () => {
                         <div
                           style={{
                             position: "absolute",
-                            top: 0,
-                            right: 0,
+                            top: 2,
+                            left: 220,
+                            width: "100%",
+                            height: "100%",
                           }}>
-                          <IconButton
-                            aria-label="more"
-                            id="long-button"
-                            aria-controls={open ? "long-menu" : undefined}
-                            aria-expanded={open ? "true" : undefined}
-                            aria-haspopup="true"
-                            onClick={handleClick}>
-                            <MoreVertIcon />
-                          </IconButton>
-                          <Menu
-                            id="long-menu"
-                            MenuListProps={{
-                              "aria-labelledby": "long-button",
+                          <ScatterPlotIcon
+                            sx={{
+                              color: "#fff",
+                              fontWeight: 600,
+                              background: "#ccc",
+                              border: "#000 2px solid",
+                              "&:hover": {
+                                cursor: "pointer",
+                              },
                             }}
+                            id="basic-button"
+                            aria-controls={open ? "basic-menu" : undefined}
+                            aria-haspopup="true"
+                            aria-expanded={open ? "true" : undefined}
+                            onClick={handleClick}
+                          />
+
+                          <Menu
+                            id="basic-menu"
                             anchorEl={anchorEl}
                             open={open}
                             onClose={handleClose}
-                            PaperProps={{
-                              style: {
-                                maxHeight: ITEM_HEIGHT * 4.5,
-                                width: "20ch",
-                              },
+                            MenuListProps={{
+                              "aria-labelledby": "basic-button",
                             }}>
                             <MenuItem
                               onClick={(e) => handleClose(e, "Edit", item.id)}>

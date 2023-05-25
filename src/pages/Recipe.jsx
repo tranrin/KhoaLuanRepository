@@ -19,7 +19,8 @@ import {
   saveRecipe,
 } from "../api/recipe.api";
 import { LoadingButton } from "@mui/lab";
-
+import Ultils from "../Ultils";
+import PrintToPDF from "../components/PrintPDF";
 function Recipe() {
   let params = useParams();
   const [details, setDetails] = useState({});
@@ -27,10 +28,15 @@ function Recipe() {
   const [idRecipe, setIdRecipe] = useState();
   const [isLoading, setIsLoading] = useState(false);
   const [listSavedRecipe, setlistSavedRecipe] = useState([]);
-  const [isRating, setIsRating] = useState(0);
+  const [open, setOpen] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
   const [rating, setRating] = useState();
-  const [ratingByUser, setRatingByUser] = useState(0)
+  const [tokenValue, setTokenValue] = useState(localStorage.getItem("token"));
+  useEffect(() => {
+    console.log("Token value:", tokenValue);
+    // setTokenValue(tokenValue);
+  }, [tokenValue]);
+
   const handleSaveRecipe = () => {
     setIsLoading(true);
     saveRecipe({
@@ -46,10 +52,6 @@ function Recipe() {
   };
   useEffect(() => {}, [params.name]);
   const handleRating = async (newValue) => {
-    console.log({
-      sao: newValue,
-      congThucID: parseInt(params.name),
-    });
     await ratingRecipe({
       sao: newValue,
       congThucID: params.name,
@@ -72,6 +74,13 @@ function Recipe() {
   }, [rating]);
 
   useEffect(() => {
+    getDetailsRecipe(params.name).then((payload) => {
+      setRating(payload?.data?.thongTinChung?.saoTrungBinh);
+      setDetails(payload.data);
+    });
+  }, [tokenValue]);
+
+  useEffect(() => {
     getSavedRecipe().then((payload) => {
       setlistSavedRecipe(payload.data);
     });
@@ -88,6 +97,8 @@ function Recipe() {
     <>
       <DetailWrapper>
         <div>
+          <PrintToPDF handleClose={() => setOpen(false)} isOpen={open} />
+
           <h2>{details?.thongTinChung?.tenCongThuc}</h2>
           {/* <img> src={details.img}</img> */}
 
@@ -144,7 +155,7 @@ function Recipe() {
                 </>
               )}
             </LoadingButton>
-            <Button variant="contained">
+            <Button onClick={() => setOpen(true)} variant="contained">
               {" "}
               <LocalPrintshopIcon /> Print
             </Button>
@@ -230,7 +241,7 @@ function Recipe() {
         <Typography variant="h4">Your rating</Typography>
         <Box>
           <Rating
-            defaultValue={ratingByUser}
+            disabled={tokenValue === null}
             onChange={(event, newValue) => {
               handleRating(newValue);
             }}
@@ -240,6 +251,15 @@ function Recipe() {
             name="half-rating"
           />{" "}
         </Box>
+        {tokenValue === null ? (
+          <Typography
+            sx={{
+              color: "red",
+            }}
+            variant="caption">
+            You must login to rating
+          </Typography>
+        ) : null}
       </Box>
       <Container
         style={{ margin: 20, borderTop: "solid 2px #ccc", padding: 12 }}>

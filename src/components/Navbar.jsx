@@ -18,15 +18,15 @@ import styled from "@emotion/styled";
 import { GiKnifeFork } from "react-icons/gi";
 import Search from "./Search";
 import Category from "./Category";
-import GoogleLogin from 'react-google-login';
+import GoogleLogin from "react-google-login";
 import { useEffect } from "react";
-import { gapi } from 'gapi-script';
+import { gapi } from "gapi-script";
 import LanguagePopover from "../Language/LanguagePopover";
 import { useState } from "react";
 const pages = [];
 
 const settings = ["Profile", "Recipe", "Logout", ""];
-const clientId = process.env.REACT_APP_GOOGLE_CLIENTID 
+const clientId = process.env.REACT_APP_GOOGLE_CLIENTID;
 function Navbar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
@@ -41,7 +41,7 @@ function Navbar() {
   };
   const handleClose = () => {
     //  navigate("/dashboard/profile");
-   console.log("check")
+    console.log("check");
     setOpen(null);
   };
   const handleOpenUserMenu = (event) => {
@@ -52,7 +52,7 @@ function Navbar() {
     setOpen(null);
     if (setting === "Logout") {
       localStorage.removeItem("token");
-       const token = localStorage.getItem("token");
+      const token = localStorage.getItem("token");
       // console.log(token);
       setToken(token);
       navigate("/home");
@@ -66,11 +66,6 @@ function Navbar() {
     }
   };
 
-  const handleLogin = () => {
-    localStorage.setItem("token", "token");
-    const token = localStorage.getItem("token");
-    setToken(token);
-  };
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
   };
@@ -78,48 +73,52 @@ function Navbar() {
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
-  useEffect(()=>{
-    function start (){
+  useEffect(() => {
+    function start() {
       gapi.client.init({
         clientId: clientId,
-        scope: ""
-      })
-    };
-    gapi.load('client:auth2',start)
-})
+        scope: "",
+      });
+    }
+    gapi.load("client:auth2", start);
+  });
   React.useEffect(() => {
     const token = localStorage.getItem("token");
     setToken(token);
   }, [token]);
-  const onSuccess =async (res)=>{
-    console.log("Login success!", res)
- 
-    if (res.tokenId) {  
-  const testAutho = async()=>{
-    let api =await fetch(process.env.REACT_APP_URI_Local + 'api/User/userLogin'  
-    ,{method: "POST",
-    body:JSON.stringify({
-    IdToken: res.tokenId
-  })
-    ,headers: {
-      "Content-type": "application/json; charset=UTF-8"
-    }})
-    let token = ''
-    token = await api.text();
-    console.log("token",token);
-    localStorage.setItem("token",token);
-    setToken(token);
-  }
-  testAutho()
-    }
-  }
-  const onFalure = (res)=>{
-    console.log("Login Fail!", res)
-  }
+  const onSuccess = async (res) => {
+    window.location.reload();
+    console.log("Login success!", res);
+
+    if (res.tokenId) {
+      const testAutho = async () => {
+        let api = await fetch(
+          process.env.REACT_APP_URI_Local + "api/User/userLogin",
+          {
+            method: "POST",
+            body: JSON.stringify({
+              IdToken: res.tokenId,
+            }),
+            headers: {
+              "Content-type": "application/json; charset=UTF-8",
+            },
+          },
+        );
+        let token = "";
+        token = await api.text();
+        console.log("token", token);
+        localStorage.setItem("token", token);
+        setToken(token);
+      };
+      testAutho();
+    }
+  };
+  const onFalure = (res) => {
+    console.log("Login Fail!", res);
+  };
   return (
     <AppBar
       sx={{
-       
         zIndex: 12,
         overflow: "hidden",
         background:
@@ -132,7 +131,6 @@ function Navbar() {
             "linear-gradient(to right bottom, rgb(73, 73, 73), rgb(49, 49, 49))",
         }}
         maxWidth="xl">
-  
         <Toolbar disableGutters>
           {/* <RiceBowlIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} /> */}
           <Typography
@@ -149,7 +147,7 @@ function Navbar() {
               color: "inherit",
               textDecoration: "none",
             }}>
-                           {/* <img src="https://localhost:44337/images\original-62b8a65b3a744b16072a125d9b7774f3.webporiginal-62b8a65b3a744b16072a125d9b7774f3.webp" alt="aloalo" /> */}
+            {/* <img src="https://localhost:44337/images\original-62b8a65b3a744b16072a125d9b7774f3.webporiginal-62b8a65b3a744b16072a125d9b7774f3.webp" alt="aloalo" /> */}
             <Logo Logo to={"/home"}>
               <GiKnifeFork
                 style={{
@@ -166,7 +164,7 @@ function Navbar() {
               </Typography>
             </Logo>
           </Typography>
-             
+
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
             <IconButton
               size="large"
@@ -238,7 +236,7 @@ function Navbar() {
             }}>
             <Category />
             <Search />
-            <LanguagePopover onClose={handleClose}/>
+            <LanguagePopover onClose={handleClose} />
           </Box>
           {token != null ? (
             <Box sx={{ flexGrow: 0 }}>
@@ -283,33 +281,29 @@ function Navbar() {
                 alignItems: "center",
                 justifyContent: "center",
               }}>
-              
-              
               <GoogleLogin
-               render={renderProps => (
-                <>
-                <AccountCircleIcon />
-                <Button color="inherit"  onClick={renderProps.onClick}>
-                Login
-              </Button>
-                </>
+                render={(renderProps) => (
+                  <>
+                    <AccountCircleIcon />
+                    <Button color="inherit" onClick={renderProps.onClick}>
+                      Login
+                    </Button>
+                  </>
 
-              //   <Button id={props.id} fullWidth size="large" color="inherit" variant="outlined" onClick={renderProps.onClick}>
-              //   <Iconify icon="eva:google-fill" color="#DF3E30" width={22} height={22} />
-              
-              // </Button>
-              )}
-              // <GoogleButton id={props.id} onClick={renderProps.onClick} disabled={renderProps.disabled}>Sign in with Google</GoogleButton>
+                  //   <Button id={props.id} fullWidth size="large" color="inherit" variant="outlined" onClick={renderProps.onClick}>
+                  //   <Iconify icon="eva:google-fill" color="#DF3E30" width={22} height={22} />
 
-            //  className='GGButton'
-              clientId={clientId}
-              onSuccess={onSuccess}
-              onFailure={onFalure}
-              cookiePolicy={'single_host_origin'}
-              //isSignedIn={true}
+                  // </Button>
+                )}
+                // <GoogleButton id={props.id} onClick={renderProps.onClick} disabled={renderProps.disabled}>Sign in with Google</GoogleButton>
+
+                //  className='GGButton'
+                clientId={clientId}
+                onSuccess={onSuccess}
+                onFailure={onFalure}
+                cookiePolicy={"single_host_origin"}
+                //isSignedIn={true}
               />
-          
-             
             </Box>
           )}
         </Toolbar>

@@ -22,8 +22,7 @@ function App() {
         <Grid
           sx={{
             position: "fixed",
-            overflow: "hidden",
-            zIndex: 10000,
+            zIndex: 4,
             top: 0,
             left: 0,
             right: 0,

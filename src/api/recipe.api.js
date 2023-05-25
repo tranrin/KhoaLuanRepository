@@ -37,10 +37,13 @@ export const updateRecipe = async (payload) => {
 };
 
 export const deleteRecipe = async (id) => {
-  console.log(apiContants.RECIPE.DELETE_RECIPE + "/" + id);
   return sendRequest(apiContants.RECIPE.DELETE_RECIPE + "/" + id, "DEL");
 };
+
 export const getCommentRecipe = async (idCongThuc) => {
-  console.log(apiContants.RECIPE.GET_COMMENT + "/" + idCongThuc);
   return sendRequest(apiContants.RECIPE.GET_COMMENT + "/" + idCongThuc, "GET");
+};
+
+export const deleteSavedRecipe = async (id) => {
+  return sendRequest(apiContants.RECIPE.DELETE_SAVED_RECIPE + "/" + id, "DEL");
 };
