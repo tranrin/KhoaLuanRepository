@@ -5,6 +5,7 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { editProfile, getProfile } from "../api/user.api";
 import { LoadingButton } from "@mui/lab";
 import CircularProgress from "@mui/material/CircularProgress";
+import { upLoadImage } from "../api/recipe.api";
 const default_payload = {
   email: "tranngocrin12@gmail.com",
   birthDate: "2023-05-20T15:51:19.686Z",
@@ -22,13 +23,14 @@ const Profile = () => {
   const [profilePayload, SetProfilePayload] = useState(default_payload);
   const [isLoading, setIsLoading] = useState(false);
   const [isMounting, setIsMounting] = useState(false);
+  const [file, setFile] = React.useState("");
+  const [preview, setPreview] = React.useState("");
   useEffect(() => {
     setIsMounting(true);
     getProfile()
       .then((payload) => {
-        console.log(payload.data)
+        console.log(payload.data);
         SetProfilePayload(payload.data);
-
       })
       .finally(() => {
         setIsMounting(false);
@@ -36,28 +38,72 @@ const Profile = () => {
   }, []);
 
   const handleChange = (e, name) => {
+    console.log(name);
     const { value } = e.target;
-    SetProfilePayload({
-      ...profilePayload,
-      [name]: value,
-    });
+    if (name === "image") {
+      if (e.target.files[0] != null) {
+        setFile(e.target.files[0]);
+        const objectUrl = window.URL.createObjectURL(e.target.files[0]);
+        setPreview(objectUrl);
+        // setPayload({
+        //   ...payload,
+        //   thongTinChung: {
+        //     ...payload.thongTinChung,
+        //     anhKemTheo: e.target.value,
+        //   },
+        // });
+      }
+    }
+    if (name != "image") {
+      SetProfilePayload({
+        ...profilePayload,
+        [name]: value,
+      });
+    }
   };
 
-  const handleEdit = () => {
+  const handleEdit = async () => {
     setIsLoading(true);
-    editProfile(profilePayload)
-      .then((payload) => {})
-      .catch((error) => {
-        console.error(error);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
+    const formData = new FormData();
+    formData.append("File", file);
+    if (file.name != "") {
+      console.log(file);
+
+      const uploadImage = await upLoadImage(formData)
+        .then(async (item) => {
+          console.log(item.data);
+          setIsLoading(true);
+          console.log({
+            ...profilePayload,
+            image: item?.data,
+          });
+          await editProfile({
+            ...profilePayload,
+            image: item?.data,
+          }).then((payload) => {});
+        })
+        .finally(async () => {
+          setIsLoading(false);
+          setFile("");
+        });
+    }
+    if (file.name === undefined) {
+      console.log("not null");
+
+      await editProfile(profilePayload)
+        .then((payload) => {})
+        .catch((error) => {
+          console.error(error);
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
+    }
   };
   return (
     <Grid
       sx={{
-        marginTop: 20,
+        marginTop: 10,
         border: "solid #ccc 2px",
         borderRadius: 5,
         boxShadow: "0 0 20px 2px rgb(49, 49, 49,0.8)",
@@ -101,21 +147,53 @@ const Profile = () => {
 
             <label htmlFor="upload-photo">
               {profilePayload && profilePayload.image != null ? (
-                <Box
-                  sx={{
-                    width: 1,
-                    height: 1,
-                    borderRadius: 50,
-                  }}>
-                  <img
-                    style={{
-                      width: 200,
-                      borderRadius: 12,
-                    }}
-                    src={process.env.REACT_APP_URI_Local + profilePayload.image}
-                    alt="image profile"
+                <>
+                  <input
+                    style={{ display: "none" }}
+                    id="upload-photo"
+                    name="upload-photo"
+                    type="file"
+                    onChange={(e) => handleChange(e, "image")}
                   />
-                </Box>
+                  <Box
+                    sx={{
+                      width: 1,
+                      height: 1,
+                      borderRadius: 50,
+                      "&:hover": {
+                        opacity: 0.7,
+                      },
+                    }}>
+                    {preview != "" ? (
+                      <img
+                        width={"300px"}
+                        style={{
+                          borderRadius: 20,
+                          marginBottom: 2,
+                          "&::hover": {
+                            borderRadius: 100,
+                          },
+                        }}
+                        src={preview}
+                      />
+                    ) : (
+                      <img
+                        width={"300px"}
+                        style={{
+                          borderRadius: 20,
+                          marginBottom: 2,
+                          "&::hover": {
+                            borderRadius: 100,
+                          },
+                        }}
+                        src={`${
+                          process.env.REACT_APP_URI_Local +
+                          profilePayload?.image
+                        }`}
+                      />
+                    )}
+                  </Box>
+                </>
               ) : (
                 <>
                   <input
@@ -123,6 +201,7 @@ const Profile = () => {
                     id="upload-photo"
                     name="upload-photo"
                     type="file"
+                    onChange={(e) => handleChange(e, "image")}
                   />
                   <Fab
                     sx={{
