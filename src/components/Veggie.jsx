@@ -4,6 +4,10 @@ import { Splide, SplideSlide } from "@splidejs/react-splide";
 import "@splidejs/react-splide/css";
 import Recipe from "../pages/Recipe";
 import { Link } from "react-router-dom";
+import { Rating } from "@mui/material";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+
 function Veggie() {
   const [veggie, setVeggie] = useState([]);
   useEffect(() => {
@@ -40,9 +44,34 @@ function Veggie() {
               <SplideSlide key={recipe.id}>
                 <Card>
                   <Link to={"/recipe/" + recipe.id}>
-                    <p>{recipe.tenCongThuc}</p>
+               
+                    <p>
+                          <Gradient>
+                          {recipe.tenCongThuc}
+                    <Box
+                              sx={{
+                                display: "flex",
+                                justifyContent: "center",
+                                alignItems: "center       ",
+                              }}>
+                                  <Rating
+                                readOnly
+                                name="half-rating"
+                                defaultValue={recipe?.saoTrungBinh || null}
+                                value={recipe?.saoTrungBinh || null}
+                              />{" "}
+                              
+                            </Box>
+                            <Typography sx={{ fontWeight: 600 }} variant="p">
+                                {console.log(recipe?.saoTrungBinh)}
+                                {recipe?.tongSoLuong} Ratings
+                              </Typography>
+                    </Gradient>           
+                    </p>
+            
                     <img src={ process.env.REACT_APP_URI_Local + recipe.anhKemTheo} alt={recipe.tenCongThuc} />
-                    <Gradient></Gradient>
+              
+              
                   </Link>
                 </Card>
               </SplideSlide>

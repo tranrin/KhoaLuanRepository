@@ -20,6 +20,7 @@ import {
   getRecipeWithUser,
   getSavedRecipe,
 } from "../api/recipe.api";
+import { event } from "react-ga";
 const ITEM_HEIGHT = 48;
 const RecipeManagement = () => {
   const [value, setValue] = React.useState(2);
@@ -33,6 +34,7 @@ const RecipeManagement = () => {
   useEffect(() => {
     const listRecipeUser = getRecipeWithUser();
     listRecipeUser.then((list) => {
+      console.log(list, "list");
       return setMyRecipe(list.data);
     });
   }, []);
@@ -310,11 +312,12 @@ const RecipeManagement = () => {
                               <Rating
                                 readOnly
                                 name="half-rating"
-                                defaultValue={3}
+                                defaultValue={item?.saoTrungBinh || null}
+                                value={item?.saoTrungBinh || null}
                               />{" "}
                               <Typography sx={{ fontWeight: 600 }} variant="p">
-                                {" "}
-                                7 Ratings
+                                {console.log(item?.saoTrungBinh)}
+                                {item?.tongSoLuong} Ratings
                               </Typography>
                             </Box>
                           </Link>

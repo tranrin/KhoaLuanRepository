@@ -24,13 +24,14 @@ import { gapi } from "gapi-script";
 import LanguagePopover from "../Language/LanguagePopover";
 import { useState } from "react";
 const pages = [];
-
+const ImageUser = localStorage.getItem("imageUser");
 const settings = ["Profile", "Recipe", "Logout", ""];
 const clientId = process.env.REACT_APP_GOOGLE_CLIENTID;
 function Navbar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const [token, setToken] = React.useState("");
+  const [imageUser, setImageUser] = React.useState(ImageUser);
   const [open, setOpen] = useState(null);
   const navigate = useNavigate();
   const handleOpenNavMenu = (event) => {
@@ -52,6 +53,7 @@ function Navbar() {
     setOpen(null);
     if (setting === "Logout") {
       localStorage.removeItem("token");
+      localStorage.removeItem("imageUser");
       const token = localStorage.getItem("token");
       // console.log(token);
       setToken(token);
@@ -87,10 +89,11 @@ function Navbar() {
     setToken(token);
   }, [token]);
   const onSuccess = async (res) => {
-    window.location.reload();
-    console.log("Login success!", res);
+   //window.location.reload();
+   
 
     if (res.tokenId) {
+      console.log(res.TokenId)
       const testAutho = async () => {
         let api = await fetch(
           process.env.REACT_APP_URI_Local + "api/User/userLogin",
@@ -104,11 +107,15 @@ function Navbar() {
             },
           },
         );
+
         let token = "";
-        token = await api.text();
-        console.log("token", token);
-        localStorage.setItem("token", token);
-        setToken(token);
+        token = await api.json();
+        console.log("Login successtoken!", token);
+        //console.log("token", token);
+        localStorage.setItem("token", token.token);
+        setToken(token.token);
+        localStorage.setItem("imageUser", token.imageUser);
+        setImageUser(token.imageUser);
       };
       testAutho();
     }
@@ -242,7 +249,7 @@ function Navbar() {
             <Box sx={{ flexGrow: 0 }}>
               <Tooltip title="Open settings">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                  <Avatar alt="Remy Sharp" src={imageUser ? process.env.REACT_APP_URI_Local + imageUser : "/static/images/avatar/2.jpg"} />
                 </IconButton>
               </Tooltip>
               <Menu
