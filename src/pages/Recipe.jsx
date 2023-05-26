@@ -9,7 +9,7 @@ import ButtonExampleLabeledBasicShorthand from "../components/LableShortHand";
 import LikeButton from "../components/LikeButton";
 import BookmarkAddedIcon from "@mui/icons-material/BookmarkAdded";
 import LocalPrintshopIcon from "@mui/icons-material/LocalPrintshop";
-import { Box, Button, Rating, Typography } from "@mui/material";
+import { Box, Button, Grid, Rating, Typography } from "@mui/material";
 import StarRateIcon from "@mui/icons-material/StarRate";
 import Comments from "../components/comments/Comments";
 import {
@@ -21,6 +21,7 @@ import {
 import { LoadingButton } from "@mui/lab";
 import Ultils from "../Ultils";
 import PrintToPDF from "../components/PrintPDF";
+import RoundButton from "../components/RoundedButton";
 function Recipe() {
   let params = useParams();
   const [details, setDetails] = useState({});
@@ -91,6 +92,26 @@ function Recipe() {
 
   return (
     <>
+      <Grid
+        sx={{
+          marginTop: "100px",
+          width: "100%",
+          marginBottom: 6,
+          border: " solid 1px #ccc",
+          boxShadow: "5px 5px 5px 5px #ccc",
+          borderRadius: "10px",
+          padding: "10px",
+        }}
+        container
+        xs={12}
+        md={12}
+        lg={12}>
+        <Grid item xs={12} lg={12} md={12}>
+          <Typography variant="h4">
+            Author: {details?.thongTinChung?.idUser}
+          </Typography>
+        </Grid>
+      </Grid>
       <DetailWrapper>
         <div>
           <PrintToPDF handleClose={() => setOpen(false)} isOpen={open} />
@@ -151,27 +172,31 @@ function Recipe() {
                 </>
               )}
             </LoadingButton>
-            <Button onClick={() => setOpen(true)} variant="contained">
-              {" "}
-              <LocalPrintshopIcon /> Print
-            </Button>
+            <RoundButton
+              onClick={() => setOpen(true)}
+              variant="contained"
+              startIcon={<LocalPrintshopIcon />}
+              label="Print"
+            />
           </div>
         </div>
         <Info>
-          <Button
+          <RoundButton
+            sx={{ marginRight: 2 }}
             className={activeTab === "instructions" ? "active" : ""}
             onClick={() => {
               setActiveTab("instructions");
-            }}>
-            Instructions
-          </Button>
-          <Button
+            }}
+            label="Instructions"
+          />
+          <RoundButton
             className={activeTab === "ingredients" ? "active" : ""}
             onClick={() => {
               setActiveTab("ingredients");
-            }}>
-            Ingredients
-          </Button>
+            }}
+            label="Ingredients"
+          />
+
           {activeTab === "instructions" && (
             <div>
               <h3
@@ -270,7 +295,6 @@ function Recipe() {
   );
 }
 const DetailWrapper = styled.div`
-  margin-top: 100px;
   margin-bottom: 5rem;
   display: flex;
 

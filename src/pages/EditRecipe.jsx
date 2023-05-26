@@ -178,6 +178,7 @@ const EditRecipe = () => {
       setPrepareMin(timePre.minutes);
       setCookHours(timeCook.hours);
       setCookMin(timeCook.minutes);
+      console.log(cookMin);
     });
   }, []);
 

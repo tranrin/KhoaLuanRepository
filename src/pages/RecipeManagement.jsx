@@ -29,6 +29,7 @@ const RecipeManagement = () => {
 
   const [myRecipe, setMyRecipe] = React.useState([]);
   const [anchorEl, setAnchorEl] = React.useState();
+  const [idEdit, setIdEdit] = React.useState();
   useEffect(() => {
     const listRecipeUser = getRecipeWithUser();
     listRecipeUser.then((list) => {
@@ -44,15 +45,16 @@ const RecipeManagement = () => {
   }, []);
 
   const open = Boolean(anchorEl);
-  const handleClick = (event) => {
+  const handleClick = (event, id) => {
     setAnchorEl(event.currentTarget);
+    setIdEdit(id);
   };
   const handleClose = (e, option, id) => {
     if (option === "Edit") {
-      navigate("/edit-recipe/" + id);
+      navigate("/edit-recipe/" + idEdit);
     }
     if (option === "Unsave") {
-      deleteSavedRecipe(id).then(async () => {
+      deleteSavedRecipe(idEdit).then(async () => {
         await getSavedRecipe().then((list) => {
           setSavedRecipe(list.data);
         });
@@ -60,7 +62,7 @@ const RecipeManagement = () => {
     }
 
     if (option === "Remove") {
-      deleteRecipe(id).then(async (data) => {
+      deleteRecipe(idEdit).then(async (data) => {
         await getRecipeWithUser().then((list) => {
           setMyRecipe(list.data);
         });
@@ -166,7 +168,7 @@ const RecipeManagement = () => {
                             aria-controls={open ? "basic-menu" : undefined}
                             aria-haspopup="true"
                             aria-expanded={open ? "true" : undefined}
-                            onClick={handleClick}
+                            onClick={(e) => handleClick(e, item.id)}
                           />
 
                           <Menu
@@ -260,7 +262,7 @@ const RecipeManagement = () => {
                             aria-controls={open ? "basic-menu" : undefined}
                             aria-haspopup="true"
                             aria-expanded={open ? "true" : undefined}
-                            onClick={handleClick}
+                            onClick={(e) => handleClick(e, item.id)}
                           />
 
                           <Menu
@@ -271,14 +273,10 @@ const RecipeManagement = () => {
                             MenuListProps={{
                               "aria-labelledby": "basic-button",
                             }}>
-                            <MenuItem
-                              onClick={(e) => handleClose(e, "Edit", item.id)}>
+                            <MenuItem onClick={(e) => handleClose(e, "Edit")}>
                               Edit
                             </MenuItem>
-                            <MenuItem
-                              onClick={(e) =>
-                                handleClose(e, "Remove", item.id)
-                              }>
+                            <MenuItem onClick={(e) => handleClose(e, "Remove")}>
                               Remove
                             </MenuItem>
                           </Menu>
