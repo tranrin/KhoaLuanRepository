@@ -99,7 +99,7 @@ const Comment = ({
           dataUseRef={loadComment}
 
             submitLabel="Reply"
-            handleSubmit={(text) => addComment(text, replyId)}
+          //  handleSubmit={(text) => addComment(text, replyId)}
           />
         )}
         {replies.length > 0 && (

@@ -172,9 +172,10 @@ const Comments = ({ commentsUrl, currentUserId, CongThucId }) => {
       <div className="comment-form-title">Write comment</div>
       <CommentForm submitLabel="Write"  dataComment={CongThucId} dataUseRef={connectionRef.current}/>
       <div className="comments-container">
-        {rootComments.map((rootComment) => {
-        
-          return(
+        {backendComments.map((rootComment) => {
+
+        if(rootComment.parentID == 0)
+      {    return(
           <Comment
            dataComment={CongThucId}
             loadComment ={connectionRef.current}
@@ -188,7 +189,7 @@ const Comments = ({ commentsUrl, currentUserId, CongThucId }) => {
             updateComment={updateComment}
             currentUserId={currentUserId}
             parentId={rootComment.id}
-          />)
+          />)}
           })}
       </div>
     </div>

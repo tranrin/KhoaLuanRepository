@@ -249,6 +249,7 @@ function Recipe() {
             style={{
               fontSize: 60,
             }}
+            value={details?.danhGiaByUserId?.sao ?? 0}
             name="half-rating"
           />{" "}
         </Box>
