@@ -9,7 +9,7 @@ import ButtonExampleLabeledBasicShorthand from "../components/LableShortHand";
 import LikeButton from "../components/LikeButton";
 import BookmarkAddedIcon from "@mui/icons-material/BookmarkAdded";
 import LocalPrintshopIcon from "@mui/icons-material/LocalPrintshop";
-import { Box, Button, Rating, Typography } from "@mui/material";
+import { Box, Button, Grid, Rating, Typography } from "@mui/material";
 import StarRateIcon from "@mui/icons-material/StarRate";
 import Comments from "../components/comments/Comments";
 
@@ -21,10 +21,9 @@ import {
   saveRecipe,
 } from "../api/recipe.api";
 import { LoadingButton } from "@mui/lab";
-import Grid from '@mui/material/Grid';
+
 import Ultils from "../Ultils";
 import PrintToPDF from "../components/PrintPDF";
-
 function Recipe() {
 
   let params = useParams();
@@ -100,15 +99,38 @@ function Recipe() {
 
   return (
     <>
-      <DetailWrapper>
-        <div>
-          <PrintToPDF handleClose={() => setOpen(false)} isOpen={open} Data={details}/>
+      <Grid
+        sx={{
+          marginTop: "100px",
+          width: "100%",
+          marginBottom: 6,
+          border: " solid 1px #ccc",
+      
+          borderRadius: "10px",
+      
+        }}
+    >
+   
+      </Grid>
+      <Grid container spacing={1}>
+   
+  <Grid item xs={6}>
+  <DetailWrapper>
+  <div>
+          <PrintToPDF handleClose={() => setOpen(false)} isOpen={open} Data={details} />
 
           <h2>{details?.thongTinChung?.tenCongThuc}</h2>
           {/* <img> src={details.img}</img> */}
-
+          <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          flexDirection: "column",
+          alignItems: "center",
+        }}>
           <img
             style={{
+             // marginLeft: 110,
               borderRadius: 6,
             }}
             src={
@@ -120,6 +142,7 @@ function Recipe() {
             }
             alt={details.title}
           />
+          </Box>
           <div
             style={{
               display: "flex",
@@ -160,20 +183,31 @@ function Recipe() {
                 </>
               )}
             </LoadingButton>
-            <Button onClick={() => setOpen(true)} variant="contained">
-              {" "}
-              <LocalPrintshopIcon /> Print
-            </Button>
+            <Button
+              onClick={() => setOpen(true)}
+              variant="contained"
+              startIcon={<><LocalPrintshopIcon />Print</>}
+              label="Print"
+              
+            />
           </div>
-        </div>
-        <Info>
+    </div>
+    </DetailWrapper>
+  </Grid>
+
+  <Grid item xs={6}>
+  <DetailWrapper>
+  <Info>
           <Button
+            
             className={activeTab === "instructions" ? "active" : ""}
             onClick={() => {
               setActiveTab("instructions");
-            }}>
-            Instructions
-          </Button>
+            }}
+            label="Instructions"
+          >
+           Instructions
+           </Button>
           <Button
             className={activeTab === "ingredients" ? "active" : ""}
             onClick={() => {
@@ -328,7 +362,15 @@ function Recipe() {
            </div>
           )}
         </Info>
-      </DetailWrapper>
+        </DetailWrapper>
+  </Grid>
+  
+
+</Grid>
+     
+     
+     
+
       <Box
         sx={{
           display: "flex",
@@ -373,9 +415,9 @@ function Recipe() {
   );
 }
 const DetailWrapper = styled.div`
-  margin-top: 100px;
   margin-bottom: 5rem;
   display: flex;
+  justify-content:center ;
 
   .active {
     background: linear-gradient(35deg, #494949, #313131);

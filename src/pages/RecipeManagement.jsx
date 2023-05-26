@@ -30,10 +30,11 @@ const RecipeManagement = () => {
 
   const [myRecipe, setMyRecipe] = React.useState([]);
   const [anchorEl, setAnchorEl] = React.useState();
+  const [idEdit, setIdEdit] = React.useState();
   useEffect(() => {
     const listRecipeUser = getRecipeWithUser();
     listRecipeUser.then((list) => {
-      console.log(list,"list")
+      console.log(list, "list");
       return setMyRecipe(list.data);
     });
   }, []);
@@ -41,25 +42,21 @@ const RecipeManagement = () => {
   useEffect(() => {
     const listSavedRecipeUser = getSavedRecipe();
     listSavedRecipeUser.then((list) => {
-
       return setSavedRecipe(list.data);
     });
   }, []);
 
   const open = Boolean(anchorEl);
-  const handleClick = (event) => {
+  const handleClick = (event, id) => {
     setAnchorEl(event.currentTarget);
+    setIdEdit(id);
   };
   const handleClose = (e, option, id) => {
-    e.preventDefault() 
-
-       if (option === "Edit") {
-        console.log(id,"  event.preventDefault()")
-     // navigate("/edit-recipe/" + id);
+    if (option === "Edit") {
+      navigate("/edit-recipe/" + idEdit);
     }
     if (option === "Unsave") {
-      console.log(id," Unsave event.preventDefault()")
-      deleteSavedRecipe(id).then(async () => {
+      deleteSavedRecipe(idEdit).then(async () => {
         await getSavedRecipe().then((list) => {
           setSavedRecipe(list.data);
         });
@@ -67,7 +64,7 @@ const RecipeManagement = () => {
     }
 
     if (option === "Remove") {
-      deleteRecipe(id).then(async (data) => {
+      deleteRecipe(idEdit).then(async (data) => {
         await getRecipeWithUser().then((list) => {
           setMyRecipe(list.data);
         });
@@ -173,7 +170,7 @@ const RecipeManagement = () => {
                             aria-controls={open ? "basic-menu" : undefined}
                             aria-haspopup="true"
                             aria-expanded={open ? "true" : undefined}
-                            onClick={handleClick}
+                            onClick={(e) => handleClick(e, item.id)}
                           />
 
                           <Menu
@@ -242,7 +239,6 @@ const RecipeManagement = () => {
               {" "}
               <Grid container spacing={2} md={12} xs={12} lg={12}>
                 {myRecipe.map((item, index) => {
-                 
                   return (
                     <Grid item xs={12} md={6} lg={4}>
                       <Card sx={{ width: "100%", position: "relative" }}>
@@ -268,7 +264,7 @@ const RecipeManagement = () => {
                             aria-controls={open ? "basic-menu" : undefined}
                             aria-haspopup="true"
                             aria-expanded={open ? "true" : undefined}
-                            onClick={handleClick}
+                            onClick={(e) => handleClick(e, item.id)}
                           />
 
                           <Menu
@@ -279,14 +275,10 @@ const RecipeManagement = () => {
                             MenuListProps={{
                               "aria-labelledby": "basic-button",
                             }}>
-                            <MenuItem
-                              onClick={(e) => handleClose(e, "Edit", item.id)}>
+                            <MenuItem onClick={(e) => handleClose(e, "Edit")}>
                               Edit
                             </MenuItem>
-                            <MenuItem
-                              onClick={(e) =>
-                                handleClose(e, "Remove", item.id)
-                              }>
+                            <MenuItem onClick={(e) => handleClose(e, "Remove")}>
                               Remove
                             </MenuItem>
                           </Menu>
@@ -317,7 +309,7 @@ const RecipeManagement = () => {
                                 justifyContent: "center",
                                 alignItems: "center       ",
                               }}>
-                                  <Rating
+                              <Rating
                                 readOnly
                                 name="half-rating"
                                 defaultValue={item?.saoTrungBinh || null}
