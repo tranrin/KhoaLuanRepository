@@ -1,5 +1,6 @@
 {
-  "homepage": "https://tranrin.github.io/home",
+  "proxy": "http://localhost:9000/",
+  "homepage": ".",
   "name": "my-react-app",
   "version": "0.1.0",
   "private": true,

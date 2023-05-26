@@ -23,7 +23,6 @@ import Ultils from "../Ultils";
 import PrintToPDF from "../components/PrintPDF";
 import RoundButton from "../components/RoundedButton";
 function Recipe() {
-
   let params = useParams();
   const [details, setDetails] = useState({});
   const [activeTab, setActiveTab] = useState("instructions");
@@ -59,7 +58,6 @@ function Recipe() {
       congThucID: params.name,
     }).then(async () => {
       await getDetailsRecipe(params.name).then((payload) => {
-     
         setRating(payload?.data?.thongTinChung?.saoTrungBinh);
         // setIsRating(payload.data.thongTinChung.saoTrungBinh)
       });
@@ -67,9 +65,9 @@ function Recipe() {
   };
   useEffect(() => {
     getDetailsRecipe(params.name).then((payload) => {
-      console.log(payload.data.danhGiaByUserId)
+      console.log(payload.data.danhGiaByUserId);
 
-        //setRatingByUser(payload.data.danhGiaByUserId.sao + 1)
+      //setRatingByUser(payload.data.danhGiaByUserId.sao + 1)
       setRating(payload?.data?.thongTinChung?.saoTrungBinh);
       setDetails(payload.data);
     });
@@ -119,7 +117,11 @@ function Recipe() {
       </Grid>
       <DetailWrapper>
         <div>
-          <PrintToPDF handleClose={() => setOpen(false)} isOpen={open} Data={details}/>
+          <PrintToPDF
+            handleClose={() => setOpen(false)}
+            isOpen={open}
+            Data={details}
+          />
 
           <h2>{details?.thongTinChung?.tenCongThuc}</h2>
           {/* <img> src={details.img}</img> */}
@@ -164,8 +166,10 @@ function Recipe() {
               onClick={handleSaveRecipe}
               sx={{
                 marginRight: 1,
+                color: "#000",
+                border: "1px solid #000",
               }}
-              variant="contained">
+              variant="outlined">
               {" "}
               {isSaved ? (
                 <>

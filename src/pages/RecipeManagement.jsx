@@ -181,10 +181,7 @@ const RecipeManagement = () => {
                             MenuListProps={{
                               "aria-labelledby": "basic-button",
                             }}>
-                            <MenuItem
-                              onClick={(e) =>
-                                handleClose(e, "Unsave", item.id)
-                              }>
+                            <MenuItem onClick={(e) => handleClose(e, "Unsave")}>
                               Unsave
                             </MenuItem>
                           </Menu>

@@ -130,7 +130,7 @@ const EditRecipe = () => {
             ...payload,
             thongTinChung: {
               ...payload.thongTinChung,
-              anhKemTheo: payload?.thongTinChung?.anhKemTheo,
+              anhKemTheo: item?.data,
             },
           });
           await updateRecipe(payload).then((data) => {
@@ -164,7 +164,7 @@ const EditRecipe = () => {
   const param = useParams();
   useEffect(() => {
     getDetailsRecipeToUpdate(param.id).then((payload) => {
-      console.log(payload.data)
+      console.log(payload.data);
       setPayload(payload?.data);
       setStepMethodPayload(payload?.data?.buocNau);
       setIngredientPayload(payload?.data?.nguyenLieu);

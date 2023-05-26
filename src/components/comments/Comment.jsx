@@ -1,7 +1,7 @@
-import { Height } from "@material-ui/icons";
+// import { Height } from "@material-ui/icons";
 import CommentForm from "./CommentForm";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import { StyledEngineProvider } from '@mui/material/styles';
+import { StyledEngineProvider } from "@mui/material/styles";
 
 const Comment = ({
   dataComment,
@@ -13,7 +13,7 @@ const Comment = ({
   updateComment,
   deleteComment,
   addComment,
-  parentId ,
+  parentId,
   currentUserId,
 }) => {
   const isEditing =
@@ -35,14 +35,17 @@ const Comment = ({
   return (
     <div key={comment.id} className="comment">
       <div className="comment-image-container">
-        {comment.image ? <img style={{
-          width:"50px",
-          height:"50px",
-          borderRadius:"50%"
-
-        }} src={process.env.REACT_APP_URI_Local + comment.image}></img> :    <AccountCircleIcon  /> }
-    
-     
+        {comment.image ? (
+          <img
+            style={{
+              width: "50px",
+              height: "50px",
+              borderRadius: "50%",
+            }}
+            src={process.env.REACT_APP_URI_Local + comment.image}></img>
+        ) : (
+          <AccountCircleIcon />
+        )}
       </div>
       <div className="comment-right-part">
         <div className="comment-content">
@@ -52,9 +55,9 @@ const Comment = ({
         {!isEditing && <div className="comment-text">{comment.content}</div>}
         {isEditing && (
           <CommentForm
-          parentId={parentId}
-          dataComment={dataComment}
-          dataUseRef={loadComment}
+            parentId={parentId}
+            dataComment={dataComment}
+            dataUseRef={loadComment}
             submitLabel="Update"
             hasCancelButton
             initialText={comment.body}
@@ -65,7 +68,6 @@ const Comment = ({
           />
         )}
         <div className="comment-actions">
-          
           {canReply && (
             <div
               className="comment-action"
@@ -94,12 +96,11 @@ const Comment = ({
         </div>
         {isReplying && (
           <CommentForm
-          parentId={parentId}
-          dataComment={dataComment}
-          dataUseRef={loadComment}
-
+            parentId={parentId}
+            dataComment={dataComment}
+            dataUseRef={loadComment}
             submitLabel="Reply"
-          //  handleSubmit={(text) => addComment(text, replyId)}
+            //  handleSubmit={(text) => addComment(text, replyId)}
           />
         )}
         {replies.length > 0 && (
@@ -117,7 +118,7 @@ const Comment = ({
                 replies={[]}
                 currentUserId={currentUserId}
                 dataComment={dataComment}
-                loadComment ={loadComment}
+                loadComment={loadComment}
               />
             ))}
           </div>
