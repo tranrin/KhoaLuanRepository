@@ -12,6 +12,8 @@ import LocalPrintshopIcon from "@mui/icons-material/LocalPrintshop";
 import { Box, Button, Rating, Typography } from "@mui/material";
 import StarRateIcon from "@mui/icons-material/StarRate";
 import Comments from "../components/comments/Comments";
+
+import Paper from '@mui/material/Paper';
 import {
   getDetailsRecipe,
   getSavedRecipe,
@@ -19,8 +21,10 @@ import {
   saveRecipe,
 } from "../api/recipe.api";
 import { LoadingButton } from "@mui/lab";
+import Grid from '@mui/material/Grid';
 import Ultils from "../Ultils";
 import PrintToPDF from "../components/PrintPDF";
+
 function Recipe() {
 
   let params = useParams();
@@ -177,6 +181,13 @@ function Recipe() {
             }}>
             Ingredients
           </Button>
+          <Button
+            className={activeTab === "Author" ? "active" : ""}
+            onClick={() => {
+              setActiveTab("Author");
+            }}>
+            Author
+          </Button>
           {activeTab === "instructions" && (
             <div>
               <h3
@@ -229,6 +240,92 @@ function Recipe() {
                 return <li key={nguyenLieu.id}>{nguyenLieu.tenNguyenLieu}</li>;
               })}
             </ul>
+          )}
+            {activeTab === "Author" && (
+           <div>
+          <Box sx={{ width: '100%' }}>
+      <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+        <Grid item xs={12}>
+        <img
+            style={{
+              width: 200,
+              borderRadius: 6,
+            }}
+            src={
+              process.env.REACT_APP_URI_Local +
+              details?.thongTinChung?.image
+
+              // ? details?.thongTinChung?.anhKemTheo
+              // : "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxleHBsb3JlLWZlZWR8Mnx8fGVufDB8fHx8fA%3D%3D&w=1000&q=80"
+            }
+            alt={details.title}
+          />
+        </Grid>
+        <Grid item xs={12}>
+        <Typography
+                sx={{
+                  fontSize: 16,
+                  fontWeight: 500,
+                }}>
+                Screen Name
+              </Typography>
+              {details?.thongTinChung?.screenName}
+              <Typography
+                sx={{
+                  fontSize: 16,
+                  fontWeight: 500,
+                }}>
+                Bio
+              </Typography>
+              <div>{details?.thongTinChung?.Bio}</div>
+              
+              <Typography
+                sx={{
+                  fontSize: 16,
+                  fontWeight: 500,
+                }}>
+                Location
+              </Typography>
+              {details?.thongTinChung?.location}
+              <Typography
+                sx={{
+                  fontSize: 16,
+                  fontWeight: 500,
+                }}>
+                facebookURL
+              </Typography>
+              {details?.thongTinChung?.facebookURL}
+              <Typography
+                sx={{
+                  fontSize: 16,
+                  fontWeight: 500,
+                }}>
+                instagramURL
+              </Typography>
+              {details?.thongTinChung?.instagramURL}
+              <Typography
+                sx={{
+                  fontSize: 16,
+                  fontWeight: 500,
+                }}>
+                websiteURL
+              </Typography>
+              {details?.thongTinChung?.websiteURL}
+              <Typography
+                sx={{
+                  fontSize: 16,
+                  fontWeight: 500,
+                }}>
+                twitterURL
+              </Typography>
+              {details?.thongTinChung?.twitterURL}
+        </Grid>
+   
+      </Grid>
+    </Box>
+        
+          
+           </div>
           )}
         </Info>
       </DetailWrapper>

@@ -89,7 +89,7 @@ function Navbar() {
     setToken(token);
   }, [token]);
   const onSuccess = async (res) => {
-   //window.location.reload();
+ 
    
 
     if (res.tokenId) {
@@ -118,6 +118,7 @@ function Navbar() {
         setImageUser(token.imageUser);
       };
       testAutho();
+      navigate("/home");
     }
   };
   const onFalure = (res) => {

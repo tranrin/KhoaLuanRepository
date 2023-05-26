@@ -16,6 +16,7 @@ function Pages() {
   return (
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
+      <Route path="/" element={<Home></Home>}></Route>
         <Route path="/home" element={<Home></Home>}></Route>
         <Route path="/cuisine/:type" element={<Cuisine></Cuisine>}></Route>
         <Route path="/searched/:search" element={<Searched></Searched>}></Route>

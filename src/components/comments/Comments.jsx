@@ -10,6 +10,7 @@ import {
   deleteComment as deleteCommentApi,
 } from "../../api/api";
 import { getCommentRecipe } from "../../api/recipe.api";
+import { Typography } from "@mui/material";
 
 const Comments = ({ commentsUrl, currentUserId, CongThucId }) => {
   const connectionRef = useRef(null);
@@ -168,9 +169,19 @@ const Comments = ({ commentsUrl, currentUserId, CongThucId }) => {
 
   return (
     <div className="comments">
-      <h3 className="comments-title">Comments</h3>
-      <div className="comment-form-title">Write comment</div>
-      <CommentForm submitLabel="Write"  dataComment={CongThucId} dataUseRef={connectionRef.current}/>
+      {
+(localStorage.getItem("token")) ?      <div>
+<h3 className="comments-title">Comments</h3>
+<div className="comment-form-title">Write comment</div>
+<CommentForm submitLabel="Write"  dataComment={CongThucId} dataUseRef={connectionRef.current}/>
+</div>  :
+  <Typography color="#f42f2f" variant="h6" component="h2">
+You must login to Comment
+</Typography>
+      }
+       
+   
+     
       <div className="comments-container">
         {backendComments.map((rootComment) => {
 

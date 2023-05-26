@@ -2,6 +2,8 @@ import { useState } from "react";
 import Alert from '@mui/material/Alert';
 import { useRef } from "react";
 import { HubConnectionBuilder } from "@microsoft/signalr";
+import { Typography } from "@mui/material";
+import { red } from "@mui/material/colors";
 
 const CommentForm = ({
   parentId = null,
@@ -54,11 +56,13 @@ const CommentForm = ({
     }else{
       event.preventDefault();
       <Alert severity="warning">This is a warning alert — check it out!</Alert>
+      
     }
   
     setText("");
   };
-  return (
+   return (  
+ 
     <form onSubmit={onSubmit}>
       <textarea
         className="comment-form-textarea"
@@ -67,7 +71,7 @@ const CommentForm = ({
       />
       <button className="comment-form-button" disabled={isTextareaDisabled}>
         {submitLabel}
-      </button>
+      </button> 
       {hasCancelButton && (
         <button
           type="button"
@@ -77,7 +81,10 @@ const CommentForm = ({
         </button>
       )}
     </form>
-  );
+  
+ 
+  )
+ 
 };
 
 export default CommentForm;
