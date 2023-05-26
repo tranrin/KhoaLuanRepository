@@ -164,6 +164,7 @@ const EditRecipe = () => {
   const param = useParams();
   useEffect(() => {
     getDetailsRecipeToUpdate(param.id).then((payload) => {
+      console.log(payload.data)
       setPayload(payload?.data);
       setStepMethodPayload(payload?.data?.buocNau);
       setIngredientPayload(payload?.data?.nguyenLieu);

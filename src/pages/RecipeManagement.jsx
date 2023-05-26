@@ -237,6 +237,7 @@ const RecipeManagement = () => {
               {" "}
               <Grid container spacing={2} md={12} xs={12} lg={12}>
                 {myRecipe.map((item, index) => {
+                  {console.log(item)}
                   return (
                     <Grid item xs={12} md={6} lg={4}>
                       <Card sx={{ width: "100%", position: "relative" }}>

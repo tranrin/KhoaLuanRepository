@@ -25,7 +25,9 @@ const Profile = () => {
     setIsMounting(true);
     getProfile()
       .then((payload) => {
+        console.log(payload.data)
         SetProfilePayload(payload.data);
+
       })
       .finally(() => {
         setIsMounting(false);
@@ -216,6 +218,8 @@ const Profile = () => {
                   fullWidth
                   id="outlined-multiline-flexible"
                   label="Twitter URL"
+                  value={(profilePayload && profilePayload.twitterURL) || ""}
+                  onChange={(e) => handleChange(e, "twitterURL")}
                 />
               </Grid>{" "}
               <Grid item xs={12} md={6} lg={6}>

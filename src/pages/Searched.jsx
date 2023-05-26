@@ -4,6 +4,10 @@ import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { Typography } from '@mui/material';
 import SearchOffIcon from '@mui/icons-material/SearchOff';
+import Box from "@mui/material/Box";
+import { Rating } from "@mui/material";
+
+
 function Searched() {
     let params = useParams(" ");
     const [searchedRecipes, setSearchedRecipes] = useState([]);
@@ -33,6 +37,23 @@ function Searched() {
                       <Link to={'/recipe/' + item.id}>
                       <img src={ process.env.REACT_APP_URI_Local +item.anhKemTheo} alt={item.tenCongThuc}></img>
                       <h4>{item.tenCongThuc}</h4>
+                      <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center       ",
+                }}>
+                    <Rating
+                  readOnly
+                  name="half-rating"
+                  defaultValue={item?.saoTrungBinh || null}
+                  value={item?.saoTrungBinh || null}
+                />{" "}
+                 <Typography sx={{ fontWeight: 600 }} variant="p">
+                                {console.log(item?.saoTrungBinh)}
+                                {item?.tongSoLuong} Ratings
+                              </Typography>
+              </Box>
                       </Link>
                 </Card>
             )
