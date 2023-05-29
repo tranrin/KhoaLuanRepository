@@ -2,6 +2,7 @@
 import CommentForm from "./CommentForm";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { StyledEngineProvider } from "@mui/material/styles";
+import { useTranslation } from 'react-i18next';
 
 const Comment = ({
   dataComment,
@@ -16,6 +17,7 @@ const Comment = ({
   parentId,
   currentUserId,
 }) => {
+  const { t } = useTranslation()
   const isEditing =
     activeComment &&
     activeComment.id === comment.id &&
@@ -68,15 +70,14 @@ const Comment = ({
           />
         )}
         <div className="comment-actions">
-          {canReply && (
-            <div
-              className="comment-action"
-              onClick={() =>
-                setActiveComment({ id: comment.id, type: "replying" })
-              }>
-              Reply
-            </div>
-          )}
+     {   (localStorage.getItem("token")) ? <div
+                  className="comment-action"
+                  onClick={() =>
+                    setActiveComment({ id: comment.id, type: "replying" })
+                  }>
+                {t('recipeDetail.reply')}
+                </div> : ""}
+          {canReply }
           {canEdit && (
             <div
               className="comment-action"

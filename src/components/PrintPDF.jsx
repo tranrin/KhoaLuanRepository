@@ -128,7 +128,7 @@ const PrintToPDF = ({ isOpen, handleClose, Data }) => {
                         margin: 2
                       }}
                       variant="body1">
-                       Recipe name :      <span>{Data  ?  Data.thongTinChung?.tenCongThuc : ''  }</span>
+                       Recipe name :      <span style={{marginLeft: 5}}>{Data  ?  Data.thongTinChung?.tenCongThuc : ''  }</span>
                     </Typography>
                
                         <Typography

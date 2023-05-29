@@ -21,6 +21,8 @@ import {
   upLoadImage,
   updateRecipe,
 } from "../api/recipe.api";
+import { useTranslation } from 'react-i18next';
+
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import RoundButton from "../components/RoundedButton";
 import { useParams } from "react-router-dom";
@@ -36,45 +38,48 @@ const MINS = [
   42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59,
 ];
 
-const level = [
-  {
-    doKho: 1,
-    nameDoKho: "Easy",
-  },
-  {
-    doKho: 2,
-    nameDoKho: "Intermediate",
-  },
-  {
-    doKho: 3,
-    nameDoKho: "Advanced",
-  },
-  {
-    doKho: 4,
-    nameDoKho: "Expert",
-  },
-];
 
-const category = [
-  {
-    idCategory: 1,
-    nameCategory: "Italian",
-  },
-  {
-    idCategory: 2,
-    nameCategory: "American",
-  },
-  {
-    idCategory: 3,
-    nameCategory: "Thai",
-  },
-  {
-    idCategory: 4,
-    nameCategory: "Japanese",
-  },
-];
+
 
 const EditRecipe = () => {
+  const { t } = useTranslation()
+  const category = [
+    {
+      idCategory: 1,
+      nameCategory: t('recipeUpdate.category.italian'),
+    },
+    {
+      idCategory: 2,
+      nameCategory:  t('recipeUpdate.category.american'),
+    },
+    {
+      idCategory: 3,
+      nameCategory:  t('recipeUpdate.category.thai'),
+    },
+    {
+      idCategory: 4,
+      nameCategory:  t('recipeUpdate.category.japanese'),
+    },
+  ];
+  
+  const level = [
+    {
+      doKho: 1,
+      nameDoKho: t('recipeUpdate.difficultylevel.easy'),
+    },
+    {
+      doKho: 2,
+      nameDoKho:  t('recipeUpdate.difficultylevel.intermediate'),
+    },
+    {
+      doKho: 3,
+      nameDoKho:t('recipeUpdate.difficultylevel.advanced'),
+    },
+    {
+      doKho: 4,
+      nameDoKho: t('recipeUpdate.difficultylevel.expert'),
+    },
+  ];
   const [prepareHours, setPrepareHours] = React.useState(0);
   const [prepareMin, setPrepareMin] = React.useState(0);
   const [cookHours, setCookHours] = React.useState(0);
@@ -126,13 +131,17 @@ const EditRecipe = () => {
       const uploadImage = await upLoadImage(formData)
         .then(async (item) => {
           setIsLoading(true);
-          setPayload({
-            ...payload,
-            thongTinChung: {
-              ...payload.thongTinChung,
-              anhKemTheo: item?.data,
-            },
-          });
+          if(item?.data != 'Object reference not set to an instance of an object.'){
+            setPayload({
+              ...payload,
+              thongTinChung: {
+                ...payload.thongTinChung,
+                anhKemTheo: item?.data,
+              },
+            }
+            );
+          }
+         
           await updateRecipe(payload).then((data) => {
             console.log(data);
           });
@@ -302,7 +311,8 @@ const EditRecipe = () => {
       lg={12}>
       <Grid item md={12} xs={12} lg={12}>
         <Typography marginBottom={2} fontSize={20} fontWeight={600}>
-          Recipe Editing
+       
+          {t('recipeUpdate.recipeTitle')}
         </Typography>
         <Grid container md={12} xs={12} lg={12}>
           <Grid item md={3} lg={3} xs={12}>
@@ -331,6 +341,7 @@ const EditRecipe = () => {
                   <CameraAltIcon sx={{ fontSize: 100 }} />
                   <Typography fontSize={12}>
                     Tap or click to add photo
+         
                   </Typography>
                 </Fab>
               </label>
@@ -381,7 +392,7 @@ const EditRecipe = () => {
                   fullWidth
                   required
                   id="outlined-basic"
-                  label="Recipe Title (keep it short and descriptive)"
+                  label=           {t('recipeUpdate.recipeTitle')}
                   variant="outlined"
                   name="tenCongThuc"
                   value={payload?.thongTinChung?.tenCongThuc || ""}
@@ -392,7 +403,7 @@ const EditRecipe = () => {
                 <TextField
                   fullWidth
                   id="outlined-basic"
-                  label="Short Intro (10-15 words)"
+                  label={t('recipeUpdate.shortInto')}
                   variant="outlined"
                   multiline
                   rows={2}
@@ -403,16 +414,20 @@ const EditRecipe = () => {
               </Grid>
               <Grid item xs={12} md={12} lg={12}>
                 <Typography marginTop={1} marginBottom={1} fontWeight={600}>
-                  Timings
+              
+                  {t('recipeUpdate.timings')}
                 </Typography>
                 <Grid gap={1} container md={12} xs={12} lg={12}>
                   <Grid item xs={12} md={12} lg={12}>
-                    <Typography>Prep Time (approx.)</Typography>
+                    <Typography>
+                    {t('recipeUpdate.prepTime')}
+                     </Typography>
                   </Grid>
                   <Grid item md={4} lg={4} xs={12}>
                     <FormControl fullWidth>
                       <InputLabel id="demo-simple-select-label">
-                        Hours
+                
+                        {t('recipeUpdate.cookTime')}
                       </InputLabel>
                       <Select
                         labelId="demo-simple-select-label"
@@ -425,7 +440,7 @@ const EditRecipe = () => {
                           HOURS.map((hour, i) => {
                             return (
                               <MenuItem value={hour} key={i}>
-                                {hour} hours
+                                {hour}       {t('recipeUpdate.hours')}
                               </MenuItem>
                             );
                           })}
@@ -435,7 +450,8 @@ const EditRecipe = () => {
                   <Grid item md={4} lg={4} xs={12}>
                     <FormControl fullWidth>
                       <InputLabel id="demo-simple-select-label">
-                        Mins
+                        
+                        {t('recipeUpdate.mins')}
                       </InputLabel>
                       <Select
                         labelId="demo-simple-select-label"
@@ -450,7 +466,7 @@ const EditRecipe = () => {
                           MINS.map((hour, i) => {
                             return (
                               <MenuItem value={hour} key={i}>
-                                {hour} mins
+                                {hour}    {t('recipeUpdate.mins')}
                               </MenuItem>
                             );
                           })}
@@ -460,12 +476,13 @@ const EditRecipe = () => {
                 </Grid>
                 <Grid gap={1} container md={12} xs={12} lg={12}>
                   <Grid item xs={12} md={12} lg={12}>
-                    <Typography>Cook Time (approx.)</Typography>
+                    <Typography> {t('recipeUpdate.cookTime')}</Typography>
                   </Grid>
                   <Grid item md={4} lg={4} xs={12}>
                     <FormControl fullWidth>
                       <InputLabel id="demo-simple-select-label">
-                        Hours
+                     
+                        {t('recipeUpdate.hours')}
                       </InputLabel>
                       <Select
                         labelId="demo-simple-select-label"
@@ -478,7 +495,7 @@ const EditRecipe = () => {
                           HOURS.map((hour, i) => {
                             return (
                               <MenuItem value={hour} key={i}>
-                                {hour} hours
+                                {hour}   {t('recipeUpdate.hours')}
                               </MenuItem>
                             );
                           })}
@@ -488,7 +505,8 @@ const EditRecipe = () => {
                   <Grid item md={4} lg={4} xs={12}>
                     <FormControl fullWidth>
                       <InputLabel id="demo-simple-select-label">
-                        Mins
+            
+                        {t('recipeUpdate.mins')}
                       </InputLabel>
                       <Select
                         labelId="demo-simple-select-label"
@@ -501,7 +519,7 @@ const EditRecipe = () => {
                           MINS.map((hour, i) => {
                             return (
                               <MenuItem value={hour} key={i}>
-                                {hour} mins
+                                {hour}         {t('recipeUpdate.mins')}
                               </MenuItem>
                             );
                           })}
@@ -513,10 +531,12 @@ const EditRecipe = () => {
               <Grid item xs={12} md={12} lg={12}>
                 <Grid container>
                   <Grid paddingRight={0.5} item xs={12} md={6} lg={6}>
-                    <Typography>Difficulty level</Typography>
+                    <Typography>{t('recipeUpdate.difficultylevel.title')}
+
+                    </Typography>
                     <FormControl fullWidth>
                       <InputLabel id="demo-simple-select-label">
-                        Difficulty level
+                 {t('recipeUpdate.difficultylevel.title')}
                       </InputLabel>
                       <Select
                         labelId="demo-simple-select-label"
@@ -536,10 +556,11 @@ const EditRecipe = () => {
                     </FormControl>
                   </Grid>
                   <Grid paddingRight={0.5} item xs={12} md={6} lg={6}>
-                    <Typography>Category</Typography>
+                    <Typography>{t('recipeUpdate.category.title')}</Typography>
                     <FormControl fullWidth>
                       <InputLabel id="demo-simple-select-label">
-                        Category
+                      
+                        {t('recipeUpdate.category.title')}
                       </InputLabel>
                       <Select
                         labelId="demo-simple-select-label"
@@ -569,18 +590,20 @@ const EditRecipe = () => {
       <Grid marginTop={2} item md={12} xs={12} lg={12}>
         <Grid spacing={2} container md={12} xs={12} lg={12}>
           <Grid item md={6} lg={6} xs={12}>
-            <Typography fontWeight={600}>Ingredients</Typography>
+            <Typography fontWeight={600}>
+            {t('recipeUpdate.ingredient')}
+              </Typography>
             <Typography>
-              Please use metric if possible (we have a handy conversion guide to
-              help)
+            {t('recipeUpdate.ingredients')}
+          
             </Typography>
-            <Typography
+            {/* <Typography
               sx={{
                 marginBottom: 1,
               }}>
               You can split your ingredients into groups, e.g. sauce, filling
               etc.
-            </Typography>
+            </Typography> */}
             {ingredientPayload?.map((item, index) => {
               return (
                 <Stack
@@ -629,12 +652,13 @@ const EditRecipe = () => {
                 ])
               }
               variant="contained">
-              Add next ingrediant
+                  {t('recipeUpdate.addIngre')}
+            
             </Button>
           </Grid>
           <Grid item md={6} lg={6} xs={12}>
             <Typography sx={{ marginBottom: 1 }} fontWeight={600}>
-              Method
+               {t('recipeUpdate.method')}
             </Typography>
             {stepMethodPayload &&
               stepMethodPayload?.map((item, index) => {
@@ -689,7 +713,8 @@ const EditRecipe = () => {
                 ])
               }
               variant="contained">
-              Add next step
+ 
+              {t('recipeUpdate.addMethod')}
             </Button>
           </Grid>
         </Grid>
@@ -704,7 +729,7 @@ const EditRecipe = () => {
           }}
           onClick={() => handleSubmit()}
           variant="outlined">
-          Save
+          {t('recipeUpdate.save')}
         </LoadingButton>
       </Grid>
     </Grid>

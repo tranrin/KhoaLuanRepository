@@ -13,6 +13,7 @@ import {
   Typography,
 } from "@mui/material";
 import CameraAltIcon from "@mui/icons-material/CameraAlt";
+import { useTranslation } from 'react-i18next';
 import React, { useEffect } from "react";
 import { createRecipe, saveRecipe, upLoadImage } from "../api/recipe.api";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
@@ -50,6 +51,44 @@ const MINS = [
 ];
 
 const CreateRecipe = () => {
+  const { t } = useTranslation()
+  const category = [
+    {
+      idCategory: 1,
+      nameCategory: t('recipeUpdate.category.italian'),
+    },
+    {
+      idCategory: 2,
+      nameCategory:  t('recipeUpdate.category.american'),
+    },
+    {
+      idCategory: 3,
+      nameCategory:  t('recipeUpdate.category.thai'),
+    },
+    {
+      idCategory: 4,
+      nameCategory:  t('recipeUpdate.category.japanese'),
+    },
+  ];
+  
+  const level = [
+    {
+      doKho: 1,
+      nameDoKho: t('recipeUpdate.difficultylevel.easy'),
+    },
+    {
+      doKho: 2,
+      nameDoKho:  t('recipeUpdate.difficultylevel.intermediate'),
+    },
+    {
+      doKho: 3,
+      nameDoKho:t('recipeUpdate.difficultylevel.advanced'),
+    },
+    {
+      doKho: 4,
+      nameDoKho: t('recipeUpdate.difficultylevel.expert'),
+    },
+  ];
   const [prepareHours, setPrepareHours] = React.useState(0);
   const [prepareMin, setPrepareMin] = React.useState(0);
   const [cookHours, setCookHours] = React.useState(0);
@@ -153,6 +192,8 @@ const CreateRecipe = () => {
           })
           .finally(() => {
             setPayload(defaulPayload);
+            setOpen(true)
+            setTextAlert("Creating successfully.");
           });
       });
     }
@@ -339,16 +380,20 @@ const CreateRecipe = () => {
               </Grid>
               <Grid item xs={12} md={12} lg={12}>
                 <Typography marginTop={1} marginBottom={1} fontWeight={600}>
-                  Timings
+                   {t('recipeUpdate.timings')}
                 </Typography>
                 <Grid gap={1} container md={12} xs={12} lg={12}>
                   <Grid item xs={12} md={12} lg={12}>
-                    <Typography>Prep Time (approx.)</Typography>
+                    <Typography>
+                    {t('recipeUpdate.prepTime')}
+
+                    </Typography>
                   </Grid>
                   <Grid item md={4} lg={4} xs={12}>
                     <FormControl fullWidth>
                       <InputLabel id="demo-simple-select-label">
-                        Hours
+                     
+                        {t('recipeUpdate.hours')}
                       </InputLabel>
                       <Select
                         labelId="demo-simple-select-label"
@@ -361,7 +406,7 @@ const CreateRecipe = () => {
                           HOURS.map((hour, i) => {
                             return (
                               <MenuItem value={hour} key={i}>
-                                {hour} hours
+                                {hour} {t('recipeUpdate.hours')}
                               </MenuItem>
                             );
                           })}
@@ -371,7 +416,8 @@ const CreateRecipe = () => {
                   <Grid item md={4} lg={4} xs={12}>
                     <FormControl fullWidth>
                       <InputLabel id="demo-simple-select-label">
-                        Mins
+                  
+                        {t('recipeUpdate.mins')}
                       </InputLabel>
                       <Select
                         labelId="demo-simple-select-label"
@@ -386,7 +432,7 @@ const CreateRecipe = () => {
                           MINS.map((hour, i) => {
                             return (
                               <MenuItem value={hour} key={i}>
-                                {hour} mins
+                                {hour}  {t('recipeUpdate.mins')}
                               </MenuItem>
                             );
                           })}
@@ -396,12 +442,13 @@ const CreateRecipe = () => {
                 </Grid>
                 <Grid gap={1} container md={12} xs={12} lg={12}>
                   <Grid item xs={12} md={12} lg={12}>
-                    <Typography>Cook Time (approx.)</Typography>
+                    <Typography> {t('recipeUpdate.cookTime')}</Typography>
                   </Grid>
                   <Grid item md={4} lg={4} xs={12}>
                     <FormControl fullWidth>
                       <InputLabel id="demo-simple-select-label">
-                        Hours
+           
+                        {t('recipeUpdate.hours')}
                       </InputLabel>
                       <Select
                         labelId="demo-simple-select-label"
@@ -414,7 +461,7 @@ const CreateRecipe = () => {
                           HOURS.map((hour, i) => {
                             return (
                               <MenuItem value={hour} key={i}>
-                                {hour} mins
+                                {hour}  {t('recipeUpdate.mins')}
                               </MenuItem>
                             );
                           })}
@@ -424,7 +471,7 @@ const CreateRecipe = () => {
                   <Grid item md={4} lg={4} xs={12}>
                     <FormControl fullWidth>
                       <InputLabel id="demo-simple-select-label">
-                        Mins
+                        {t('recipeUpdate.mins')}
                       </InputLabel>
                       <Select
                         labelId="demo-simple-select-label"
@@ -436,7 +483,7 @@ const CreateRecipe = () => {
                           MINS.map((hour, i) => {
                             return (
                               <MenuItem value={hour} key={i}>
-                                {hour} mins
+                                {hour}  {t('recipeUpdate.mins')}
                               </MenuItem>
                             );
                           })}
@@ -448,39 +495,41 @@ const CreateRecipe = () => {
               <Grid item xs={12} md={12} lg={12}>
                 <Grid container>
                   <Grid paddingRight={0.5} item xs={12} md={6} lg={6}>
-                    <Typography>Difficulty level</Typography>
+                    <Typography> {t('recipeUpdate.difficultylevel.title')}</Typography>
                     <FormControl fullWidth>
                       <InputLabel id="demo-simple-select-label">
-                        Difficulty level
+                     {t('recipeUpdate.difficultylevel.title')}
                       </InputLabel>
                       <Select
                         labelId="demo-simple-select-label"
                         id="demo-simple-select"
-                        label="Difficulty level"
+                        label= {t('recipeUpdate.difficultylevel.title')}
                         name="doKho"
                         onChange={(e) => handleChangeInput(e, "doKho")}>
-                        <MenuItem value={1}>1</MenuItem>
-                        <MenuItem value={2}>2</MenuItem>
-                        <MenuItem value={2}>3</MenuItem>
+                        <MenuItem value={level[0].doKho}>{level[0].nameDoKho}</MenuItem>
+                        <MenuItem value={level[1].doKho}>{level[1].nameDoKho}</MenuItem>
+                        <MenuItem value={level[2].doKho}>{level[2].nameDoKho}</MenuItem>
+                        <MenuItem value={level[3].doKho}>{level[3].nameDoKho}</MenuItem>
                       </Select>
                     </FormControl>
                   </Grid>
                   <Grid paddingRight={0.5} item xs={12} md={6} lg={6}>
-                    <Typography>Category</Typography>
+                    <Typography>{t('recipeUpdate.category.title')}</Typography>
                     <FormControl fullWidth>
                       <InputLabel id="demo-simple-select-label">
-                        Category
+                        {t('recipeUpdate.category.title')}
                       </InputLabel>
                       <Select
                         labelId="demo-simple-select-label"
                         id="demo-simple-select"
-                        label="Category"
+                        label= {t('recipeUpdate.category.title')}
                         name="idCategory"
                         onChange={(e) => handleChangeInput(e, "idCategory")}>
-                        <MenuItem value={1}>1</MenuItem>
-                        <MenuItem value={2}>2</MenuItem>
-                        <MenuItem value={2}>3</MenuItem>
-                        <MenuItem value={2}>4</MenuItem>
+                        <MenuItem value={category[0].idCategory}>{category[0].nameCategory}</MenuItem>
+                        <MenuItem value={category[1].idCategory}>{category[1].nameCategory}</MenuItem>
+                        <MenuItem value={category[2].idCategory}>{category[2].nameCategory}</MenuItem>
+                        <MenuItem value={category[3].idCategory}>{category[3].nameCategory}</MenuItem>
+                        
                       </Select>
                     </FormControl>
                   </Grid>
@@ -493,18 +542,18 @@ const CreateRecipe = () => {
       <Grid marginTop={2} item md={12} xs={12} lg={12}>
         <Grid spacing={2} container md={12} xs={12} lg={12}>
           <Grid item md={6} lg={6} xs={12}>
-            <Typography fontWeight={600}>Ingredients</Typography>
+            <Typography fontWeight={600}> {t('recipeUpdate.ingredient')}</Typography>
             <Typography>
-              Please use metric if possible (we have a handy conversion guide to
-              help)
+            {t('recipeUpdate.ingredients')}
+             
             </Typography>
-            <Typography
+            {/* <Typography
               sx={{
                 marginBottom: 1,
               }}>
               You can split your ingredients into groups, e.g. sauce, filling
               etc.
-            </Typography>
+            </Typography> */}
             {ingredientPayload.map((item, index) => {
               return (
                 <Stack
@@ -552,12 +601,13 @@ const CreateRecipe = () => {
                 ])
               }
               variant="contained">
-              Add next ingrediant
+             {t('recipeUpdate.addIngre')}
             </Button>
           </Grid>
           <Grid item md={6} lg={6} xs={12}>
             <Typography sx={{ marginBottom: 1 }} fontWeight={600}>
-              Method
+            
+              {t('recipeUpdate.method')}
             </Typography>
             {stepMethodPayload.map((item, index) => {
               return (
@@ -610,7 +660,8 @@ const CreateRecipe = () => {
                 ])
               }
               variant="contained">
-              Add next step
+                 {t('recipeUpdate.addMethod')}
+
             </Button>
           </Grid>
         </Grid>
@@ -624,7 +675,7 @@ const CreateRecipe = () => {
           }}
           onClick={() => handleSubmit()}
           variant="outlined">
-          Save
+           {t('recipeUpdate.save')}
         </Button>
       </Grid>
     </Grid>

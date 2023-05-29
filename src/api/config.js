@@ -108,7 +108,7 @@ const postFormData = async (api, url, data) => {
   const headers = {
     "Content-Type": "multipart/form-data",
     authorization:
-      "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6InRyYW5uZ29jcmluMTJAZ21haWwuY29tIiwiZXhwIjoxNjg1MDI4NDg0LCJpc3MiOiJodHRwOi8vcmVjaXBlZm9vZGFwaS5jb20vIiwiYXVkIjoiaHR0cDovL3JlY2lwZWZvb2RhcGkuY29tLyJ9.-HUWgTT4kqSetNlelSqXZ7Lx-Pp4bBrxZpSja2fJe8o",
+      `bearer ${localStorage.getItem('token')}`,
   };
   return api
     .post(url, data, { headers })

@@ -12,7 +12,7 @@ import LocalPrintshopIcon from "@mui/icons-material/LocalPrintshop";
 import { Box, Button, Grid, Rating, Typography } from "@mui/material";
 import StarRateIcon from "@mui/icons-material/StarRate";
 import Comments from "../components/comments/Comments";
-
+import { useTranslation } from "react-i18next";
 import Paper from '@mui/material/Paper';
 import {
   getDetailsRecipe,
@@ -25,6 +25,7 @@ import { LoadingButton } from "@mui/lab";
 import Ultils from "../Ultils";
 import PrintToPDF from "../components/PrintPDF";
 function Recipe() {
+  const { t } = useTranslation()
   let params = useParams();
   const [details, setDetails] = useState({});
   const [activeTab, setActiveTab] = useState("instructions");
@@ -123,7 +124,7 @@ function Recipe() {
         sx={{
           display: "flex",
           justifyContent: "center",
-          flexDirection: "column",
+          flexDirection: "row",
           alignItems: "center",
         }}>
           <img
@@ -154,7 +155,7 @@ function Recipe() {
             />{" "}
             <Typography>
               {" "}
-              {details?.thongTinChung?.tongSoLuong} Ratings
+              {details?.thongTinChung?.tongSoLuong}    {t('recipeDetail.Ratings')}
             </Typography>
           </div>
           <div
@@ -175,18 +176,18 @@ function Recipe() {
               {" "}
               {isSaved ? (
                 <>
-                  <BookmarkAddedIcon /> Saved
+                  <BookmarkAddedIcon />  {t('recipeDetail.saved')} 
                 </>
               ) : (
                 <>
-                  <BookmarkAddedIcon /> Save{" "}
+                  <BookmarkAddedIcon />  {t('recipeDetail.save')} {" "}
                 </>
               )}
             </LoadingButton>
             <Button
               onClick={() => setOpen(true)}
               variant="contained"
-              startIcon={<><LocalPrintshopIcon />Print</>}
+              startIcon={<><LocalPrintshopIcon /> {t('recipeDetail.print')} </>}
               label="Print"
               
             />
@@ -206,21 +207,23 @@ function Recipe() {
             }}
             label="Instructions"
           >
-           Instructions
+             {t('recipeDetail.instructions.title')} 
+           
            </Button>
           <Button
             className={activeTab === "ingredients" ? "active" : ""}
             onClick={() => {
               setActiveTab("ingredients");
             }}>
-            Ingredients
+                   {t('recipeDetail.ingredients.title')} 
+            
           </Button>
           <Button
             className={activeTab === "Author" ? "active" : ""}
             onClick={() => {
               setActiveTab("Author");
-            }}>
-            Author
+            }}> {t('recipeDetail.author.title')} 
+            
           </Button>
           {activeTab === "instructions" && (
             <div>
@@ -233,7 +236,7 @@ function Recipe() {
                   sx={{
                     fontSize: 16,
                     fontWeight: 500,
-                  }}>
+                  }}> 
                   Step method
                 </Typography>
 
@@ -378,7 +381,7 @@ function Recipe() {
           flexDirection: "column",
           alignItems: "center",
         }}>
-        <Typography variant="h4">Your rating</Typography>
+        <Typography variant="h4"> {t('recipeDetail.yourRating')} </Typography>
         <Box>
           <Rating
             disabled={tokenValue === null}
@@ -398,7 +401,8 @@ function Recipe() {
               color: "red",
             }}
             variant="caption">
-            You must login to rating
+              {t('recipeDetail.alertRating')}
+
           </Typography>
         ) : null}
       </Box>

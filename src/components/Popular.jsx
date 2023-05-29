@@ -6,8 +6,10 @@ import { Link } from "react-router-dom";
 import { Rating } from "@mui/material";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
+import { useTranslation } from 'react-i18next';
 
 function Popular() {
+  const { t } = useTranslation()
   const [popular, setPopular] = useState([]);
   useEffect(() => {
     getPopular();
@@ -28,7 +30,9 @@ function Popular() {
   return (
     <div>
       <Wrapper>
-        <h3>New Recipe</h3>
+        <h3>
+        {t('newRecipe')}
+          </h3>
         <Splide
           options={{
             perPage: 4,

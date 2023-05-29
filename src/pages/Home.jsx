@@ -6,6 +6,7 @@ import ReactGA from "react-ga";
 import { Box } from "@mui/material";
 
 function Home() {
+
   return (
     // <motion.div
     // animate={{opacity: 1}}

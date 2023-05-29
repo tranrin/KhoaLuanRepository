@@ -4,6 +4,8 @@ import styled from "styled-components";
 import React from "react";
 import { Grid } from "@mui/material";
 import { Link } from "react-router-dom";
+import { useTranslation } from 'react-i18next';
+
 const lnkStyle = {
   display: "flex",
   flexDirection: "column",
@@ -29,6 +31,7 @@ const lnkStyle = {
   },
 };
 function Category() {
+  const { t } = useTranslation()
   return (
     <Grid sx={{ display: "flex" }}>
       <Link style={lnkStyle} to={"/cuisine/1"}>
@@ -42,7 +45,7 @@ function Category() {
             color: "#fff",
             fontSize: 14,
           }}>
-          Italian
+         { t('menu.italian')}
         </h4>
       </Link>
       <Link style={lnkStyle} to={"/cuisine/2"}>
@@ -57,7 +60,7 @@ function Category() {
             color: "#fff",
             fontSize: 14,
           }}>
-          American
+            { t('menu.american')}
         </h4>
       </Link>
       <Link style={lnkStyle} to={"/cuisine/3"}>
@@ -72,7 +75,7 @@ function Category() {
             color: "#fff",
             fontSize: 14,
           }}>
-          Thai
+           { t('menu.thai')}
         </h4>
       </Link>
       <Link style={lnkStyle} to={"cuisine/4"}>
@@ -87,7 +90,7 @@ function Category() {
             fontSize: 14,
             color: "#fff",
           }}>
-          Japanese
+            { t('menu.japanese')}
         </h4>
       </Link>
     </Grid>

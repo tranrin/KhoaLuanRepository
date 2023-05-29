@@ -11,8 +11,10 @@ import {
 } from "../../api/api";
 import { getCommentRecipe } from "../../api/recipe.api";
 import { Typography } from "@mui/material";
+import { useTranslation } from "react-i18next";
 
 const Comments = ({ commentsUrl, currentUserId, CongThucId }) => {
+  const { t } = useTranslation()
   const connectionRef = useRef(null);
   const token = localStorage.getItem("token");
   const [backendComments, setBackendComments] = useState([]);
@@ -171,12 +173,13 @@ const Comments = ({ commentsUrl, currentUserId, CongThucId }) => {
     <div className="comments">
       {
 (localStorage.getItem("token")) ?      <div>
-<h3 className="comments-title">Comments</h3>
-<div className="comment-form-title">Write comment</div>
+<h3 className="comments-title">       {t('recipeDetail.comments')}</h3>
+<div className="comment-form-title">{t('recipeDetail.writeComment')}</div>
 <CommentForm submitLabel="Write"  dataComment={CongThucId} dataUseRef={connectionRef.current}/>
 </div>  :
   <Typography color="#f42f2f" variant="h6" component="h2">
-You must login to Comment
+   {t('recipeDetail.alertComment')}  
+
 </Typography>
       }
        

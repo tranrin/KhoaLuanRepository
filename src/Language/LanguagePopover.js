@@ -27,7 +27,7 @@ export default function LanguagePopover() {
   const [open, setOpen] = useState(null);
   const { t, i18n } = useTranslation();
   const [language, setLanguage] = useState(i18n.language);
-  const [selected, setSeleted] = useState(LANGS[1]);
+  const [selected, setSeleted] = useState(LANGS[0]);
   const handleLanguageChange = (lang) => { 
     i18n.changeLanguage(lang.value);
     setLanguage(lang.value);

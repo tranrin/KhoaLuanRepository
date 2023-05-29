@@ -7,8 +7,10 @@ import { Link } from "react-router-dom";
 import { Rating } from "@mui/material";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
+import { useTranslation } from 'react-i18next';
 
 function Veggie() {
+  const { t } = useTranslation()
   const [veggie, setVeggie] = useState([]);
   useEffect(() => {
     getVeggie();
@@ -30,7 +32,10 @@ function Veggie() {
   return (
     <div>
       <Wrapper>
-        <h3>Top recipe</h3>
+        <h3>
+        {t('topRecipe')}
+
+        </h3>
         <Splide
           options={{
             perPage: 3,

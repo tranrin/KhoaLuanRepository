@@ -20,9 +20,11 @@ import {
   getRecipeWithUser,
   getSavedRecipe,
 } from "../api/recipe.api";
+import { useTranslation } from 'react-i18next';
 import { event } from "react-ga";
 const ITEM_HEIGHT = 48;
 const RecipeManagement = () => {
+  const { t } = useTranslation()
   const [value, setValue] = React.useState(2);
   const options = value === 1 ? ["Unsave"] : ["Edit", "Remove"];
   const navigate = useNavigate();
@@ -100,7 +102,7 @@ const RecipeManagement = () => {
             sx={{
               marginLeft: 4,
             }}
-            label={"Create Recipe"}
+            label= {t('recipe.createRecipe')}
             onClick={() => navigate("/recipe/create")}
           />
           <TabContext value={value}>
@@ -127,7 +129,7 @@ const RecipeManagement = () => {
                       borderColor: "#fff",
                     },
                   }}
-                  label="Saved Recipe"
+                  label={t('recipe.savedRecipe')}
                   value={1}
                 />
                 <Tab
@@ -137,7 +139,7 @@ const RecipeManagement = () => {
                       borderColor: "#fff",
                     },
                   }}
-                  label="My Recipe"
+                  label={t('recipe.myRecipe')}
                   value={2}
                 />
               </TabList>
@@ -182,7 +184,8 @@ const RecipeManagement = () => {
                               "aria-labelledby": "basic-button",
                             }}>
                             <MenuItem onClick={(e) => handleClose(e, "Unsave")}>
-                              Unsave
+                              
+                              {t('recipe.unsave')}
                             </MenuItem>
                           </Menu>
                         </div>
@@ -221,7 +224,7 @@ const RecipeManagement = () => {
                               />{" "}
                               <Typography sx={{ fontWeight: 600 }} variant="p">
                                 {console.log(item?.soSaoTrungBinh)}
-                                {item?.soNguoiDanhGia} Ratings
+                                {item?.soNguoiDanhGia}  {t('recipe.ratings')}
                               </Typography>
                             </Box>
                           </Link>
@@ -273,10 +276,11 @@ const RecipeManagement = () => {
                               "aria-labelledby": "basic-button",
                             }}>
                             <MenuItem onClick={(e) => handleClose(e, "Edit")}>
-                              Edit
+                             {t('recipe.edit')}
                             </MenuItem>
                             <MenuItem onClick={(e) => handleClose(e, "Remove")}>
-                              Remove
+                        
+                              {t('recipe.remove')}
                             </MenuItem>
                           </Menu>
                         </div>

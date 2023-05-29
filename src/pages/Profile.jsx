@@ -6,6 +6,9 @@ import { editProfile, getProfile } from "../api/user.api";
 import { LoadingButton } from "@mui/lab";
 import CircularProgress from "@mui/material/CircularProgress";
 import { upLoadImage } from "../api/recipe.api";
+import { useNavigate } from "react-router-dom";
+import { useTranslation } from 'react-i18next';
+
 const default_payload = {
   email: "tranngocrin12@gmail.com",
   birthDate: "2023-05-20T15:51:19.686Z",
@@ -19,7 +22,10 @@ const default_payload = {
   twitterURL: "string",
 };
 
+
 const Profile = () => {
+  const { t } = useTranslation()
+  const navigate = useNavigate();
   const [profilePayload, SetProfilePayload] = useState(default_payload);
   const [isLoading, setIsLoading] = useState(false);
   const [isMounting, setIsMounting] = useState(false);
@@ -66,32 +72,44 @@ const Profile = () => {
     setIsLoading(true);
     const formData = new FormData();
     formData.append("File", file);
-    if (file.name != "") {
-      console.log(file);
+    if (file.name != "" ) {
+  //    console.log(file.name,"namefilieeee" + file.name);
 
       const uploadImage = await upLoadImage(formData)
         .then(async (item) => {
-          console.log(item.data);
+   
+        
+       //   console.log(item.text(),"datareturn");
           setIsLoading(true);
           console.log({
             ...profilePayload,
             image: item?.data,
-          });
+            
+          },"datacheck");
+      if(item?.data != 'Object reference not set to an instance of an object.'){
+        localStorage.setItem('imageUser',item?.data)
+      }
           await editProfile({
             ...profilePayload,
             image: item?.data,
-          }).then((payload) => {});
+          }).then((payload) => { 
+            console.log(payload,"payload")
+          
+          });
         })
         .finally(async () => {
           setIsLoading(false);
           setFile("");
+      window.location.reload();
         });
     }
     if (file.name === undefined) {
       console.log("not null");
 
       await editProfile(profilePayload)
-        .then((payload) => {})
+        .then((payload) => {
+       
+        })
         .catch((error) => {
           console.error(error);
         })
@@ -117,13 +135,11 @@ const Profile = () => {
       lg={12}>
       <Grid item md={12} xs={12} lg={12}>
         <Typography fontWeight={600} variant="h4">
-          Public profile
+        {t('profile.title')}
+        
         </Typography>
-        <Typography>
-          This information will appear on your public profile and can be seen by
-          other members. Create a screen name for when you post on our site or
-          when you enter a competition as we are required to publish the
-          winners.
+        <Typography>  {t('profile.description')}
+         
         </Typography>
       </Grid>
       {isMounting === true ? (
@@ -142,7 +158,7 @@ const Profile = () => {
             xs={12}
             lg={12}>
             <Typography marginBottom={2} fontWeight={600}>
-              Profile photo
+           {t('profile.image')}
             </Typography>
 
             <label htmlFor="upload-photo">
@@ -225,7 +241,7 @@ const Profile = () => {
               fullWidth
               id="outlined-basic"
               disabled
-              label="Email"
+              label= {t('profile.email')}
               InputLabelProps={{ shrink: true }}
               value={(profilePayload && profilePayload.email) || ""}
               variant="outlined"
@@ -235,7 +251,7 @@ const Profile = () => {
             <TextField
               fullWidth
               id="outlined-basic"
-              label="Screen name"
+              label={t('profile.screenName')}
               InputLabelProps={{ shrink: true }}
               value={profilePayload && profilePayload.screenName}
               onChange={(e) => handleChange(e, "screenName")}
@@ -246,7 +262,7 @@ const Profile = () => {
             <TextField
               fullWidth
               id="outlined-multiline-flexible"
-              label="Bio"
+              label={t('profile.bio')}
               multiline
               InputLabelProps={{ shrink: true }}
               value={profilePayload && profilePayload.bio}
@@ -254,7 +270,7 @@ const Profile = () => {
               maxRows={4}
             />
           </Grid>
-          <Grid item xs={12} md={12} lg={12}>
+          {/* <Grid item xs={12} md={12} lg={12}>
             <TextField
               fullWidth
               id="outlined-multiline-flexible"
@@ -268,14 +284,14 @@ const Profile = () => {
               onChange={(e) => handleChange(e, "birthDate")}
               maxRows={4}
             />
-          </Grid>
+          </Grid> */}
           <Grid item xs={12} md={12} lg={12}>
             <TextField
               sx={{
                 width: 0.992,
               }}
               id="outlined-multiline-flexible"
-              label="Location"
+              label={t('profile.location')}
               InputLabelProps={{ shrink: true }}
               onChange={(e) => handleChange(e, "location")}
               value={(profilePayload && profilePayload.location) || ""}
@@ -288,7 +304,7 @@ const Profile = () => {
                   fullWidth
                   id="outlined-multiline-flexible"
                   defaultValue={""}
-                  label="Facebook URL"
+                  label={t('profile.facebook-URL')}
                   value={(profilePayload && profilePayload.facebookURL) || ""}
                   onChange={(e) => handleChange(e, "facebookURL")}
                 />
@@ -297,7 +313,7 @@ const Profile = () => {
                 <TextField
                   fullWidth
                   id="outlined-multiline-flexible"
-                  label="Twitter URL"
+                  label={t('profile.twitter-URL')}
                   value={(profilePayload && profilePayload.twitterURL) || ""}
                   onChange={(e) => handleChange(e, "twitterURL")}
                 />
@@ -306,7 +322,7 @@ const Profile = () => {
                 <TextField
                   fullWidth
                   id="outlined-multiline-flexible"
-                  label="Instagram URL"
+                  label={t('profile.instagram-URL')}
                   value={(profilePayload && profilePayload.instagramURL) || ""}
                   onChange={(e) => handleChange(e, "instagramURL")}
                 />
@@ -315,7 +331,7 @@ const Profile = () => {
                 <TextField
                   fullWidth
                   id="outlined-multiline-flexible"
-                  label="Website URL"
+                  label={t('profile.website-URL')}
                   value={(profilePayload && profilePayload.websiteURL) || ""}
                   onChange={(e) => handleChange(e, "websiteURL")}
                 />
@@ -333,7 +349,8 @@ const Profile = () => {
                 },
               }}
               variant="contained">
-              Save change
+                  {t('profile.saveChange')}
+
             </LoadingButton>
           </Grid>
         </>

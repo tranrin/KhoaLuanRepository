@@ -1,75 +1,99 @@
+
 {
-  "dashboard": "Tổng quan",
-  "blog": "Bài viết",
+  "topRecipe":"Công thức Top",
+  "newRecipe":"Công thức mới nhất",
   "nav-bar": {
-    "home": "Trang chủ",
+    "recipe": "Công thức",
     "profile": "Hồ sơ",
-    "logout": "Đăng xuất"
-
+    "logout": "Đăng xuất",
+    "login":"Đăng nhập"
+    
   },
-  "profile-page":{
-      "title": "Thông tin",
-      "screen-name": "Tên",
-      "location": "Địa chỉ",
-      "bio": "Tiểu sử",
-      "update": "Cập nhật"
+  "menu":{
+      "italian": "Ý",
+      "american": "Mĩ",
+      "thai": "Thái lan",
+      "japanese": "Nhật bản",
+      "search": "Tìm kiếm"
   },
-  "blog-page":{
-    "title":"Tổng quan: bài viết",
-    "blog": "Bài viết",
-    "search-post": "Tìm kiếm bài viết",
-    "new-post": {
-      "step":{
-        "information":"Thông tin chung",
-        "ingredient":"Nguyên liệu",
-        "method": "Bước nấu",
-        "finish":"Hoàn thành",
-        "next": "Tiếp tục"
-      },
-    "title": "Tạo bài viết",
-    "information":{
-      "title":"Thông tin chung",
-      "name": "Tên công thức",
-      "description": "Mô tả",
-      "category": "Thể loại",
-      "cooking-time": "Thời gian nấu",
-      "preparing-time": "Thời gian chuẩn bị",
-      "upload-your-image": "Tải ảnh"
-    } ,
-    "ingredient": {
-      "title": "Nguyên liệu",
-      "add-record": "Thêm nguyên liệu",
-      "table": {
-        "serial": "Stt",
-        "name": "Tên nguyên liệu",
-        "quantity": "Số lượng",
-        "unit": "Đơn vị",
-        "actions": "Chức năng"
-
-      }
-    },
-    "method": {
-      "title": "Bước nấu",
-      "add-record": "Thêm bước nấu",
-      "table": {
-        "step": "Bước nấu",
-        "content": "Nội dung",
-        "actions": "Chức năng"
-      }
-    },
-    "back": "Trở về",
-    "next": "Tiếp tục"
-    },
-    "sort": {
-      "latest": "Mới nhất",
-      "popular": "Nổi bật",
-      "oldest": "Cũ nhất"
-    }
+  "profile":{
+    "title":"Thông tin cá nhân",
+    "description": "Thông tin này sẽ xuất hiện trên hồ sơ công khai của bạn và các thành viên khác có thể nhìn thấy. Tạo một tên hiển thị khi bạn đăng trên trang web của chúng tôi",
+    "image": "Ảnh đại diện",
+    "email":"Email",
+    "screenName":"Tên hiển thị",
+    "bio": "Tiểu sử",
+    "birthday":"Sinh nhật",
+    "location": "Địa chỉ",
+    "facebook-URL":"Facebook URL",
+    "twitter-URL":"Twitter URL",
+    "instagram-URL": "Instagram-URL",
+    "website-URL": "Website-URL",
+    "saveChange": "Lưu"
+   
+   
+    
+ 
+}, "recipe": {
+  "createRecipe": "Thêm mới công thức",
+  "savedRecipe": "Lưu",
+  "myRecipe": "Công thức của tôi",
+  "ratings": "Đánh giá",
+  "unsave": "Bỏ lưu",
+  "edit": "Chỉnh sửa",
+  "remove": "Xoá"
 },
-"notifications": {
-  "title": "Thông báo",
-  "new": "Mới",
-  "Before That": "Đã đọc",
-  "header": "Bạn có {{Unread}} thông báo chưa đọc"
+"recipeUpdate":{
+  "recipeTitle": "Tiêu đề",
+  "shortInto": "Mô tả",
+  "timings": "Thời gian",
+  "prepTime": "Thời gian chuẩn bị",
+  "cookTime": "Thời gian nấu",
+  "difficultylevel": {
+     "title":"Cấp độ",
+    "easy": "Dễ",
+    "intermediate": "Bình thường",
+    "advanced": "Khó",
+    "expert": "Cực khó"},
+    "category":{
+      "Italian": "Ý",
+      "American": "Mĩ",
+      "Thai": "Thái lan",
+      "Japanese": "Nhật bản"
+    },
+     "save":"Lưu",
+  "ingredients": "Nhập nguyên liệu làm ơn nhập đủ số lượng, tên nguyên liệu, đơn vị nguyên liệu",
+  "ingredient": "Nguyên liệu",
+  "step": "Bước",
+  "addIngre":"Thêm nguyên liệu",
+  "addMethod":"Thêm bước nấu",
+  "method":"Bước nấu",
+  "hours":"Giờ",
+  "Mins":"Phút"
+
+},
+"recipeDetail":{
+  "Ratings":"Đánh giá",
+  "saved":"Đã lưu",
+  "save":"Lưu",
+  "print":"In",
+  "instructions":{
+    "title":"Giới thiệu"
+  },
+  "ingredients":{
+    "title":"Nguyên liệu"
+    },
+    "author":{
+      "title":"Tác giả"
+      },
+      "yourRating":"Đánh giá của bạn",
+      "comments":"Bình luận",
+      "writeComment":"Viết bình luận",
+      "write":"Bình luận",
+      "reply":"Trả lời",
+      "alertComment":"Bạn phải đăng nhập để bình luận",
+      "alertRating":"Bạn phải đăng nhập để đánh giá"
 }
+
 }
+

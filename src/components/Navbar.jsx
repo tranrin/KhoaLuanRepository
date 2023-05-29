@@ -23,11 +23,16 @@ import { useEffect } from "react";
 import { gapi } from "gapi-script";
 import LanguagePopover from "../Language/LanguagePopover";
 import { useState } from "react";
+import { useTranslation } from 'react-i18next';
+
 const pages = [];
 const ImageUser = localStorage.getItem("imageUser");
-const settings = ["Profile", "Recipe", "Logout", ""];
+
 const clientId = process.env.REACT_APP_GOOGLE_CLIENTID;
 function Navbar() {
+
+  const { t } = useTranslation()
+  let settings = [t('nav-bar.recipe'), t('nav-bar.profile'), t('nav-bar.logout')];
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const [token, setToken] = React.useState("");
@@ -51,7 +56,7 @@ function Navbar() {
 
   const handleSetting = (setting) => {
     setOpen(null);
-    if (setting === "Logout") {
+    if (setting === t('nav-bar.logout')) {
       localStorage.removeItem("token");
       localStorage.removeItem("imageUser");
       const token = localStorage.getItem("token");
@@ -59,11 +64,11 @@ function Navbar() {
       setToken(token);
       navigate("/home");
     }
-    if (setting === "Profile") {
+    if (setting ===  t('nav-bar.profile')) {
       navigate("/profile");
     }
 
-    if (setting === "Recipe") {
+    if (setting ===t('nav-bar.recipe')) {
       navigate("/recipe-management");
     }
   };
@@ -116,9 +121,10 @@ function Navbar() {
         setToken(token.token);
         localStorage.setItem("imageUser", token.imageUser);
         setImageUser(token.imageUser);
+        navigate("/home");
       };
       testAutho();
-      navigate("/home");
+      
     }
   };
   const onFalure = (res) => {
@@ -294,8 +300,8 @@ function Navbar() {
                   <>
                     <AccountCircleIcon />
                     <Button color="inherit" onClick={renderProps.onClick}>
-                      Login
-                    </Button>
+                      {t('nav-bar.login')}
+                    </Button> 
                   </>
 
                   //   <Button id={props.id} fullWidth size="large" color="inherit" variant="outlined" onClick={renderProps.onClick}>
