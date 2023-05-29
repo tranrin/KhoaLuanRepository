@@ -11,63 +11,67 @@ import { useEffect } from "react";
 import IconButton from "@mui/material/IconButton";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
-import { useNavigate } from "react-router-dom";
+import ScatterPlotIcon from "@mui/icons-material/ScatterPlot";
+import { Link, useNavigate } from "react-router-dom";
+import RoundButton from "../components/RoundedButton";
+import {
+  deleteRecipe,
+  deleteSavedRecipe,
+  getRecipeWithUser,
+  getSavedRecipe,
+} from "../api/recipe.api";
+import { useTranslation } from 'react-i18next';
+import { event } from "react-ga";
 const ITEM_HEIGHT = 48;
 const RecipeManagement = () => {
+  const { t } = useTranslation()
   const [value, setValue] = React.useState(2);
   const options = value === 1 ? ["Unsave"] : ["Edit", "Remove"];
   const navigate = useNavigate();
-  const [savedRecipe, setSavedRecipe] = React.useState([
-    {
-      recipeName: "Test",
-      image:
-        "https://www.shutterstock.com/image-photo/surreal-image-african-elephant-wearing-260nw-1365289022.jpg",
-      rating: 4,
-    },
-    {
-      recipeName: "Test",
-      image:
-        "https://www.shutterstock.com/image-photo/surreal-image-african-elephant-wearing-260nw-1365289022.jpg",
-      rating: 4,
-    },
-    {
-      recipeName: "Test",
-      image:
-        "https://www.shutterstock.com/image-photo/surreal-image-african-elephant-wearing-260nw-1365289022.jpg",
-      rating: 4,
-    },
-  ]);
+  const [savedRecipe, setSavedRecipe] = React.useState([]);
 
-  const [myRecipe, setMyRecipe] = React.useState([
-    {
-      recipeName: "Test 2",
-      image:
-        "https://www.shutterstock.com/image-photo/surreal-image-african-elephant-wearing-260nw-1365289022.jpg",
-      rating: 4,
-    },
-    {
-      recipeName: "Test 2",
-      image:
-        "https://www.shutterstock.com/image-photo/surreal-image-african-elephant-wearing-260nw-1365289022.jpg",
-      rating: 4,
-    },
-    {
-      recipeName: "Test 2",
-      image:
-        "https://www.shutterstock.com/image-photo/surreal-image-african-elephant-wearing-260nw-1365289022.jpg",
-      rating: 4,
-    },
-  ]);
+  const [myRecipe, setMyRecipe] = React.useState([]);
   const [anchorEl, setAnchorEl] = React.useState();
+  const [idEdit, setIdEdit] = React.useState();
+  useEffect(() => {
+    const listRecipeUser = getRecipeWithUser();
+    listRecipeUser.then((list) => {
+      console.log(list, "list");
+      return setMyRecipe(list.data);
+    });
+  }, []);
+
+  useEffect(() => {
+    const listSavedRecipeUser = getSavedRecipe();
+    listSavedRecipeUser.then((list) => {
+      return setSavedRecipe(list.data);
+    });
+  }, []);
 
   const open = Boolean(anchorEl);
-  const handleClick = (event) => {
-    event.stopPropagation();
+  const handleClick = (event, id) => {
     setAnchorEl(event.currentTarget);
+    setIdEdit(id);
   };
-  const handleClose = (option) => {
-    navigate("/edit-recipe/2");
+  const handleClose = (e, option, id) => {
+    if (option === "Edit") {
+      navigate("/edit-recipe/" + idEdit);
+    }
+    if (option === "Unsave") {
+      deleteSavedRecipe(idEdit).then(async () => {
+        await getSavedRecipe().then((list) => {
+          setSavedRecipe(list.data);
+        });
+      });
+    }
+
+    if (option === "Remove") {
+      deleteRecipe(idEdit).then(async (data) => {
+        await getRecipeWithUser().then((list) => {
+          setMyRecipe(list.data);
+        });
+      });
+    }
     setAnchorEl(null);
   };
 
@@ -79,7 +83,14 @@ const RecipeManagement = () => {
     setValue(1);
   }, []);
   return (
-    <Grid container md={12} xs={12} lg={12}>
+    <Grid
+      sx={{
+        marginTop: 10,
+      }}
+      container
+      md={12}
+      xs={12}
+      lg={12}>
       <Grid
         sx={{ display: "flex", justifyContent: "center" }}
         item
@@ -87,6 +98,13 @@ const RecipeManagement = () => {
         xs={12}
         lg={12}>
         <Box sx={{ width: "100%", typography: "body1" }}>
+          <RoundButton
+            sx={{
+              marginLeft: 4,
+            }}
+            label= {t('recipe.createRecipe')}
+            onClick={() => navigate("/recipe/create")}
+          />
           <TabContext value={value}>
             <Box
               sx={{
@@ -96,70 +114,101 @@ const RecipeManagement = () => {
                 justifyContent: "center",
               }}>
               <TabList
+                TabIndicatorProps={{
+                  style: {
+                    backgroundColor: "#000",
+                    color: "#000",
+                  },
+                }}
                 onChange={handleChange}
                 aria-label="lab API tabs example">
-                <Tab label="Saved Recipe" value={1} />
-                <Tab label="My Recipe" value={2} />
+                <Tab
+                  sx={{
+                    color: "#000 !important",
+                    "&:hover": {
+                      borderColor: "#fff",
+                    },
+                  }}
+                  label={t('recipe.savedRecipe')}
+                  value={1}
+                />
+                <Tab
+                  sx={{
+                    color: "#000 !important",
+                    "&:hover": {
+                      borderColor: "#fff",
+                    },
+                  }}
+                  label={t('recipe.myRecipe')}
+                  value={2}
+                />
               </TabList>
             </Box>
             <TabPanel value={1}>
               <Grid container spacing={2} md={12} xs={12} lg={12}>
                 {savedRecipe.map((item, index) => {
                   return (
-                    <Grid item xs={12} md={6} lg={4}>
-                      <Card sx={{ width: "100%" }}>
-                        <CardActionArea>
-                          <CardMedia
-                            component="img"
-                            width="100%"
-                            image={item.image}
-                            alt="green iguana"
+                    <Grid key={index} item xs={12} md={6} lg={4}>
+                      <Card sx={{ position: "relative", width: "100%" }}>
+                        <div
+                          style={{
+                            position: "absolute",
+                            top: 2,
+                            left: 220,
+                            width: "100%",
+                            height: "100%",
+                          }}>
+                          <ScatterPlotIcon
+                            sx={{
+                              color: "#fff",
+                              fontWeight: 600,
+                              background: "#ccc",
+                              border: "#000 2px solid",
+                              "&:hover": {
+                                cursor: "pointer",
+                              },
+                            }}
+                            id="basic-button"
+                            aria-controls={open ? "basic-menu" : undefined}
+                            aria-haspopup="true"
+                            aria-expanded={open ? "true" : undefined}
+                            onClick={(e) => handleClick(e, item.id)}
                           />
-                          <div
-                            style={{
-                              position: "absolute",
-                              top: 0,
-                              right: 0,
+
+                          <Menu
+                            id="basic-menu"
+                            anchorEl={anchorEl}
+                            open={open}
+                            onClose={handleClose}
+                            MenuListProps={{
+                              "aria-labelledby": "basic-button",
                             }}>
-                            <IconButton
-                              aria-label="more"
-                              id="long-button"
-                              aria-controls={open ? "long-menu" : undefined}
-                              aria-expanded={open ? "true" : undefined}
-                              aria-haspopup="true"
-                              onClick={handleClick}>
-                              <MoreVertIcon />
-                            </IconButton>
-                            <Menu
-                              id="long-menu"
-                              MenuListProps={{
-                                "aria-labelledby": "long-button",
-                              }}
-                              anchorEl={anchorEl}
-                              open={open}
-                              onClose={handleClose}
-                              PaperProps={{
-                                style: {
-                                  maxHeight: ITEM_HEIGHT * 4.5,
-                                  width: "20ch",
-                                },
-                              }}>
-                              {options.map((option) => (
-                                <MenuItem
-                                  key={option}
-                                  selected={option === "Unsave"}
-                                  onClick={() => handleClose(option)}>
-                                  {option}
-                                </MenuItem>
-                              ))}
-                            </Menu>
-                          </div>
-                          <CardContent sx={{ padding: 2 }}>
+                            <MenuItem onClick={(e) => handleClose(e, "Unsave")}>
+                              
+                              {t('recipe.unsave')}
+                            </MenuItem>
+                          </Menu>
+                        </div>
+                        <CardMedia
+                          component="img"
+                          width="100%"
+                          image={
+                            //process.env.REACT_APP_URI_Local + item.anhKemTheo
+                            item.anhKemtheo
+                              ? process.env.REACT_APP_URI_Local +
+                                item.anhKemtheo
+                              : "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxleHBsb3JlLWZlZWR8Mnx8fGVufDB8fHx8fA%3D%3D&w=1000&q=80"
+                          }
+                          alt="green iguana"
+                        />
+
+                        <CardContent sx={{ padding: 2 }}>
+                          <Link to={"/recipe/" + item.congThucID}>
                             <Typography
                               gutterBottom
                               variant="h5"
                               component="div">
-                              {item.recipeName}
+                              {item.tenCongThuc}
                             </Typography>
                             <Box
                               sx={{
@@ -170,15 +219,16 @@ const RecipeManagement = () => {
                               <Rating
                                 readOnly
                                 name="half-rating"
-                                defaultValue={3}
+                                defaultValue={item?.soSaoTrungBinh || null}
+                                value={item?.soSaoTrungBinh || null}
                               />{" "}
                               <Typography sx={{ fontWeight: 600 }} variant="p">
-                                {" "}
-                                7 Ratings
+                                {console.log(item?.soSaoTrungBinh)}
+                                {item?.soNguoiDanhGia}  {t('recipe.ratings')}
                               </Typography>
                             </Box>
-                          </CardContent>
-                        </CardActionArea>
+                          </Link>
+                        </CardContent>
                       </Card>
                     </Grid>
                   );
@@ -191,59 +241,68 @@ const RecipeManagement = () => {
                 {myRecipe.map((item, index) => {
                   return (
                     <Grid item xs={12} md={6} lg={4}>
-                      <Card sx={{ width: "100%" }}>
-                        <CardActionArea>
-                          <CardMedia
-                            component="img"
-                            width="100%"
-                            image={item.image}
-                            alt="green iguana"
+                      <Card sx={{ width: "100%", position: "relative" }}>
+                        <div
+                          style={{
+                            position: "absolute",
+                            top: 2,
+                            left: 220,
+                            width: "100%",
+                            height: "100%",
+                          }}>
+                          <ScatterPlotIcon
+                            sx={{
+                              color: "#fff",
+                              fontWeight: 600,
+                              background: "#ccc",
+                              border: "#000 2px solid",
+                              "&:hover": {
+                                cursor: "pointer",
+                              },
+                            }}
+                            id="basic-button"
+                            aria-controls={open ? "basic-menu" : undefined}
+                            aria-haspopup="true"
+                            aria-expanded={open ? "true" : undefined}
+                            onClick={(e) => handleClick(e, item.id)}
                           />
-                          <div
-                            style={{
-                              position: "absolute",
-                              top: 0,
-                              right: 0,
+
+                          <Menu
+                            id="basic-menu"
+                            anchorEl={anchorEl}
+                            open={open}
+                            onClose={handleClose}
+                            MenuListProps={{
+                              "aria-labelledby": "basic-button",
                             }}>
-                            <IconButton
-                              aria-label="more"
-                              id="long-button"
-                              aria-controls={open ? "long-menu" : undefined}
-                              aria-expanded={open ? "true" : undefined}
-                              aria-haspopup="true"
-                              onClick={handleClick}>
-                              <MoreVertIcon />
-                            </IconButton>
-                            <Menu
-                              id="long-menu"
-                              MenuListProps={{
-                                "aria-labelledby": "long-button",
-                              }}
-                              anchorEl={anchorEl}
-                              open={open}
-                              onClose={handleClose}
-                              PaperProps={{
-                                style: {
-                                  maxHeight: ITEM_HEIGHT * 4.5,
-                                  width: "20ch",
-                                },
-                              }}>
-                              {options.map((option) => (
-                                <MenuItem
-                                  key={option}
-                                  selected={option === "Unsave"}
-                                  onClick={() => handleClose(option)}>
-                                  {option}
-                                </MenuItem>
-                              ))}
-                            </Menu>
-                          </div>
-                          <CardContent sx={{ padding: 2 }}>
+                            <MenuItem onClick={(e) => handleClose(e, "Edit")}>
+                             {t('recipe.edit')}
+                            </MenuItem>
+                            <MenuItem onClick={(e) => handleClose(e, "Remove")}>
+                        
+                              {t('recipe.remove')}
+                            </MenuItem>
+                          </Menu>
+                        </div>
+                        <CardMedia
+                          component="img"
+                          width="100%"
+                          image={
+                            item.anhKemTheo
+                              ? process.env.REACT_APP_URI_Local +
+                                item.anhKemTheo
+                              : "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxleHBsb3JlLWZlZWR8Mnx8fGVufDB8fHx8fA%3D%3D&w=1000&q=80"
+                          }
+                          alt="green iguana"
+                        />
+
+                        <CardContent sx={{ padding: 2 }}>
+                          <Link to={"/recipe/" + item.id}>
                             <Typography
                               gutterBottom
                               variant="h5"
                               component="div">
-                              {item.recipeName}
+                              {item.tenCongThuc}
                             </Typography>
                             <Box
                               sx={{
@@ -254,15 +313,16 @@ const RecipeManagement = () => {
                               <Rating
                                 readOnly
                                 name="half-rating"
-                                defaultValue={3}
+                                defaultValue={item?.saoTrungBinh || null}
+                                value={item?.saoTrungBinh || null}
                               />{" "}
                               <Typography sx={{ fontWeight: 600 }} variant="p">
-                                {" "}
-                                7 Ratings
+                                {console.log(item?.saoTrungBinh)}
+                                {item?.tongSoLuong} Ratings
                               </Typography>
                             </Box>
-                          </CardContent>
-                        </CardActionArea>
+                          </Link>
+                        </CardContent>
                       </Card>
                     </Grid>
                   );

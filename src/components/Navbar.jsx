@@ -16,45 +16,63 @@ import RiceBowlIcon from "@mui/icons-material/RiceBowl";
 import { Link, useNavigate } from "react-router-dom";
 import styled from "@emotion/styled";
 import { GiKnifeFork } from "react-icons/gi";
-import { useEffect, useRef } from 'react';
-import { gapi } from 'gapi-script';
-import ButtonLoginEmail from "./Login/ButtonLoginEmail";
+import Search from "./Search";
+import Category from "./Category";
+import GoogleLogin from "react-google-login";
+import { useEffect } from "react";
+import { gapi } from "gapi-script";
+import LanguagePopover from "../Language/LanguagePopover";
+import { useState } from "react";
+import { useTranslation } from 'react-i18next';
 
 const pages = [];
-const settings = ["Profile", "Recipe", "Logout", ""];
-const clientId = process.env.REACT_APP_GOOGLE_CLIENTID 
+const ImageUser = localStorage.getItem("imageUser");
+
+const clientId = process.env.REACT_APP_GOOGLE_CLIENTID;
 function Navbar() {
+
+  const { t } = useTranslation()
+  let settings = [t('nav-bar.recipe'), t('nav-bar.profile'), t('nav-bar.logout')];
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const [token, setToken] = React.useState("");
+  const [imageUser, setImageUser] = React.useState(ImageUser);
+  const [open, setOpen] = useState(null);
   const navigate = useNavigate();
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
+  };
+  const handleOpen = (event) => {
+    setOpen(event.currentTarget);
+  };
+  const handleClose = () => {
+    //  navigate("/dashboard/profile");
+    console.log("check");
+    setOpen(null);
   };
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
   };
 
   const handleSetting = (setting) => {
-    if (setting === "Logout") {
-      localStorage.removeItem("authenticated");
-      console.log("Logout success");
+    setOpen(null);
+    if (setting === t('nav-bar.logout')) {
+      localStorage.removeItem("token");
+      localStorage.removeItem("imageUser");
+      const token = localStorage.getItem("token");
+      // console.log(token);
+      setToken(token);
+      navigate("/home");
     }
-    if (setting === "Profile") {
+    if (setting ===  t('nav-bar.profile')) {
       navigate("/profile");
     }
 
-    if (setting === "Recipe") {
+    if (setting ===t('nav-bar.recipe')) {
       navigate("/recipe-management");
     }
   };
 
-  const handleLogin = () => {
-
-    localStorage.setItem("token", "token");
-    const token = localStorage.getItem("token");
-    setToken(token);
-  };
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
   };
@@ -62,20 +80,56 @@ function Navbar() {
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
-  useEffect(()=>{
-    function start (){
+  useEffect(() => {
+    function start() {
       gapi.client.init({
         clientId: clientId,
-        scope: ""
-      })
-    };
-    gapi.load('client:auth2',start)
-})
+        scope: "",
+      });
+    }
+    gapi.load("client:auth2", start);
+  });
   React.useEffect(() => {
-    const token = localStorage.getItem("authenticated");
+    const token = localStorage.getItem("token");
     setToken(token);
   }, [token]);
+  const onSuccess = async (res) => {
+ 
+   
 
+    if (res.tokenId) {
+      console.log(res.TokenId)
+      const testAutho = async () => {
+        let api = await fetch(
+          process.env.REACT_APP_URI_Local + "api/User/userLogin",
+          {
+            method: "POST",
+            body: JSON.stringify({
+              IdToken: res.tokenId,
+            }),
+            headers: {
+              "Content-type": "application/json; charset=UTF-8",
+            },
+          },
+        );
+
+        let token = "";
+        token = await api.json();
+        console.log("Login successtoken!", token);
+        //console.log("token", token);
+        localStorage.setItem("token", token.token);
+        setToken(token.token);
+        localStorage.setItem("imageUser", token.imageUser);
+        setImageUser(token.imageUser);
+        navigate("/home");
+      };
+      testAutho();
+      
+    }
+  };
+  const onFalure = (res) => {
+    console.log("Login Fail!", res);
+  };
   return (
     <AppBar
       sx={{
@@ -107,6 +161,7 @@ function Navbar() {
               color: "inherit",
               textDecoration: "none",
             }}>
+            {/* <img src="https://localhost:44337/images\original-62b8a65b3a744b16072a125d9b7774f3.webporiginal-62b8a65b3a744b16072a125d9b7774f3.webp" alt="aloalo" /> */}
             <Logo Logo to={"/home"}>
               <GiKnifeFork
                 style={{
@@ -186,11 +241,22 @@ function Navbar() {
               </Button>
             ))}
           </Box>
+          <Box
+            sx={{
+              height: 1,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}>
+            <Category />
+            <Search />
+            <LanguagePopover onClose={handleClose} />
+          </Box>
           {token != null ? (
             <Box sx={{ flexGrow: 0 }}>
               <Tooltip title="Open settings">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                  <Avatar alt="Remy Sharp" src={imageUser ? process.env.REACT_APP_URI_Local + imageUser : "/static/images/avatar/2.jpg"} />
                 </IconButton>
               </Tooltip>
               <Menu
@@ -229,12 +295,29 @@ function Navbar() {
                 alignItems: "center",
                 justifyContent: "center",
               }}>
-              <AccountCircleIcon />
-              {/* <Button onClick={() => handleLogin()} color="inherit">
-                Login
-                
-              </Button> */}
-              <ButtonLoginEmail id='GGButton' clientId={clientId}></ButtonLoginEmail>
+              <GoogleLogin
+                render={(renderProps) => (
+                  <>
+                    <AccountCircleIcon />
+                    <Button color="inherit" onClick={renderProps.onClick}>
+                      {t('nav-bar.login')}
+                    </Button> 
+                  </>
+
+                  //   <Button id={props.id} fullWidth size="large" color="inherit" variant="outlined" onClick={renderProps.onClick}>
+                  //   <Iconify icon="eva:google-fill" color="#DF3E30" width={22} height={22} />
+
+                  // </Button>
+                )}
+                // <GoogleButton id={props.id} onClick={renderProps.onClick} disabled={renderProps.disabled}>Sign in with Google</GoogleButton>
+
+                //  className='GGButton'
+                clientId={clientId}
+                onSuccess={onSuccess}
+                onFailure={onFalure}
+                cookiePolicy={"single_host_origin"}
+                //isSignedIn={true}
+              />
             </Box>
           )}
         </Toolbar>

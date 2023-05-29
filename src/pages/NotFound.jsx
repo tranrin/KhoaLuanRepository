@@ -2,7 +2,7 @@ import React from 'react';
 import { Box, Typography } from '@mui/material';
 import { purple } from '@mui/material/colors';
 
-const primary = purple[500]; // #f44336
+const primary = purple[800]; // #f44336
 
 export default function NotFound() {
   return (
@@ -16,7 +16,11 @@ export default function NotFound() {
       }}
     >
       <Typography variant="h1" style={{ color: 'white' }}>
-        404
+        404 Not found
+        <div style={{fontSize: 200}}>
+        :(
+        </div>
+      
       </Typography>
     </Box>
   );

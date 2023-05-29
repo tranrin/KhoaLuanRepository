@@ -1,20 +1,68 @@
 import { useState } from "react";
+import Alert from '@mui/material/Alert';
+import { useRef } from "react";
+import { HubConnectionBuilder } from "@microsoft/signalr";
+import { Typography } from "@mui/material";
+import { red } from "@mui/material/colors";
 
 const CommentForm = ({
+  parentId = null,
+  dataUseRef,
+  dataComment,
   handleSubmit,
   submitLabel,
   hasCancelButton = false,
   handleCancel,
   initialText = "",
 }) => {
+  const connectionRef = useRef(dataUseRef);
+  const sendMessage = (message) => {
+    console.log(parentId,"parentId")
+    console.log(dataUseRef,"dataUseRefvao")
+    //console.log(message)
+    if (dataUseRef._connectionState === "Connected") {
+      console.log({  CongThucId:dataComment,
+        Content: text,
+        ParentId: null,
+        UserId: null},"vao ket noi1")
+      dataUseRef
+        .invoke("SendOffersToUser",{  
+          CongThucId:Number(dataComment),
+          Content: text,
+          ParentId: parentId,
+          UserId: null})
+        .then((data) => {console.log(data)})
+        .catch((error) => {
+          console.error("Failed to send message: ", error);
+        });
+    }
+  };
   const [text, setText] = useState(initialText);
   const isTextareaDisabled = text.length === 0;
   const onSubmit = (event) => {
-    event.preventDefault();
-    handleSubmit(text);
+    if(localStorage.getItem('token')){
+      event.preventDefault();
+     // handleSubmit('a');
+
+      const message = {
+        CongThucId:dataComment,
+        Content: text,
+        ParentId: null,
+        UserId: null
+      };
+      console.log(message)
+      sendMessage(message)
+
+    }else{
+      event.preventDefault();
+      <Alert severity="warning">This is a warning alert — check it out!</Alert>
+      
+    }
+  
     setText("");
   };
-  return (
+   return (  
+ 
     <form onSubmit={onSubmit}>
       <textarea
         className="comment-form-textarea"
@@ -23,7 +71,7 @@ const CommentForm = ({
       />
       <button className="comment-form-button" disabled={isTextareaDisabled}>
         {submitLabel}
-      </button>
+      </button> 
       {hasCancelButton && (
         <button
           type="button"
@@ -33,7 +81,10 @@ const CommentForm = ({
         </button>
       )}
     </form>
-  );
+  
+ 
+  )
+ 
 };
 
 export default CommentForm;

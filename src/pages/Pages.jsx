@@ -6,7 +6,6 @@ import Searched from "./Searched";
 import NotFound from "./NotFound";
 import Recipe from "./Recipe";
 import { AnimatePresence } from "framer-motion";
-
 import Profile from "./Profile";
 import CreateRecipe from "./CreateRecipe";
 import RecipeManagement from "./RecipeManagement";
@@ -17,6 +16,7 @@ function Pages() {
   return (
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
+      <Route path="/" element={<Home></Home>}></Route>
         <Route path="/home" element={<Home></Home>}></Route>
         <Route path="/cuisine/:type" element={<Cuisine></Cuisine>}></Route>
         <Route path="/searched/:search" element={<Searched></Searched>}></Route>

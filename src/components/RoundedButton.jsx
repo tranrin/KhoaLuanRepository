@@ -14,7 +14,16 @@ const RoundButton = ({
   return (
     <Button
       size={size}
-      sx={{ height: "38px", bgcolor: "rgb(49, 49, 49)", ...sx }}
+      sx={{
+        height: "38px",
+        color: "#fff",
+        bgcolor: "rgb(49, 49, 49)",
+        "&:hover": {
+          bgcolor: "rgb(49, 49, 49,0.7)",
+          borderColor: "#fff",
+        },
+        ...sx,
+      }}
       variant={type}
       disabled={disabled}
       onClick={onClick}

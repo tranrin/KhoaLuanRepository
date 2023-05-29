@@ -1,7 +1,12 @@
+// import { Height } from "@material-ui/icons";
 import CommentForm from "./CommentForm";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import { StyledEngineProvider } from "@mui/material/styles";
+import { useTranslation } from 'react-i18next';
 
 const Comment = ({
+  dataComment,
+  loadComment,
   comment,
   replies,
   setActiveComment,
@@ -9,9 +14,10 @@ const Comment = ({
   updateComment,
   deleteComment,
   addComment,
-  parentId = null,
+  parentId,
   currentUserId,
 }) => {
+  const { t } = useTranslation()
   const isEditing =
     activeComment &&
     activeComment.id === comment.id &&
@@ -26,22 +32,34 @@ const Comment = ({
     currentUserId === comment.userId && replies.length === 0 && !timePassed;
   const canReply = Boolean(currentUserId);
   const canEdit = currentUserId === comment.userId && !timePassed;
-  const replyId = parentId ? parentId : comment.id;
-  const createdAt = new Date(comment.createdAt).toLocaleDateString();
+  const replyId = parentId ? parentId : comment.ID;
+  const createdAt = new Date(comment.dateCreate).toLocaleDateString();
   return (
     <div key={comment.id} className="comment">
       <div className="comment-image-container">
-        {/* <img src="/user-icon.png" /> */}
-        <AccountCircleIcon />
+        {comment.image ? (
+          <img
+            style={{
+              width: "50px",
+              height: "50px",
+              borderRadius: "50%",
+            }}
+            src={process.env.REACT_APP_URI_Local + comment.image}></img>
+        ) : (
+          <AccountCircleIcon />
+        )}
       </div>
       <div className="comment-right-part">
         <div className="comment-content">
-          <div className="comment-author">{comment.username}</div>
+          <div className="comment-author">{comment.screenName}</div>
           <div>{createdAt}</div>
         </div>
-        {!isEditing && <div className="comment-text">{comment.body}</div>}
+        {!isEditing && <div className="comment-text">{comment.content}</div>}
         {isEditing && (
           <CommentForm
+            parentId={parentId}
+            dataComment={dataComment}
+            dataUseRef={loadComment}
             submitLabel="Update"
             hasCancelButton
             initialText={comment.body}
@@ -52,15 +70,14 @@ const Comment = ({
           />
         )}
         <div className="comment-actions">
-          {canReply && (
-            <div
-              className="comment-action"
-              onClick={() =>
-                setActiveComment({ id: comment.id, type: "replying" })
-              }>
-              Reply
-            </div>
-          )}
+     {   (localStorage.getItem("token")) ? <div
+                  className="comment-action"
+                  onClick={() =>
+                    setActiveComment({ id: comment.id, type: "replying" })
+                  }>
+                {t('recipeDetail.reply')}
+                </div> : ""}
+          {canReply }
           {canEdit && (
             <div
               className="comment-action"
@@ -80,8 +97,11 @@ const Comment = ({
         </div>
         {isReplying && (
           <CommentForm
+            parentId={parentId}
+            dataComment={dataComment}
+            dataUseRef={loadComment}
             submitLabel="Reply"
-            handleSubmit={(text) => addComment(text, replyId)}
+            //  handleSubmit={(text) => addComment(text, replyId)}
           />
         )}
         {replies.length > 0 && (
@@ -95,9 +115,11 @@ const Comment = ({
                 updateComment={updateComment}
                 deleteComment={deleteComment}
                 addComment={addComment}
-                parentId={comment.id}
+                parentId={parentId}
                 replies={[]}
                 currentUserId={currentUserId}
+                dataComment={dataComment}
+                loadComment={loadComment}
               />
             ))}
           </div>

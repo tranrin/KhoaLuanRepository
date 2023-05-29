@@ -18,24 +18,28 @@ const BAD_REQUEST_ERROR = [400, 422];
 const WRONG_URL_ERROR = [404];
 
 const getAPIConfig = (isCrawlingAPI) => {
-  const token = Utils.getSavedToken();
+  const token = localStorage.getItem("token");
+
+
   // const validateToken = Utils.checkTokenLifeTime(token);
   // if (!validateToken) return;
   // const BASE_URL = isCrawlingAPI
   //   ? import.meta.env.VITE_BE_CRAWL_URL
   //   : import.meta.env.VITE_BE_URL;
-  const BASE_URL = process.env.LINK_WEB_SERCVICE;
+  const BASE_URL = `${process.env.REACT_APP_URL_WEB_SERCVICE}/api`;
   const api = create({
-    baseURL: ` https://9018-2402-800-6273-529a-4c8e-ce19-9ecd-3665.ngrok-free.app/api/CongThuc/CongThucGets/sa`,
+    baseURL: BASE_URL,
     headers: {
-      Accept: "application/json",
-      "ngrok-skip-browser-warning": 6024,
+      // Accept: "application/json",
+      "ngrok-skip-browser-warning": "69420",
     },
+    // mode: "cors",
   });
-  // api.setHeader(
-  //   "Authorization",
-  //   `bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2ODM4MjEzNjksImV4cCI6MTY4MzkwNzc2OSwiYXVkIjoiaHR0cHM6Ly9teS1hcHAuY29tIiwiaXNzIjoiaHR0cHM6Ly9teS1hcHAuY29tIiwic3ViIjoiMWRmNjVmNTAtNTgzNC00YzBmLWFkZTYtNmZiMjVkNjA1N2NjIn0.vb6WKPcTczRNpxhvTuUqfjMtozpayO9lt-PddH3O-Kc`,
-  // );
+
+  api.setHeader(
+    "Authorization",
+    `bearer ${token}`,
+  );
   // if (lang) api.setHeader("lang", lang);
   return api;
 };
@@ -103,7 +107,8 @@ const post = async (api, url, data) => {
 const postFormData = async (api, url, data) => {
   const headers = {
     "Content-Type": "multipart/form-data",
-    authorization: "bearer",
+    authorization:
+      `bearer ${localStorage.getItem('token')}`,
   };
   return api
     .post(url, data, { headers })
@@ -122,8 +127,15 @@ const putFormData = async (api, url, data) => {
 };
 
 const get = async (api, url, data) => {
+  const token = localStorage.getItem("token")
+  console.log(token,"token")
+  const headers = {
+    "Content-Type": "multipart/form-data",
+    Authorization:
+      `bearer ${token}`,
+  };
   return api
-    .get(url, data)
+    .get(url, data, { headers })
     .then((response) => handleResponse(response))
     .catch((err) => handleResponse(err));
 };

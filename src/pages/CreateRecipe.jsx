@@ -6,16 +6,40 @@ import {
   InputLabel,
   MenuItem,
   Select,
+  Stack,
   Tab,
   Tabs,
   TextField,
   Typography,
 } from "@mui/material";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import CameraAltIcon from "@mui/icons-material/CameraAlt";
+import { useTranslation } from 'react-i18next';
 import React, { useEffect } from "react";
-import { createRecipe } from "../api/recipe.api";
-
+import { createRecipe, saveRecipe, upLoadImage } from "../api/recipe.api";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import RoundButton from "../components/RoundedButton";
+import AlertDialog from "../components/Alert";
+const defaulPayload = {
+  thongTinChung: {
+    tenCongThuc: "",
+    moTa: "",
+    thoiGianNau: 0,
+    thoiGianChuanBi: 0,
+    idCategory: 0,
+    anhKemTheo: null,
+    doKho: 0,
+  },
+  nguyenLieu: [
+    {
+      tenNguyenLieu: "",
+    },
+  ],
+  buocNau: [
+    {
+      moTa: "",
+    },
+  ],
+};
 const HOURS = [
   1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22,
   23,
@@ -27,34 +51,54 @@ const MINS = [
 ];
 
 const CreateRecipe = () => {
+  const { t } = useTranslation()
+  const category = [
+    {
+      idCategory: 1,
+      nameCategory: t('recipeUpdate.category.italian'),
+    },
+    {
+      idCategory: 2,
+      nameCategory:  t('recipeUpdate.category.american'),
+    },
+    {
+      idCategory: 3,
+      nameCategory:  t('recipeUpdate.category.thai'),
+    },
+    {
+      idCategory: 4,
+      nameCategory:  t('recipeUpdate.category.japanese'),
+    },
+  ];
+  
+  const level = [
+    {
+      doKho: 1,
+      nameDoKho: t('recipeUpdate.difficultylevel.easy'),
+    },
+    {
+      doKho: 2,
+      nameDoKho:  t('recipeUpdate.difficultylevel.intermediate'),
+    },
+    {
+      doKho: 3,
+      nameDoKho:t('recipeUpdate.difficultylevel.advanced'),
+    },
+    {
+      doKho: 4,
+      nameDoKho: t('recipeUpdate.difficultylevel.expert'),
+    },
+  ];
   const [prepareHours, setPrepareHours] = React.useState(0);
   const [prepareMin, setPrepareMin] = React.useState(0);
   const [cookHours, setCookHours] = React.useState(0);
   const [cookMin, setCookMin] = React.useState(0);
-  const [ingredients, setIngredients] = React.useState([1]);
-  const [payload, setPayload] = React.useState({
-    thongTinChung: {
-      tenCongThuc: "",
-      moTa: "",
-      thoiGianNau: 0,
-      thoiGianChuanBi: 0,
-      idCategory: 0,
-      anhKemTheo: null,
-      ngayTao: " 2023-05-05T21:37:48.567",
-      doKho: 0,
-    },
-    nguyenLieu: [
-      {
-        tenNguyenLieu: "",
-      },
-    ],
-    buocNau: [
-      {
-        moTa: "",
-        thuTu: 1,
-      },
-    ],
-  });
+  const [preview, setPreview] = React.useState("");
+  const [open, setOpen] = React.useState(false);
+  const [file, setFile] = React.useState("");
+  const [textAlert, setTextAlert] = React.useState("");
+
+  const [payload, setPayload] = React.useState(defaulPayload);
   const [ingredientPayload, setIngredientPayload] = React.useState([
     {
       tenNguyenLieu: "",
@@ -63,49 +107,98 @@ const CreateRecipe = () => {
   const [stepMethodPayload, setStepMethodPayload] = React.useState([
     {
       moTa: "",
-      thuTu: 0,
     },
   ]);
-  // const [stepMethod, setStepMethod] = React.useState([1]);
-  const myHeaders = new Headers();
-  const myInit = {
-    method: "GET",
-    headers: myHeaders,
-    mode: "cors",
-    cache: "default",
-  };
-  const handleSubmit = () => {
-    delete payload.thongTinChung.prepareHours;
-    delete payload.thongTinChung.prepareMins;
-    delete payload.thongTinChung.cookHours;
-    delete payload.thongTinChung.cookMins;
-    // const test = await createRecipe(payload);
-    fetch(
-      "https://9018-2402-800-6273-529a-4c8e-ce19-9ecd-3665.ngrok-free.app/api/CongThuc/CongThucGets/sa",
-      {},
-    )
-      .then((response) => {
-        response.header(
-          "Access-Control-Allow-Methods",
-          "GET,PUT,POST,DELETE,PATCH,OPTIONS",
-        );
-        if (response.ok) {
-          return response.text();
-        } else {
-          throw new Error("Server response was not OK");
-        }
-      })
-      .then((data) => {
-        try {
-          const jsonData = JSON.parse(data);
-          console.log(jsonData); // Do something with the data
-        } catch (error) {
-          console.error("Failed to parse JSON data", error);
-        }
-      })
-      .catch((error) => console.error(error));
 
-    // const data = await api.json();
+  const handleRemoveItem = (indexToRemove, name) => {
+    if (name === "ingredientPayload")
+      setIngredientPayload((prevPayload) => {
+        return prevPayload.filter((_, index) => index !== indexToRemove);
+      });
+    if (name === "methodPayload")
+      setStepMethodPayload((prevPayload) => {
+        return prevPayload.filter((_, index) => index !== indexToRemove);
+      });
+  };
+
+  const handleSubmit = async () => {
+    // alert.show("Oh look, an alert!");
+    let hasValidationError = false;
+    // Check thongTinChung properties
+    const {
+      tenCongThuc,
+      moTa,
+      thoiGianNau,
+      thoiGianChuanBi,
+      idCategory,
+      anhKemTheo,
+      doKho,
+    } = payload.thongTinChung;
+
+    if (
+      !tenCongThuc ||
+      tenCongThuc.trim() === "" ||
+      !moTa ||
+      moTa.trim() === ""
+    ) {
+      setOpen(true);
+      hasValidationError = true;
+      setTextAlert("Please enter all fields.");
+    }
+
+    payload.nguyenLieu.forEach((nguyenLieu, index) => {
+      if (!nguyenLieu.tenNguyenLieu || nguyenLieu.tenNguyenLieu.trim() === "") {
+        hasValidationError = true;
+        setOpen(true);
+
+        setTextAlert(`Please enter all fields`);
+      }
+    });
+
+    // Check buocNau properties
+    payload.buocNau.forEach((buocNau, index) => {
+      if (!buocNau.moTa || buocNau.moTa.trim() === "") {
+        hasValidationError = true;
+        setOpen(true);
+        setTextAlert(`Please enter all fields`);
+      }
+    });
+
+    // Perform further validation if needed...
+
+    // If there are no validation errors, proceed with submitting the form
+    if (!hasValidationError) {
+      // Submit form logic here
+      delete payload.thongTinChung.prepareHours;
+      delete payload.thongTinChung.prepareMins;
+      delete payload.thongTinChung.cookHours;
+      delete payload.thongTinChung.cookMins;
+      console.log(payload);
+      const formData = new FormData();
+      formData.append("File", file);
+      const uploadImage = await upLoadImage(formData).then(async (item) => {
+        console.log(item);
+        const file = item.data.replace("C:\\fakepath\\", "");
+        setPayload({
+          ...payload,
+          thongTinChung: {
+            ...payload.thongTinChung,
+            anhKemTheo: file,
+          },
+        });
+        await createRecipe(payload)
+          .then((data) => {
+            console.log(data);
+          })
+          .finally(() => {
+            setPayload(defaulPayload);
+            setOpen(true)
+            setTextAlert("Creating successfully.");
+          });
+      });
+    }
+
+    // const test = await createRecipe(payload).then((data) => {});
   };
 
   const handleChangeIngredient = (index) => (event) => {
@@ -135,7 +228,6 @@ const CreateRecipe = () => {
       newPayload[index] = {
         ...newPayload[index],
         [name]: value,
-        thuTu: index + 1,
       };
       return newPayload;
     });
@@ -162,14 +254,26 @@ const CreateRecipe = () => {
       setCookMin(e.target.value);
     }
 
+    if (name === "anhKemTheo") {
+      setFile(e.target.files[0]);
+      if (e.target.files[0] != null) {
+        const objectUrl = window.URL.createObjectURL(e.target.files[0]);
+        setPreview(objectUrl);
+        setPayload({
+          ...payload,
+          thongTinChung: {
+            ...payload.thongTinChung,
+          },
+        });
+      }
+    }
     setPayload({
       ...payload,
       thongTinChung: {
         ...payload.thongTinChung,
         [name]: e.target.value,
-        thoiGianChuanBi:
-          prepareHours + " " + "hour" + " " + prepareMin + " " + "min",
-        thoiGianNau: cookHours + " " + "hour" + " " + cookMin + " " + "min",
+        thoiGianChuanBi: prepareHours * 60 + prepareMin,
+        thoiGianNau: cookHours * 60 + cookMin,
       },
     });
   };
@@ -180,49 +284,81 @@ const CreateRecipe = () => {
       sx={{
         border: "solid #ccc 2px",
         borderRadius: 5,
+        marginTop: 12,
         boxShadow: "0 0 20px 2px rgb(49, 49, 49,0.5)",
       }}
       container
       md={12}
       xs={12}
       lg={12}>
+      <AlertDialog
+        handleClose={() => setOpen(false)}
+        isOpen={open}
+        text={textAlert}
+      />
       <Grid item md={12} xs={12} lg={12}>
         <Typography marginBottom={2} fontSize={20} fontWeight={600}>
           Recipe Details
         </Typography>
         <Grid container md={12} xs={12} lg={12}>
           <Grid item md={3} lg={3} xs={12}>
-            <label htmlFor="upload-photo">
-              <input
-                style={{ display: "none" }}
-                id="upload-photo"
-                name="anhkKemTheo"
-                type="file"
-                onChange={(e) => handleChangeInput(e, "anhKemTheo")}
-              />
-              <Fab
-                sx={{
-                  width: 200,
-                  height: 200,
-                  borderRadius: 12,
-                  display: "flex",
-                  flexDirection: "column",
-                }}
-                color="default"
-                size="small"
-                component="span"
-                aria-label="add"
-                variant="extended">
-                <CameraAltIcon sx={{ fontSize: 100 }} />
-                <Typography fontSize={12}>Tap or click to add photo</Typography>
-              </Fab>
-            </label>
+            {preview === "" ? (
+              <label htmlFor="upload-photo">
+                <input
+                  style={{ display: "none" }}
+                  id="upload-photo"
+                  name="anhkKemTheo"
+                  type="file"
+                  onChange={(e) => handleChangeInput(e, "anhKemTheo")}
+                />
+                <Fab
+                  sx={{
+                    width: 200,
+                    height: 200,
+                    borderRadius: 12,
+                    display: "flex",
+                    flexDirection: "column",
+                  }}
+                  color="default"
+                  size="small"
+                  component="span"
+                  aria-label="add"
+                  variant="extended">
+                  <CameraAltIcon sx={{ fontSize: 100 }} />
+                  <Typography fontSize={12}>
+                    Tap or click to add photo
+                  </Typography>
+                </Fab>
+              </label>
+            ) : (
+              <label htmlFor="upload-photo">
+                <input
+                  style={{ display: "none" }}
+                  id="upload-photo"
+                  name="anhkKemTheo"
+                  type="file"
+                  onChange={(e) => handleChangeInput(e, "anhKemTheo")}
+                />
+                <img
+                  width={"100%"}
+                  style={{
+                    borderRadius: 20,
+                    marginBottom: 2,
+                    "&::hover": {
+                      borderRadius: 100,
+                    },
+                  }}
+                  src={`${preview}`}
+                />
+              </label>
+            )}
           </Grid>
           <Grid spacing={1} item md={9} lg={9} xs={12}>
             <Grid spacing={1} container md={12} xs={12} lg={12}>
               <Grid item xs={12} md={12} lg={12}>
                 <TextField
                   fullWidth
+                  required
                   id="outlined-basic"
                   label="Recipe Title (keep it short and descriptive)"
                   variant="outlined"
@@ -244,16 +380,20 @@ const CreateRecipe = () => {
               </Grid>
               <Grid item xs={12} md={12} lg={12}>
                 <Typography marginTop={1} marginBottom={1} fontWeight={600}>
-                  Timings
+                   {t('recipeUpdate.timings')}
                 </Typography>
                 <Grid gap={1} container md={12} xs={12} lg={12}>
                   <Grid item xs={12} md={12} lg={12}>
-                    <Typography>Prep Time (approx.)</Typography>
+                    <Typography>
+                    {t('recipeUpdate.prepTime')}
+
+                    </Typography>
                   </Grid>
                   <Grid item md={4} lg={4} xs={12}>
                     <FormControl fullWidth>
                       <InputLabel id="demo-simple-select-label">
-                        Hours
+                     
+                        {t('recipeUpdate.hours')}
                       </InputLabel>
                       <Select
                         labelId="demo-simple-select-label"
@@ -266,7 +406,7 @@ const CreateRecipe = () => {
                           HOURS.map((hour, i) => {
                             return (
                               <MenuItem value={hour} key={i}>
-                                {hour} hours
+                                {hour} {t('recipeUpdate.hours')}
                               </MenuItem>
                             );
                           })}
@@ -276,7 +416,8 @@ const CreateRecipe = () => {
                   <Grid item md={4} lg={4} xs={12}>
                     <FormControl fullWidth>
                       <InputLabel id="demo-simple-select-label">
-                        Mins
+                  
+                        {t('recipeUpdate.mins')}
                       </InputLabel>
                       <Select
                         labelId="demo-simple-select-label"
@@ -291,7 +432,7 @@ const CreateRecipe = () => {
                           MINS.map((hour, i) => {
                             return (
                               <MenuItem value={hour} key={i}>
-                                {hour} mins
+                                {hour}  {t('recipeUpdate.mins')}
                               </MenuItem>
                             );
                           })}
@@ -301,12 +442,13 @@ const CreateRecipe = () => {
                 </Grid>
                 <Grid gap={1} container md={12} xs={12} lg={12}>
                   <Grid item xs={12} md={12} lg={12}>
-                    <Typography>Cook Time (approx.)</Typography>
+                    <Typography> {t('recipeUpdate.cookTime')}</Typography>
                   </Grid>
                   <Grid item md={4} lg={4} xs={12}>
                     <FormControl fullWidth>
                       <InputLabel id="demo-simple-select-label">
-                        Hours
+           
+                        {t('recipeUpdate.hours')}
                       </InputLabel>
                       <Select
                         labelId="demo-simple-select-label"
@@ -319,7 +461,7 @@ const CreateRecipe = () => {
                           HOURS.map((hour, i) => {
                             return (
                               <MenuItem value={hour} key={i}>
-                                {hour} mins
+                                {hour}  {t('recipeUpdate.mins')}
                               </MenuItem>
                             );
                           })}
@@ -329,7 +471,7 @@ const CreateRecipe = () => {
                   <Grid item md={4} lg={4} xs={12}>
                     <FormControl fullWidth>
                       <InputLabel id="demo-simple-select-label">
-                        Mins
+                        {t('recipeUpdate.mins')}
                       </InputLabel>
                       <Select
                         labelId="demo-simple-select-label"
@@ -341,7 +483,7 @@ const CreateRecipe = () => {
                           MINS.map((hour, i) => {
                             return (
                               <MenuItem value={hour} key={i}>
-                                {hour} mins
+                                {hour}  {t('recipeUpdate.mins')}
                               </MenuItem>
                             );
                           })}
@@ -353,39 +495,41 @@ const CreateRecipe = () => {
               <Grid item xs={12} md={12} lg={12}>
                 <Grid container>
                   <Grid paddingRight={0.5} item xs={12} md={6} lg={6}>
-                    <Typography>Difficulty level</Typography>
+                    <Typography> {t('recipeUpdate.difficultylevel.title')}</Typography>
                     <FormControl fullWidth>
                       <InputLabel id="demo-simple-select-label">
-                        Difficulty level
+                     {t('recipeUpdate.difficultylevel.title')}
                       </InputLabel>
                       <Select
                         labelId="demo-simple-select-label"
                         id="demo-simple-select"
-                        label="Difficulty level"
+                        label= {t('recipeUpdate.difficultylevel.title')}
                         name="doKho"
                         onChange={(e) => handleChangeInput(e, "doKho")}>
-                        <MenuItem value={1}>1</MenuItem>
-                        <MenuItem value={2}>2</MenuItem>
-                        <MenuItem value={2}>3</MenuItem>
+                        <MenuItem value={level[0].doKho}>{level[0].nameDoKho}</MenuItem>
+                        <MenuItem value={level[1].doKho}>{level[1].nameDoKho}</MenuItem>
+                        <MenuItem value={level[2].doKho}>{level[2].nameDoKho}</MenuItem>
+                        <MenuItem value={level[3].doKho}>{level[3].nameDoKho}</MenuItem>
                       </Select>
                     </FormControl>
                   </Grid>
                   <Grid paddingRight={0.5} item xs={12} md={6} lg={6}>
-                    <Typography>Category</Typography>
+                    <Typography>{t('recipeUpdate.category.title')}</Typography>
                     <FormControl fullWidth>
                       <InputLabel id="demo-simple-select-label">
-                        Category
+                        {t('recipeUpdate.category.title')}
                       </InputLabel>
                       <Select
                         labelId="demo-simple-select-label"
                         id="demo-simple-select"
-                        label="Category"
+                        label= {t('recipeUpdate.category.title')}
                         name="idCategory"
                         onChange={(e) => handleChangeInput(e, "idCategory")}>
-                        <MenuItem value={1}>1</MenuItem>
-                        <MenuItem value={2}>2</MenuItem>
-                        <MenuItem value={2}>3</MenuItem>
-                        <MenuItem value={2}>4</MenuItem>
+                        <MenuItem value={category[0].idCategory}>{category[0].nameCategory}</MenuItem>
+                        <MenuItem value={category[1].idCategory}>{category[1].nameCategory}</MenuItem>
+                        <MenuItem value={category[2].idCategory}>{category[2].nameCategory}</MenuItem>
+                        <MenuItem value={category[3].idCategory}>{category[3].nameCategory}</MenuItem>
+                        
                       </Select>
                     </FormControl>
                   </Grid>
@@ -398,28 +542,51 @@ const CreateRecipe = () => {
       <Grid marginTop={2} item md={12} xs={12} lg={12}>
         <Grid spacing={2} container md={12} xs={12} lg={12}>
           <Grid item md={6} lg={6} xs={12}>
-            <Typography fontWeight={600}>Ingredients</Typography>
+            <Typography fontWeight={600}> {t('recipeUpdate.ingredient')}</Typography>
             <Typography>
-              Please use metric if possible (we have a handy conversion guide to
-              help)
+            {t('recipeUpdate.ingredients')}
+             
             </Typography>
-            <Typography
+            {/* <Typography
               sx={{
                 marginBottom: 1,
               }}>
               You can split your ingredients into groups, e.g. sauce, filling
               etc.
-            </Typography>
+            </Typography> */}
             {ingredientPayload.map((item, index) => {
               return (
-                <TextField
-                  sx={{ marginBottom: 1 }}
-                  fullWidth
-                  label="ingredient"
-                  key={index}
-                  name={`tenNguyenLieu`}
-                  onChange={handleChangeIngredient(index)}
-                />
+                <Stack
+                  sx={{
+                    with: "100%",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    flexDirection: "row",
+                  }}>
+                  <TextField
+                    sx={{ marginBottom: 1, width: 0.9 }}
+                    label="ingredient"
+                    key={index}
+                    name={`tenNguyenLieu`}
+                    onChange={handleChangeIngredient(index)}
+                  />
+                  <RoundButton
+                    sx={{
+                      marginLeft: 1,
+                      fontSize: 25,
+                      width: "12px",
+                    }}
+                    onClick={() => handleRemoveItem(index, "ingredientPayload")}
+                    label={
+                      <DeleteOutlineIcon
+                        sx={{
+                          color: "#fff",
+                        }}
+                      />
+                    }
+                  />
+                </Stack>
               );
             })}
 
@@ -434,23 +601,48 @@ const CreateRecipe = () => {
                 ])
               }
               variant="contained">
-              Add next ingrediant
+             {t('recipeUpdate.addIngre')}
             </Button>
           </Grid>
           <Grid item md={6} lg={6} xs={12}>
             <Typography sx={{ marginBottom: 1 }} fontWeight={600}>
-              Method
+            
+              {t('recipeUpdate.method')}
             </Typography>
             {stepMethodPayload.map((item, index) => {
               return (
-                <TextField
-                  sx={{ marginBottom: 1 }}
-                  fullWidth
-                  label={"step " + (index + 1)}
-                  name={`moTa`}
-                  key={index}
-                  onChange={handleChangeStepMethod(index)}
-                />
+                <Stack
+                  sx={{
+                    with: "100%",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    flexDirection: "row",
+                  }}>
+                  <TextField
+                    sx={{ marginBottom: 1 }}
+                    fullWidth
+                    label={"step " + (index + 1)}
+                    name={`moTa`}
+                    key={index}
+                    onChange={handleChangeStepMethod(index)}
+                  />
+                  <RoundButton
+                    sx={{
+                      marginLeft: 1,
+                      fontSize: 25,
+                      width: "12px",
+                    }}
+                    onClick={() => handleRemoveItem(index, "methodPayload")}
+                    label={
+                      <DeleteOutlineIcon
+                        sx={{
+                          color: "#fff",
+                        }}
+                      />
+                    }
+                  />
+                </Stack>
               );
             })}
 
@@ -468,7 +660,8 @@ const CreateRecipe = () => {
                 ])
               }
               variant="contained">
-              Add next step
+                 {t('recipeUpdate.addMethod')}
+
             </Button>
           </Grid>
         </Grid>
@@ -482,7 +675,7 @@ const CreateRecipe = () => {
           }}
           onClick={() => handleSubmit()}
           variant="outlined">
-          Save
+           {t('recipeUpdate.save')}
         </Button>
       </Grid>
     </Grid>
